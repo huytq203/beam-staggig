@@ -1,0 +1,22 @@
+/* https://codepen.io/sosuke/pen/Pjoqqp */
+
+.light {
+    filter: brightness(0) invert(1);
+}
+
+.dark {
+    filter: brightness(1) invert(0);
+}
+.blue {
+    filter: invert(45%) sepia(59%) saturate(1758%) hue-rotate(186deg) brightness(92%) contrast(96%);
+}
+.red{
+    filter: invert(44%) sepia(54%) saturate(733%) hue-rotate(313deg) brightness(97%) contrast(90%);
+}
+.green{
+    filter: invert(41%) sepia(93%) saturate(1462%) hue-rotate(93deg) brightness(101%) contrast(102%);
+}
+
+.gray {
+    filter: contrast(0%) grayscale(100%);
+}

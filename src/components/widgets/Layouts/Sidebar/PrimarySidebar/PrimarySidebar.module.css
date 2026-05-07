@@ -1,0 +1,10 @@
+.navbar {
+  background-color: "#f4f6f9";
+  @apply border-none;
+}
+.navbar span {
+  color: #fff;
+}
+.navbar .semi-navigation-item {
+  color: white !important;
+}/*# sourceMappingURL=PrimarySidebar.module.css.map */

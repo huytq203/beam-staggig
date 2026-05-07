@@ -1,0 +1,4 @@
+.beam-table .semi-table-bordered .semi-table-thead > .semi-table-row > .semi-table-row-head,
+.beam-table .semi-table-bordered .semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+  border-right: 1px solid red;
+}/*# sourceMappingURL=AppTable.module.css.map */
