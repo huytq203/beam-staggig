@@ -1,0 +1,17 @@
+import React from 'react';
+import { Container } from '@components/widgets';
+import { Layout } from '@douyinfe/semi-ui';
+import Image from 'next/image';
+import notFound from '../../../../../public/img/error/404.png';
+const NotFound = () => {
+  return (
+    <Layout className="flex-1 overflow-auto bg-slate-200">
+      <Container>
+        <div className="flex justify-center items-center">
+          <Image src={notFound} alt="" />
+        </div>
+      </Container>
+    </Layout>
+  );
+};
+export default NotFound;

@@ -1,0 +1,24 @@
+export enum COMMON_FORMAT {
+  DATE = 'DD/MM/YYYY',
+  YYYY_MM_DD = 'YYYY/MM/DD',
+  LOCAL_DATE_YYYY_MM_DD = 'YYYY-MM-DD',
+  LOCAL_DATE_DD_MM_YYYY = 'DD-MM-yyyy',
+  TIME_DATE = 'HH:mm D/MM/YYYY',
+  COMMENT_TIME_DATE = 'HH:mm - D/MM/YYYY',
+  MONTH_YEAR = 'MM/YYYY',
+  DATETIME_SHORT = 'DD MMM YYYY hh:mm A',
+  DATE_TIME = 'DD/MM/YYYY HH:mm:ss',
+  LOCAL_DATE_TIME = 'DD-MM-YYYY HH:mm:ss',
+  LOCAL_DATE = 'YYYY-MM-DD',
+  DATE_TIMEZONE = 'YYYY/MM/DD HH:mm:ss',
+  EXPORT_DATE = 'DD_MM_YYYY',
+  EXPORT_DATE_REPORT = 'YYYYMMDD',
+  EXPORT_DATE_TICKET = 'HH_mm DD_MM_YYYY',
+  EMPTY_FORMAT = '',
+  FULL_TIME = 'HH:mm:ss',
+}
+
+export enum TIMEZONE_FORMAT {
+  GMT0 = 'Africa/Abidjan',
+  GMT7 = 'Asia/Ho_Chi_Minh',
+}

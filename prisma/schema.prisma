@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model news_articles {
+  id          String    @id @db.Char(36)
+  title       String    @db.VarChar(255)
+  slug        String    @unique(map: "slug") @db.VarChar(255)
+  cover_image String?   @db.VarChar(512)
+  description String?   @db.Text
+  content     String?   @db.LongText
+  is_hot_new  Boolean?  @default(false)
+  tags        Json?
+  shows       Boolean?  @default(true)
+  status      String?   @default("ACTIVE") @db.VarChar(20)
+  created_at  DateTime? @db.DateTime(6)
+  updated_at  DateTime? @db.DateTime(6)
+  created_by  String?   @db.VarChar(50)
+  updated_by  String?   @db.VarChar(50)
+
+  @@index([slug], map: "idx_slug")
+}
