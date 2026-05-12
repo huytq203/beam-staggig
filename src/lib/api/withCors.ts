@@ -14,26 +14,29 @@ function getAllowedOrigins(): string[] {
   return env.split(",").map((o) => o.trim()).filter(Boolean);
 }
 
-export function setCorsHeaders(req: NextApiRequest, res: NextApiResponse) {
+export function setCorsHeaders(req: NextApiRequest, res: NextApiResponse): boolean {
   const origin = req.headers.origin ?? "";
   const allowedOrigins = getAllowedOrigins();
+  const isAllowed = origin !== "" && allowedOrigins.includes(origin);
 
-  const isAllowed = allowedOrigins.includes(origin);
-  res.setHeader("Access-Control-Allow-Origin", isAllowed ? origin : allowedOrigins[0]);
+  if (isAllowed) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Vary", "Origin");
+  }
+
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Vary", "Origin");
+  return isAllowed || origin === "";
 }
 
-export function withCors(handler: NextApiHandler, strictOrigin = false): NextApiHandler {
+export function withCors(handler: NextApiHandler, strictOrigin = true): NextApiHandler {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const origin = req.headers.origin ?? "";
     const allowedOrigins = getAllowedOrigins();
 
-    // Nếu có Origin header (browser cross-origin request) và không nằm trong whitelist → block
     if (strictOrigin && origin && !allowedOrigins.includes(origin)) {
-      return res.status(403).json({ success: false, message: "Origin không được phép" });
+      return res.status(403).json({ success: false, code: "FORBIDDEN_ORIGIN", message: "Origin không được phép" });
     }
 
     setCorsHeaders(req, res);

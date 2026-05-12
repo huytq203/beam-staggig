@@ -1,36 +1,46 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { withApiHandler } from "src/lib/api/withApiHandler";
+import { BadRequestError, toErrorResponse } from "src/lib/api/errors";
 import { updateNewsSchema } from "src/lib/api/news.schema";
+import { withApiHandler } from "src/lib/api/withApiHandler";
 import { withValidation } from "src/lib/api/withValidation";
 import { deleteNewsArticle, getNewsById, updateNewsArticle } from "src/server/news/news.service";
 
 const WRITE_ROLES = ["super_admin", "beam_admin", "sale"];
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-function errorStatus(err: string) {
-  return err === "Không tìm thấy bài viết" ? 404 : 500;
+function getId(req: NextApiRequest): string {
+  const id = req.query.id;
+  if (typeof id !== "string" || !UUID_REGEX.test(id)) {
+    throw new BadRequestError("ID không hợp lệ");
+  }
+  return id;
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
   try {
+    const id = getId(req);
+
     if (req.method === "GET") {
-      const result = await getNewsById(id as string);
-      return res.status(200).json(result);
+      const result = await getNewsById(id);
+      res.setHeader("Cache-Control", "no-store");
+      return res.status(200).json({ code: 200, message: "OK", data: result });
     }
     if (req.method === "PUT") {
       return withValidation(updateNewsSchema, async (req, res) => {
-        const result = await updateNewsArticle(id as string, req.body);
-        return res.status(200).json(result);
+        const userId = req.user!.sub;
+        const result = await updateNewsArticle(id, req.body, userId);
+        return res.status(200).json({ code: 200, message: "OK", data: result });
       })(req, res);
     }
     if (req.method === "DELETE") {
-      await deleteNewsArticle(id as string);
+      await deleteNewsArticle(id);
       return res.status(200).json({ code: 200, message: "OK" });
     }
     return res.status(405).end();
   } catch (error) {
-    const err = error instanceof Error ? error.message : String(error);
-    res.status(errorStatus(err)).json({ success: false, message: err });
+    console.error("[NEWS ID ERROR]", error);
+    const { status, body } = toErrorResponse(error);
+    return res.status(status).json(body);
   }
 }
 

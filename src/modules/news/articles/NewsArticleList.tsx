@@ -142,7 +142,7 @@ export const NewsArticleList = () => {
 
   const deleteNews = (id: any) => {
     NewsService.deleteNews(id).then((x: any) => {
-        if (x?.data?.code == 204 && x?.data?.message == 'OK') {
+        if (x?.data?.code == 200 && x?.data?.message == 'OK') {
           Notification.success({
             content: 'Xóa thành công',
             duration: 2,

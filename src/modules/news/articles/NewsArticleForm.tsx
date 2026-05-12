@@ -47,7 +47,7 @@ export const NewsArticleForm = (props: any) => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      reset(data);
+      reset(data?.data);
     }
   }, [data, isLoading]);
 

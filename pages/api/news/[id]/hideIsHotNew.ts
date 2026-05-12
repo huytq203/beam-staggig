@@ -1,19 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { BadRequestError, toErrorResponse } from "src/lib/api/errors";
 import { withApiHandler } from "src/lib/api/withApiHandler";
 import { hideIsHotNewArticle } from "src/server/news/news.service";
 
 const WRITE_ROLES = ["super_admin", "beam_admin", "sale"];
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") return res.status(405).end();
-  const { id } = req.query;
   try {
-    const result = await hideIsHotNewArticle(id as string);
-    return res.status(200).json(result);
+    const id = req.query.id;
+    if (typeof id !== "string" || !UUID_REGEX.test(id)) throw new BadRequestError("ID không hợp lệ");
+    const result = await hideIsHotNewArticle(id);
+    return res.status(200).json({ code: 200, message: "OK", data: result });
   } catch (error) {
-    const err = error instanceof Error ? error.message : String(error);
-    const status = err === "Không tìm thấy bài viết" ? 404 : 500;
-    res.status(status).json({ success: false, message: err });
+    console.error("[HIDE HOT ERROR]", error);
+    const { status, body } = toErrorResponse(error);
+    return res.status(status).json(body);
   }
 }
 

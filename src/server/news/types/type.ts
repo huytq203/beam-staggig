@@ -5,28 +5,25 @@ export interface FindParams {
 }
 
 export interface CreateNew {
-  title:string;
-  slug:string;
-  coverImage:string;
-  description:string;
-  content:string;
-  isHotNew:boolean;
-  tags:string;
-  shows:boolean;
-  status:string;
-  createdBy:string;
-  updatedBy:string;
+  title: string;
+  slug: string;
+  coverImage?: string | null;
+  description?: string | null;
+  content?: string | null;
+  isHotNew?: boolean;
+  tags?: string[] | null;
+  shows?: boolean;
+  status?: string;
 }
 
 export interface UpdateNews {
   title?: string;
   slug?: string;
-  coverImage?: string;
-  description?: string;
-  content?: string;
+  coverImage?: string | null;
+  description?: string | null;
+  content?: string | null;
   isHotNew?: boolean;
-  tags?: string;
+  tags?: string[] | null;
   shows?: boolean;
   status?: string;
-  updatedBy?: string;
 }

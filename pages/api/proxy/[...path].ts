@@ -24,7 +24,7 @@ function readRawBody(req: NextApiRequest): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     req.on("data", (chunk) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)));
-    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("end", () => resolve(Buffer.concat(chunks as unknown as Uint8Array[])));
     req.on("error", reject);
   });
 }

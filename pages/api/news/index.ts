@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { toErrorResponse } from "src/lib/api/errors";
 import { createNewsSchema } from "src/lib/api/news.schema";
 import { withApiHandler } from "src/lib/api/withApiHandler";
 import { withValidation } from "src/lib/api/withValidation";
@@ -10,18 +11,21 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === "GET") {
       const result = await getListNews();
-      return res.status(200).json(result);
+      res.setHeader("Cache-Control", "no-store");
+      return res.status(200).json({ code: 200, message: "OK", data: result });
     }
     if (req.method === "POST") {
       return withValidation(createNewsSchema, async (req, res) => {
-        const result = await createNewArticle(req.body);
-        return res.status(201).json(result);
+        const userId = req.user!.sub;
+        const result = await createNewArticle(req.body, userId);
+        return res.status(200).json({ code: 200, message: "OK", data: result });
       })(req, res);
     }
     return res.status(405).end();
   } catch (error) {
-    const err = error instanceof Error ? error.message : String(error);
-    res.status(500).json({ success: false, message: err });
+    console.error("[NEWS ERROR]", error);
+    const { status, body } = toErrorResponse(error);
+    return res.status(status).json(body);
   }
 }
 

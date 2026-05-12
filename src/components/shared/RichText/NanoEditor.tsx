@@ -1,5 +1,5 @@
 import { Editor } from "@tinymce/tinymce-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileManagerModal } from "../FileManager/FileManagerModal";
 
 export interface RichEditorProps {
@@ -12,6 +12,15 @@ let mainEditor: any;
 export const BeamEditor = (props: RichEditorProps) => {
   const { value, onChange, font, fontsize } = props;
   const [isOpenFileManagement, setIsOpenFileManagement] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div style={{ height: 500 }} />;
+  }
   const onSelectFile = (file: any) => {
     if (file && file.length) {
       mainEditor?.editorManager?.activeEditor?.selection?.setContent(
