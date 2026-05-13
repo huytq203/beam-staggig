@@ -39,18 +39,6 @@ export function getTokenFromRequest(req: NextApiRequest): string | null {
 }
 
 export async function verifyToken(token: string): Promise<KeycloakToken> {
-  // DEBUG: log raw JWKS to verify what jose actually fetched
-  try {
-    const jwksUrl = `${KEYCLOAK_ISSUER}/protocol/openid-connect/certs`;
-    const res = await fetch(jwksUrl);
-    const json: any = await res.json();
-    console.log("[withAuth DEBUG] JWKS fetched:", JSON.stringify(json.keys?.map((k: any) => ({ kid: k.kid, alg: k.alg, use: k.use })) ?? []));
-    const header = JSON.parse(Buffer.from(token.split(".")[0], "base64url").toString("utf8"));
-    console.log("[withAuth DEBUG] Token header:", JSON.stringify(header));
-  } catch (e) {
-    console.error("[withAuth DEBUG] cannot fetch JWKS:", e instanceof Error ? e.message : e);
-  }
-
   const { payload } = await jwtVerify(token, getJWKS(), {
     issuer: KEYCLOAK_ISSUER,
   });
