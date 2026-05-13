@@ -14,10 +14,16 @@ function getAllowedOrigins(): string[] {
   return env.split(",").map((o) => o.trim()).filter(Boolean);
 }
 
+function isOriginAllowed(origin: string, allowedOrigins: string[]): boolean {
+  if (!origin) return false;
+  if (allowedOrigins.includes("*")) return true;
+  return allowedOrigins.includes(origin);
+}
+
 export function setCorsHeaders(req: NextApiRequest, res: NextApiResponse): boolean {
   const origin = req.headers.origin ?? "";
   const allowedOrigins = getAllowedOrigins();
-  const isAllowed = origin !== "" && allowedOrigins.includes(origin);
+  const isAllowed = isOriginAllowed(origin, allowedOrigins);
 
   if (isAllowed) {
     res.setHeader("Access-Control-Allow-Origin", origin);
@@ -35,7 +41,7 @@ export function withCors(handler: NextApiHandler, strictOrigin = true): NextApiH
     const origin = req.headers.origin ?? "";
     const allowedOrigins = getAllowedOrigins();
 
-    if (strictOrigin && origin && !allowedOrigins.includes(origin)) {
+    if (strictOrigin && origin && !isOriginAllowed(origin, allowedOrigins)) {
       return res.status(403).json({ success: false, code: "FORBIDDEN_ORIGIN", message: "Origin không được phép" });
     }
 
