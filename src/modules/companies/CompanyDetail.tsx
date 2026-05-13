@@ -282,8 +282,9 @@ export const CompanyDetail = (props: any) => {
         {title && <div className="font-bold">{title}</div>}
 
         {fields
-          .map((field: any) => (
+          .map((field: any,index:number) => (
             <CompanyDetailRow
+            key={index}
               label={field.label}
               hidden={field.hidden ?? false}
             >

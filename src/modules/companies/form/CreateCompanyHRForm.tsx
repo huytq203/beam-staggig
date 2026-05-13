@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { IconMinus, IconPlus } from '@douyinfe/semi-icons';
-import { endUserStatusOptions } from '@modules/end-user/constants';
+import { EnabledStatusSelect } from '@modules/end-user/constants';
 import { useQuery } from 'react-query';
 import { FormWrapper } from '@components/widgets';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
@@ -192,9 +192,7 @@ export const CreateCompanyHRForm = (props: any) => {
                   required
                   field="enabled"
                   label="Trạng thái"
-                  component={(props: any) => (
-                    <Select optionList={endUserStatusOptions} {...props} />
-                  )}
+                  component={(props: any) => <EnabledStatusSelect {...props} />}
                   errors={errors}
                   control={control}
                 />

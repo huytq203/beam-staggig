@@ -78,9 +78,14 @@ export const CashflowOverview = () => {
       dataIndex: 'status',
       align: 'right' as 'right',
       width: 150,
+      onCell: (record: any) => ({
+        style: {
+          color: record?.status == 4 ? 'red' : '',
+          fontWeight: record?.status == 4 ? '900' : '',
+        },
+      }),
       render: (e: any) => {
         let label = '';
-
         switch (e) {
           case 0:
             label = 'Chậm thanh toán';
@@ -98,15 +103,7 @@ export const CashflowOverview = () => {
             label = 'Chưa hạch toán';
             break;
         }
-        return {
-          props: {
-            style: {
-              color: e == 4 ? 'red' : '',
-              fontWeight: e == 4 ? '900' : '',
-            },
-          },
-          children: <p>{label}</p>,
-        };
+        return <p>{label}</p>;
       },
     },
   ];
@@ -117,6 +114,9 @@ export const CashflowOverview = () => {
   return (
     <div className="flex flex-col gap-4">
       <Table
+        rowKey={(record: any, idx: any) =>
+          record?.id ?? record?.companyId ?? `${record?.companyName}-${idx}`
+        }
         data={getTableData()}
         columns={columns}
         scroll={{ x: 2000 }}

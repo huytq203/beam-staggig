@@ -249,6 +249,11 @@ export const CashList = (props: any) => {
         {showFilter && <CashFilter refetch={refetch} onFilter={setFilter} />}
 
         <Table
+         rowKey={(record: any, idx: any) =>
+            record?.id ??
+            record?.transactionId ??
+            `${record?.phoneNumber ?? ''}-${idx}`
+          }
           data={getTableData()}
           columns={columns}
           scroll={{ x: 2800, y: 400 }}

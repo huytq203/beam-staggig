@@ -1,8 +1,8 @@
 import { Select } from '@douyinfe/semi-ui';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-export const NotificationSubTypeSelect = (props: any) => {
+export const NotificationSubTypeSelect = forwardRef<any, any>((props: any, ref: any) => {
   const {
     onChange,
     value,
@@ -348,6 +348,7 @@ export const NotificationSubTypeSelect = (props: any) => {
   };
   return (
     <Select
+      ref={ref}
       // filter={FunctionBase.customSelectFilterOption}
       value={value}
       defaultValue={0}
@@ -360,4 +361,5 @@ export const NotificationSubTypeSelect = (props: any) => {
       className={className}
     />
   );
-};
+});
+NotificationSubTypeSelect.displayName = 'NotificationSubTypeSelect';

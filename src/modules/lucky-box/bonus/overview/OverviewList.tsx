@@ -208,6 +208,11 @@ export const OverviewList = (props: any) => {
           <OverviewFilter onFilter={setFilter} refetch={refetch} />
         )}
         <Table
+          rowKey={(record: any, idx: any) =>
+            record?.id ??
+            record?.phoneNumber ??
+            `${record?.name}-${idx}`
+          }
           data={getTableData()}
           columns={columns}
           scroll={{ x: 2800, y: 400 }}

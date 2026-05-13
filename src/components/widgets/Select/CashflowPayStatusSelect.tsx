@@ -1,10 +1,12 @@
 import { Select } from '@douyinfe/semi-ui';
+import { forwardRef } from 'react';
 
-export const CashflowPayStatusSelect = (props: any) => {
+export const CashflowPayStatusSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value } = props;
 
   return (
     <Select
+      ref={ref}
       value={value}
       optionList={[
         {
@@ -29,4 +31,5 @@ export const CashflowPayStatusSelect = (props: any) => {
       showClear
     />
   );
-};
+});
+CashflowPayStatusSelect.displayName = 'CashflowPayStatusSelect';

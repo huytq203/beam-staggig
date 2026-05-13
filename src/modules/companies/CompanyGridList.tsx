@@ -69,7 +69,9 @@ export const CompanyGridList = (props: any) => {
     }
   );
 
-  checkLoadingComponent(isLoading);
+  useEffect(() => {
+    checkLoadingComponent(isLoading);
+  }, [isLoading]);
   const {
     control,
     getValues,
@@ -199,22 +201,21 @@ export const CompanyGridList = (props: any) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               {getTableData().map((company: any) => (
                 <Card
+                  key={company.id}
                   loading={isFetching}
                   footerStyle={{ background: '#E9EEF0' }}
                   footer={
                     <div className="flex flex-col gap-2 justify-center items-center">
                       <div className="flex gap-1 items-center font-bold text-sm text-center h-16 overflow-hidden">
                         <TextOverflow line={2}>
-                          {/* <Tooltip position="top" content={`${company.name}`}> */}
-                          <p
+                          <span
                             className="cursor-pointer beam-break-world"
                             onClick={() =>
                               router.push(`${basePath}/${company?.id}`)
                             }
                           >
                             {company.name}
-                          </p>
-                          {/* </Tooltip> */}
+                          </span>
                         </TextOverflow>
                       </div>
                       <span>

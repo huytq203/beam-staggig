@@ -2,10 +2,10 @@ import { COMMON_FORMAT } from '@constants/common-format';
 import { Select } from '@douyinfe/semi-ui';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { DebtService } from '@services/debt-cash';
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-export const SalaryPeriodRecoliiationSelect = (props: any) => {
+export const SalaryPeriodRecoliiationSelect = forwardRef<any, any>((props: any, ref: any) => {
   const {
     onChange,
     value,
@@ -42,6 +42,7 @@ export const SalaryPeriodRecoliiationSelect = (props: any) => {
 
   return (
     <Select
+      ref={ref}
       loading={isLoading}
       optionList={getOptions()}
       placeholder={placeholder}
@@ -49,4 +50,5 @@ export const SalaryPeriodRecoliiationSelect = (props: any) => {
       multiple={multiple}
     />
   );
-};
+});
+SalaryPeriodRecoliiationSelect.displayName = 'SalaryPeriodRecoliiationSelect';

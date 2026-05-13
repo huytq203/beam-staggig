@@ -1,11 +1,12 @@
 import { Select } from '@douyinfe/semi-ui';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-export const ReportTypeFormSelect = (props: any) => {
+export const ReportTypeFormSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, companyId, multiple = false, hr } = props;
 
   return (
     <Select
+      ref={ref}
       // value={value}
       // filter={FunctionBase.customSelectFilterOption}
       // disabled={hr === 'hr_admin'}
@@ -42,4 +43,5 @@ export const ReportTypeFormSelect = (props: any) => {
       multiple={multiple}
     />
   );
-};
+});
+ReportTypeFormSelect.displayName = 'ReportTypeFormSelect';

@@ -205,9 +205,10 @@ export const UserList = (props: any) => {
     },
     {
       title: 'Hành động',
-      dataIndex: 'username',
+      key: 'action',
+      dataIndex: 'action',
       width: 150,
-      render: (username: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <div className="flex gap-3 pl-3">
             <ProtectedWrapper
@@ -218,7 +219,9 @@ export const UserList = (props: any) => {
               ]}
             >
               <IconEdit
-                onClick={() => router.push(`${username}/edit-information-user`)}
+                onClick={() =>
+                  router.push(`${record?.username}/edit-information-user`)
+                }
                 className="cursor-pointer"
               />
             </ProtectedWrapper>

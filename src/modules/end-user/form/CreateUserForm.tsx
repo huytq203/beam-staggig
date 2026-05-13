@@ -11,7 +11,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { endUserStatusOptions } from '../constants';
+import { EnabledStatusSelect } from '../constants';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { IconMinus, IconPlus } from '@douyinfe/semi-icons';
@@ -153,9 +153,7 @@ export const CreateUserForm = (props: any) => {
                     required
                     field="enabled"
                     label="Trạng thái"
-                    component={(props: any) => (
-                      <Select optionList={endUserStatusOptions} {...props} />
-                    )}
+                    component={(props: any) => <EnabledStatusSelect {...props} />}
                     errors={errors}
                     control={control}
                   />

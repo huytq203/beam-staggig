@@ -1,5 +1,6 @@
 import { Tooltip } from '@douyinfe/semi-ui';
 import Link from 'next/link';
+import { forwardRef } from 'react';
 import styles from './TextOverflow.module.css';
 
 interface TextOverflowProps {
@@ -11,46 +12,45 @@ interface TextOverflowProps {
   href?: any;
   contentText?: any;
 }
-const TextOverflow = (props: TextOverflowProps) => {
+const TextOverflow = forwardRef<any, TextOverflowProps>((props, ref) => {
   const {
     line = 1,
     style,
     className,
     children,
-    title,
     href,
     contentText = null,
   } = props;
 
-  const content = () => {
-    const wrapStyle = {
-      WebkitLineClamp: line,
-      ...style,
-    };
-    return (
-      <div
-        className={`${styles['line-clamp']} ${className ?? ''} ${
-          href ? 'cursor-pointer' : ''
-        }`}
-        style={wrapStyle}
-      >
-        <Tooltip position="top" content={contentText ? contentText : children}>
-          <p className="beam-break-world">{children}</p>
-        </Tooltip>
-      </div>
-    );
+  const wrapStyle = {
+    WebkitLineClamp: line,
+    ...style,
   };
-  return (
-    <>
-      {href ? (
-        <Link href={href} legacyBehavior>
-          <a>{content()}</a>
-        </Link>
-      ) : (
-        content()
-      )}
-    </>
+  const wrapClass = `${styles['line-clamp']} ${className ?? ''} ${
+    href ? 'cursor-pointer' : ''
+  }`;
+  const inner = (
+    <Tooltip position="top" content={contentText ? contentText : children}>
+      <span className="beam-break-world">{children}</span>
+    </Tooltip>
   );
-};
+
+  if (href) {
+    return (
+      <Link href={href} legacyBehavior>
+        <a ref={ref} className={wrapClass} style={wrapStyle}>
+          {inner}
+        </a>
+      </Link>
+    );
+  }
+  return (
+    <div ref={ref} className={wrapClass} style={wrapStyle}>
+      {inner}
+    </div>
+  );
+});
+
+TextOverflow.displayName = 'TextOverflow';
 
 export default TextOverflow;

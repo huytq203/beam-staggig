@@ -1,5 +1,5 @@
 import { Editor } from "@tinymce/tinymce-react";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { FileManagerModal } from "../FileManager/FileManagerModal";
 
 export interface RichEditorProps {
@@ -9,7 +9,7 @@ export interface RichEditorProps {
   fontsize?: boolean;
 }
 let mainEditor: any;
-export const BeamEditor = (props: RichEditorProps) => {
+export const BeamEditor = forwardRef<any, RichEditorProps>((props, ref) => {
   const { value, onChange, font, fontsize } = props;
   const [isOpenFileManagement, setIsOpenFileManagement] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -19,7 +19,7 @@ export const BeamEditor = (props: RichEditorProps) => {
   }, []);
 
   if (!mounted) {
-    return <div style={{ height: 500 }} />;
+    return <div ref={ref} style={{ height: 500 }} />;
   }
   const onSelectFile = (file: any) => {
     if (file && file.length) {
@@ -34,7 +34,7 @@ export const BeamEditor = (props: RichEditorProps) => {
   };
 
   return (
-    <>
+    <div ref={ref}>
       <Editor
         value={value}
         onEditorChange={onChange}
@@ -313,6 +313,7 @@ export const BeamEditor = (props: RichEditorProps) => {
           returnUrlOnly={true}
         />
       )}
-    </>
+    </div>
   );
-};
+});
+BeamEditor.displayName = 'BeamEditor';

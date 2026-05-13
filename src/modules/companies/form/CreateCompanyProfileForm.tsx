@@ -435,7 +435,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                     }
                   >
                     {Array.from(Array(31).keys()).map((x: any) => (
-                      <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                      <Select.Option key={x + 1} value={x + 1}>
+                        Ngày {x + 1}
+                      </Select.Option>
                     ))}
                   </Select>
                 )}
@@ -462,7 +464,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                     }
                   >
                     {Array.from(Array(31).keys()).map((x: any) => (
-                      <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                      <Select.Option key={x + 1} value={x + 1}>
+                        Ngày {x + 1}
+                      </Select.Option>
                     ))}
                   </Select>
                 )}
@@ -490,7 +494,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                     }
                   >
                     {Array.from(Array(31).keys()).map((x: any) => (
-                      <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                      <Select.Option key={x + 1} value={x + 1}>
+                        Ngày {x + 1}
+                      </Select.Option>
                     ))}
                     <Select.Option value={32}>Ngày cuối tháng</Select.Option>
                   </Select>
@@ -509,7 +515,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                 component={(props: any) => (
                   <Select disabled={!isNew && data?.status == 2} {...props}>
                     {Array.from(Array(31).keys()).map((x: any) => (
-                      <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                      <Select.Option key={x + 1} value={x + 1}>
+                        Ngày {x + 1}
+                      </Select.Option>
                     ))}
                   </Select>
                 )}
@@ -523,7 +531,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                 component={(props: any) => (
                   <Select disabled={!isNew && data?.status == 2} {...props}>
                     {Array.from(Array(31).keys()).map((x: any) => (
-                      <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                      <Select.Option key={x + 1} value={x + 1}>
+                        Ngày {x + 1}
+                      </Select.Option>
                     ))}
                   </Select>
                 )}
@@ -545,7 +555,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                   showClear
                 >
                   {Array.from(Array(31).keys()).map((x: any) => (
-                    <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                    <Select.Option key={x + 1} value={x + 1}>
+                      Ngày {x + 1}
+                    </Select.Option>
                   ))}
                 </Select>
               )}
@@ -563,7 +575,9 @@ export const CreateCompanyProfileForm = (props: any) => {
                   showClear
                 >
                   {Array.from(Array(31).keys()).map((x: any) => (
-                    <Select.Option value={x + 1}>Ngày {x + 1}</Select.Option>
+                    <Select.Option key={x + 1} value={x + 1}>
+                      Ngày {x + 1}
+                    </Select.Option>
                   ))}
                 </Select>
               )}

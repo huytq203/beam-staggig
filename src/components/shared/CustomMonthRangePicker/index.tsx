@@ -1,5 +1,6 @@
 import { DatePicker } from '@douyinfe/semi-ui';
 import moment from 'moment';
+import { forwardRef } from 'react';
 
 const getInitData = () => {
   const now = new Date();
@@ -7,7 +8,7 @@ const getInitData = () => {
   const next = temp.setFullYear(temp.getFullYear() + 4);
   return [now, next];
 };
-export const CustomMonthRangePicker = (props: any) => {
+export const CustomMonthRangePicker = forwardRef<any, any>((props, ref) => {
   const {
     value = [null, null],
     onChange,
@@ -30,7 +31,7 @@ export const CustomMonthRangePicker = (props: any) => {
   };
 
   return (
-    <div className="flex gap-2">
+    <div ref={ref} className="flex gap-2">
       <DatePicker
         placeholder={`${placeholder} bắt đầu`}
         value={value[0]}
@@ -59,4 +60,5 @@ export const CustomMonthRangePicker = (props: any) => {
       />
     </div>
   );
-};
+});
+CustomMonthRangePicker.displayName = 'CustomMonthRangePicker';

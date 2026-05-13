@@ -215,6 +215,11 @@ export const PhoneCardList = (props: any) => {
         )}
 
         <Table
+          rowKey={(record: any, idx: any) =>
+            record?.id ??
+            record?.transactionId ??
+            `${record?.phoneNumber ?? ''}-${idx}`
+          }
           data={getTableData()}
           columns={columns}
           scroll={{ x: 2800, y: 400 }}
