@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": [
+    "reportTransactionList.scss",
+    "reportTransactionList.css"
+  ],
+  "names": [],
+  "mappings": "AAAA;EACE,6BAAA;EACA,gBAAA;EACA,6BAAA;ACCF;ADAE;EACE,yBAAA;EACA,WAAA;ACEJ",
+  "file": "reportTransactionList.css"
+}

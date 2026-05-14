@@ -1,0 +1,902 @@
+[
+  {
+    "companyName": "Terry - Hirthe",
+    "companyEmail": "Trycia2@gmail.com",
+    "phoneNumber": "950-236-9438",
+    "taxIndentification": "63067579",
+    "address": "018 Natasha Heights",
+    "enabled": true,
+    "id": "1"
+  },
+  {
+    "companyName": "Cummerata, Conroy and Rippin",
+    "companyEmail": "Furman54@hotmail.com",
+    "phoneNumber": "891.546.5926",
+    "taxIndentification": "94167179",
+    "address": "450 Runolfsson Row",
+    "enabled": false,
+    "id": "2"
+  },
+  {
+    "companyName": "Oberbrunner LLC",
+    "companyEmail": "Heather.Weimann68@gmail.com",
+    "phoneNumber": "317-411-9892",
+    "taxIndentification": "89699148",
+    "address": "60992 D'Amore Underpass",
+    "enabled": true,
+    "id": "3"
+  },
+  {
+    "companyName": "Macejkovic - Wolff",
+    "companyEmail": "Jesus_Stanton@yahoo.com",
+    "phoneNumber": "466.483.9546 x5856",
+    "taxIndentification": "97135611",
+    "address": "04327 Trevor Meadows",
+    "enabled": false,
+    "id": "4"
+  },
+  {
+    "companyName": "Hoppe, Franecki and Becker",
+    "companyEmail": "Destiney_Little@yahoo.com",
+    "phoneNumber": "366.502.6331 x2628",
+    "taxIndentification": "45361650",
+    "address": "027 Schiller Garden",
+    "enabled": false,
+    "id": "5"
+  },
+  {
+    "companyName": "Lind LLC",
+    "companyEmail": "Florida48@gmail.com",
+    "phoneNumber": "323.312.6447",
+    "taxIndentification": "45262812",
+    "address": "933 Pink Run",
+    "enabled": true,
+    "id": "6"
+  },
+  {
+    "companyName": "Ritchie, Mayer and Jerde",
+    "companyEmail": "Haven_Kuhlman16@gmail.com",
+    "phoneNumber": "1-236-289-7027",
+    "taxIndentification": "90458800",
+    "address": "57107 Marco Ports",
+    "enabled": true,
+    "id": "7"
+  },
+  {
+    "companyName": "Becker, Kling and Abbott",
+    "companyEmail": "Fredy.Altenwerth11@yahoo.com",
+    "phoneNumber": "1-342-620-9244",
+    "taxIndentification": "56911360",
+    "address": "781 Smith Island",
+    "enabled": false,
+    "id": "8"
+  },
+  {
+    "companyName": "Hegmann, Hackett and Stehr",
+    "companyEmail": "Madge_Robel@gmail.com",
+    "phoneNumber": "1-289-953-8339 x7340",
+    "taxIndentification": "38524038",
+    "address": "1136 Vergie Views",
+    "enabled": false,
+    "id": "9"
+  },
+  {
+    "companyName": "Ondricka - Sanford",
+    "companyEmail": "Edison.Orn@gmail.com",
+    "phoneNumber": "717-639-3837 x8094",
+    "taxIndentification": "30994312",
+    "address": "448 Spencer Court",
+    "enabled": true,
+    "id": "10"
+  },
+  {
+    "companyName": "Leannon Inc",
+    "companyEmail": "Crystal.Steuber92@yahoo.com",
+    "phoneNumber": "(383) 275-8038",
+    "taxIndentification": "53174347",
+    "address": "43890 Agustina Rapids",
+    "enabled": false,
+    "id": "11"
+  },
+  {
+    "companyName": "Kovacek - Smith",
+    "companyEmail": "Jamarcus.Jenkins@hotmail.com",
+    "phoneNumber": "1-326-474-5393",
+    "taxIndentification": "82250198",
+    "address": "818 Morar Meadow",
+    "enabled": true,
+    "id": "12"
+  },
+  {
+    "companyName": "Jones, Morar and Hodkiewicz",
+    "companyEmail": "Malachi50@hotmail.com",
+    "phoneNumber": "404-958-7650",
+    "taxIndentification": "91285145",
+    "address": "3383 Juliana Springs",
+    "enabled": true,
+    "id": "13"
+  },
+  {
+    "companyName": "Hand LLC",
+    "companyEmail": "Creola_Keebler@gmail.com",
+    "phoneNumber": "518.864.8806",
+    "taxIndentification": "68810587",
+    "address": "2532 Corbin Trail",
+    "enabled": true,
+    "id": "14"
+  },
+  {
+    "companyName": "Gleason - Kihn",
+    "companyEmail": "Lawson.Zemlak4@yahoo.com",
+    "phoneNumber": "1-778-455-3845 x63753",
+    "taxIndentification": "84086139",
+    "address": "1440 Beer Isle",
+    "enabled": false,
+    "id": "15"
+  },
+  {
+    "companyName": "Kilback, Wunsch and Mills",
+    "companyEmail": "Katlynn_Yost86@gmail.com",
+    "phoneNumber": "1-457-692-6261 x8828",
+    "taxIndentification": "50585167",
+    "address": "7038 Guillermo Walk",
+    "enabled": false,
+    "id": "16"
+  },
+  {
+    "companyName": "Murphy Inc",
+    "companyEmail": "Alyson_Schmitt@gmail.com",
+    "phoneNumber": "(461) 312-9616 x98116",
+    "taxIndentification": "96613222",
+    "address": "1748 Bartoletti Dale",
+    "enabled": false,
+    "id": "17"
+  },
+  {
+    "companyName": "Sauer, Daugherty and Funk",
+    "companyEmail": "Maxie_Daugherty5@yahoo.com",
+    "phoneNumber": "670-938-9935 x71000",
+    "taxIndentification": "53700933",
+    "address": "4758 Parker Forge",
+    "enabled": true,
+    "id": "18"
+  },
+  {
+    "companyName": "Strosin, Reinger and Blick",
+    "companyEmail": "Vincent_Carter@yahoo.com",
+    "phoneNumber": "815.370.9620",
+    "taxIndentification": "80362275",
+    "address": "928 Johathan Mall",
+    "enabled": false,
+    "id": "19"
+  },
+  {
+    "companyName": "Mayer - Okuneva",
+    "companyEmail": "Odessa7@hotmail.com",
+    "phoneNumber": "773-767-3125",
+    "taxIndentification": "36229484",
+    "address": "5784 Lyric Greens",
+    "enabled": false,
+    "id": "20"
+  },
+  {
+    "companyName": "Zieme Inc",
+    "companyEmail": "Laisha_Schaefer88@gmail.com",
+    "phoneNumber": "1-543-944-1173 x308",
+    "taxIndentification": "17414261",
+    "address": "18482 Dallin Crest",
+    "enabled": false,
+    "id": "21"
+  },
+  {
+    "companyName": "Lockman, Legros and Wolff",
+    "companyEmail": "Florine.Denesik@yahoo.com",
+    "phoneNumber": "949-669-5070 x856",
+    "taxIndentification": "08675664",
+    "address": "40089 Kacey Road",
+    "enabled": false,
+    "id": "22"
+  },
+  {
+    "companyName": "Carter - Kunze",
+    "companyEmail": "Modesta.Walker35@gmail.com",
+    "phoneNumber": "400.214.9962",
+    "taxIndentification": "11359872",
+    "address": "55067 Earl Plains",
+    "enabled": false,
+    "id": "23"
+  },
+  {
+    "companyName": "O'Conner LLC",
+    "companyEmail": "Gabe.Dicki38@hotmail.com",
+    "phoneNumber": "(734) 388-8876 x511",
+    "taxIndentification": "28474409",
+    "address": "3667 Collier Points",
+    "enabled": false,
+    "id": "24"
+  },
+  {
+    "companyName": "Wisozk, O'Keefe and Hickle",
+    "companyEmail": "Jaylon_Glover22@hotmail.com",
+    "phoneNumber": "891.433.9506 x791",
+    "taxIndentification": "57607700",
+    "address": "28690 Moore Prairie",
+    "enabled": true,
+    "id": "25"
+  },
+  {
+    "companyName": "Bruen - Berge",
+    "companyEmail": "Adele_Graham@hotmail.com",
+    "phoneNumber": "781.470.1445 x068",
+    "taxIndentification": "59933012",
+    "address": "199 Gregoria Plaza",
+    "enabled": true,
+    "id": "26"
+  },
+  {
+    "companyName": "Jast, Auer and Mante",
+    "companyEmail": "Rodger.Rutherford@hotmail.com",
+    "phoneNumber": "950.461.4459",
+    "taxIndentification": "06886233",
+    "address": "9438 Cartwright Crossing",
+    "enabled": false,
+    "id": "27"
+  },
+  {
+    "companyName": "Roob - Borer",
+    "companyEmail": "Sadie63@yahoo.com",
+    "phoneNumber": "417.221.1116 x5436",
+    "taxIndentification": "12665515",
+    "address": "52953 Kamryn Brooks",
+    "enabled": true,
+    "id": "28"
+  },
+  {
+    "companyName": "Anderson - Klocko",
+    "companyEmail": "Brandon.Luettgen65@yahoo.com",
+    "phoneNumber": "302-524-3262 x78877",
+    "taxIndentification": "04879732",
+    "address": "420 Collins Mount",
+    "enabled": false,
+    "id": "29"
+  },
+  {
+    "companyName": "Vandervort, Gibson and Ryan",
+    "companyEmail": "Tate66@gmail.com",
+    "phoneNumber": "1-836-264-7523 x89861",
+    "taxIndentification": "07267441",
+    "address": "507 Ignacio Cove",
+    "enabled": true,
+    "id": "30"
+  },
+  {
+    "companyName": "Medhurst - Haley",
+    "companyEmail": "Leonie.Schinner85@gmail.com",
+    "phoneNumber": "330-911-0984 x299",
+    "taxIndentification": "64920551",
+    "address": "58869 Markus Union",
+    "enabled": false,
+    "id": "31"
+  },
+  {
+    "companyName": "Altenwerth and Sons",
+    "companyEmail": "Vanessa.Hane@hotmail.com",
+    "phoneNumber": "(674) 676-7297",
+    "taxIndentification": "57311731",
+    "address": "5233 Reese Forge",
+    "enabled": false,
+    "id": "32"
+  },
+  {
+    "companyName": "Schulist, Padberg and Abernathy",
+    "companyEmail": "Anibal_Strosin@gmail.com",
+    "phoneNumber": "1-335-228-3346 x23514",
+    "taxIndentification": "91951739",
+    "address": "0952 Johnson Burgs",
+    "enabled": true,
+    "id": "33"
+  },
+  {
+    "companyName": "Nicolas and Sons",
+    "companyEmail": "Kamille5@hotmail.com",
+    "phoneNumber": "1-835-418-4192",
+    "taxIndentification": "78733758",
+    "address": "2773 O'Conner Place",
+    "enabled": false,
+    "id": "34"
+  },
+  {
+    "companyName": "Reynolds - Davis",
+    "companyEmail": "Donato.Carroll@yahoo.com",
+    "phoneNumber": "(454) 201-3482 x64596",
+    "taxIndentification": "13436087",
+    "address": "9051 Brady Unions",
+    "enabled": false,
+    "id": "35"
+  },
+  {
+    "companyName": "Langworth - Hudson",
+    "companyEmail": "Cecil.Barrows36@gmail.com",
+    "phoneNumber": "548.430.4331 x72033",
+    "taxIndentification": "59545440",
+    "address": "7403 Stokes Parks",
+    "enabled": false,
+    "id": "36"
+  },
+  {
+    "companyName": "Yundt Group",
+    "companyEmail": "Daphne86@hotmail.com",
+    "phoneNumber": "802.822.5377",
+    "taxIndentification": "86985175",
+    "address": "83223 Collins Circle",
+    "enabled": false,
+    "id": "37"
+  },
+  {
+    "companyName": "Walsh LLC",
+    "companyEmail": "Fiona.Schmitt@gmail.com",
+    "phoneNumber": "(624) 800-3721 x61201",
+    "taxIndentification": "00464671",
+    "address": "37562 Jodie Gateway",
+    "enabled": false,
+    "id": "38"
+  },
+  {
+    "companyName": "Mayert and Sons",
+    "companyEmail": "Samara74@yahoo.com",
+    "phoneNumber": "(702) 625-8070 x525",
+    "taxIndentification": "35280807",
+    "address": "5961 Mekhi Spurs",
+    "enabled": true,
+    "id": "39"
+  },
+  {
+    "companyName": "Howe, Anderson and Wisoky",
+    "companyEmail": "Osvaldo_Thompson@gmail.com",
+    "phoneNumber": "811.571.3781",
+    "taxIndentification": "31351297",
+    "address": "5073 Sauer Camp",
+    "enabled": false,
+    "id": "40"
+  },
+  {
+    "companyName": "Bruen - Barrows",
+    "companyEmail": "Priscilla97@hotmail.com",
+    "phoneNumber": "713.676.1908 x90850",
+    "taxIndentification": "24528434",
+    "address": "884 Reynolds Village",
+    "enabled": true,
+    "id": "41"
+  },
+  {
+    "companyName": "Mraz - Senger",
+    "companyEmail": "Raven54@hotmail.com",
+    "phoneNumber": "967-958-9114",
+    "taxIndentification": "50948393",
+    "address": "056 Ansley Meadow",
+    "enabled": true,
+    "id": "42"
+  },
+  {
+    "companyName": "Beier, Jaskolski and Abernathy",
+    "companyEmail": "Andrew.Kerluke80@hotmail.com",
+    "phoneNumber": "(836) 491-7280 x998",
+    "taxIndentification": "60874641",
+    "address": "9452 Heidenreich Streets",
+    "enabled": true,
+    "id": "43"
+  },
+  {
+    "companyName": "Labadie, Lindgren and Lehner",
+    "companyEmail": "Dwight7@hotmail.com",
+    "phoneNumber": "1-235-874-0037",
+    "taxIndentification": "02744633",
+    "address": "314 Toy Alley",
+    "enabled": false,
+    "id": "44"
+  },
+  {
+    "companyName": "Kuhn, McCullough and Lakin",
+    "companyEmail": "Mavis.Blick49@hotmail.com",
+    "phoneNumber": "418.271.4776 x81624",
+    "taxIndentification": "76812194",
+    "address": "6878 Macey Ports",
+    "enabled": true,
+    "id": "45"
+  },
+  {
+    "companyName": "Rice LLC",
+    "companyEmail": "Macy_Tremblay62@hotmail.com",
+    "phoneNumber": "1-645-936-3239",
+    "taxIndentification": "37867060",
+    "address": "3103 McLaughlin Village",
+    "enabled": true,
+    "id": "46"
+  },
+  {
+    "companyName": "Berge, Lubowitz and Hayes",
+    "companyEmail": "Casey74@hotmail.com",
+    "phoneNumber": "675-837-9578 x103",
+    "taxIndentification": "19720851",
+    "address": "0947 Collier Camp",
+    "enabled": true,
+    "id": "47"
+  },
+  {
+    "companyName": "Sporer - Boehm",
+    "companyEmail": "Mariano.Olson@hotmail.com",
+    "phoneNumber": "565-992-5413 x017",
+    "taxIndentification": "42654594",
+    "address": "5179 Boyle Forge",
+    "enabled": true,
+    "id": "48"
+  },
+  {
+    "companyName": "Quitzon and Sons",
+    "companyEmail": "Darrell_Erdman0@yahoo.com",
+    "phoneNumber": "1-742-856-8553 x24018",
+    "taxIndentification": "02864222",
+    "address": "03544 Elmira Roads",
+    "enabled": true,
+    "id": "49"
+  },
+  {
+    "companyName": "Anderson, Davis and Nolan",
+    "companyEmail": "Arlene.Rodriguez@yahoo.com",
+    "phoneNumber": "1-550-728-5995 x4023",
+    "taxIndentification": "99506400",
+    "address": "053 White Isle",
+    "enabled": true,
+    "id": "50"
+  },
+  {
+    "companyName": "Lesch and Sons",
+    "companyEmail": "Herbert_Mertz75@gmail.com",
+    "phoneNumber": "(242) 623-0700 x3926",
+    "taxIndentification": "24087911",
+    "address": "60443 Princess Station",
+    "enabled": true,
+    "id": "51"
+  },
+  {
+    "companyName": "Gislason - Walter",
+    "companyEmail": "Alexane_Lebsack4@gmail.com",
+    "phoneNumber": "1-765-993-3757 x9774",
+    "taxIndentification": "83212639",
+    "address": "743 Rowena Causeway",
+    "enabled": true,
+    "id": "52"
+  },
+  {
+    "companyName": "Medhurst LLC",
+    "companyEmail": "Raoul95@gmail.com",
+    "phoneNumber": "772-202-6835 x26537",
+    "taxIndentification": "46607431",
+    "address": "324 Logan Flats",
+    "enabled": false,
+    "id": "53"
+  },
+  {
+    "companyName": "Abbott LLC",
+    "companyEmail": "Ilene_Koss@gmail.com",
+    "phoneNumber": "271-615-5246 x530",
+    "taxIndentification": "29827691",
+    "address": "67386 Harmon Well",
+    "enabled": true,
+    "id": "54"
+  },
+  {
+    "companyName": "Larson LLC",
+    "companyEmail": "Willis27@yahoo.com",
+    "phoneNumber": "(771) 370-1982 x26878",
+    "taxIndentification": "60901479",
+    "address": "5878 Cyrus Trace",
+    "enabled": false,
+    "id": "55"
+  },
+  {
+    "companyName": "Stamm, Kris and Weimann",
+    "companyEmail": "Beulah_Goyette@gmail.com",
+    "phoneNumber": "(844) 491-9270",
+    "taxIndentification": "30015549",
+    "address": "407 Nelson Parks",
+    "enabled": true,
+    "id": "56"
+  },
+  {
+    "companyName": "Davis LLC",
+    "companyEmail": "Beatrice94@hotmail.com",
+    "phoneNumber": "912.383.8743 x687",
+    "taxIndentification": "33288591",
+    "address": "930 Paucek Green",
+    "enabled": true,
+    "id": "57"
+  },
+  {
+    "companyName": "Weimann Group",
+    "companyEmail": "Jesse22@gmail.com",
+    "phoneNumber": "606.940.8733",
+    "taxIndentification": "21217412",
+    "address": "443 Jovani Forges",
+    "enabled": true,
+    "id": "58"
+  },
+  {
+    "companyName": "Orn - Ledner",
+    "companyEmail": "Guiseppe_Stracke53@yahoo.com",
+    "phoneNumber": "390-822-7186 x6776",
+    "taxIndentification": "70208487",
+    "address": "924 Heaney Trail",
+    "enabled": true,
+    "id": "59"
+  },
+  {
+    "companyName": "King Inc",
+    "companyEmail": "Alda_McCullough@hotmail.com",
+    "phoneNumber": "1-299-424-3525 x53906",
+    "taxIndentification": "53731245",
+    "address": "0071 Littel Stream",
+    "enabled": true,
+    "id": "60"
+  },
+  {
+    "companyName": "Miller - Kautzer",
+    "companyEmail": "Ursula_Kling@hotmail.com",
+    "phoneNumber": "448.256.0701 x632",
+    "taxIndentification": "54593888",
+    "address": "903 Rau Well",
+    "enabled": true,
+    "id": "61"
+  },
+  {
+    "companyName": "Bartell, Dooley and Hayes",
+    "companyEmail": "Adam_Hoeger85@hotmail.com",
+    "phoneNumber": "1-936-614-6368",
+    "taxIndentification": "35304956",
+    "address": "56531 Rolfson Shoal",
+    "enabled": true,
+    "id": "62"
+  },
+  {
+    "companyName": "Altenwerth, Bernier and Raynor",
+    "companyEmail": "Sadie30@hotmail.com",
+    "phoneNumber": "(535) 503-8148 x944",
+    "taxIndentification": "54266339",
+    "address": "774 Fisher Shoal",
+    "enabled": true,
+    "id": "63"
+  },
+  {
+    "companyName": "Beier Group",
+    "companyEmail": "Martine_Strosin61@hotmail.com",
+    "phoneNumber": "502.300.8339 x4618",
+    "taxIndentification": "02952363",
+    "address": "526 Leora Road",
+    "enabled": true,
+    "id": "64"
+  },
+  {
+    "companyName": "Hermann, Nienow and Will",
+    "companyEmail": "Florida_Herzog@hotmail.com",
+    "phoneNumber": "521-702-0606 x8808",
+    "taxIndentification": "37587395",
+    "address": "8608 Rhett Track",
+    "enabled": false,
+    "id": "65"
+  },
+  {
+    "companyName": "Ledner - Morissette",
+    "companyEmail": "Anibal_Stark@yahoo.com",
+    "phoneNumber": "822.439.6682",
+    "taxIndentification": "36200752",
+    "address": "36617 Grimes Gateway",
+    "enabled": true,
+    "id": "66"
+  },
+  {
+    "companyName": "Pfeffer - Hilll",
+    "companyEmail": "Chadd_Schoen@gmail.com",
+    "phoneNumber": "587-520-0229",
+    "taxIndentification": "68253737",
+    "address": "81031 Dan Avenue",
+    "enabled": true,
+    "id": "67"
+  },
+  {
+    "companyName": "Kub - Schneider",
+    "companyEmail": "Carmela_Miller27@hotmail.com",
+    "phoneNumber": "(824) 265-6135 x56003",
+    "taxIndentification": "44431603",
+    "address": "80346 Kertzmann Mountain",
+    "enabled": true,
+    "id": "68"
+  },
+  {
+    "companyName": "Davis and Sons",
+    "companyEmail": "Reyes_Satterfield92@hotmail.com",
+    "phoneNumber": "(450) 810-0340 x148",
+    "taxIndentification": "76962857",
+    "address": "99749 Walsh Vista",
+    "enabled": false,
+    "id": "69"
+  },
+  {
+    "companyName": "Green, Willms and Howe",
+    "companyEmail": "Kane.Thiel@gmail.com",
+    "phoneNumber": "(851) 749-1130 x1345",
+    "taxIndentification": "82914582",
+    "address": "0091 Alison Forks",
+    "enabled": true,
+    "id": "70"
+  },
+  {
+    "companyName": "Adams and Sons",
+    "companyEmail": "Willa.Satterfield@yahoo.com",
+    "phoneNumber": "446-727-6670 x65938",
+    "taxIndentification": "79037717",
+    "address": "5313 Jamarcus Avenue",
+    "enabled": true,
+    "id": "71"
+  },
+  {
+    "companyName": "Crist - Turner",
+    "companyEmail": "Mozell_Heaney@yahoo.com",
+    "phoneNumber": "819-469-2623 x1332",
+    "taxIndentification": "61951453",
+    "address": "62699 Heidi Lane",
+    "enabled": false,
+    "id": "72"
+  },
+  {
+    "companyName": "Ward, McDermott and Botsford",
+    "companyEmail": "Edwin_Harris@yahoo.com",
+    "phoneNumber": "(933) 841-0314 x05541",
+    "taxIndentification": "94556166",
+    "address": "136 Schultz Brooks",
+    "enabled": false,
+    "id": "73"
+  },
+  {
+    "companyName": "Gutmann, Ruecker and Mayert",
+    "companyEmail": "Roderick.Pacocha57@gmail.com",
+    "phoneNumber": "1-348-740-8825 x7693",
+    "taxIndentification": "16403845",
+    "address": "54267 Riley Underpass",
+    "enabled": true,
+    "id": "74"
+  },
+  {
+    "companyName": "Champlin, Stoltenberg and Sauer",
+    "companyEmail": "Taya_Reilly@yahoo.com",
+    "phoneNumber": "(718) 545-2749 x59809",
+    "taxIndentification": "65351880",
+    "address": "41987 King Course",
+    "enabled": true,
+    "id": "75"
+  },
+  {
+    "companyName": "Mitchell and Sons",
+    "companyEmail": "Turner90@gmail.com",
+    "phoneNumber": "1-365-388-4760",
+    "taxIndentification": "28658648",
+    "address": "2284 Terence Fords",
+    "enabled": false,
+    "id": "76"
+  },
+  {
+    "companyName": "Lakin - Strosin",
+    "companyEmail": "Libbie.Schimmel@yahoo.com",
+    "phoneNumber": "1-612-296-7294 x014",
+    "taxIndentification": "43287251",
+    "address": "964 Tod Path",
+    "enabled": true,
+    "id": "77"
+  },
+  {
+    "companyName": "Durgan Inc",
+    "companyEmail": "Kenny42@gmail.com",
+    "phoneNumber": "1-975-528-4003",
+    "taxIndentification": "33192642",
+    "address": "3096 Crona Shores",
+    "enabled": false,
+    "id": "78"
+  },
+  {
+    "companyName": "Nolan, Heller and Miller",
+    "companyEmail": "Bennett_Mills20@yahoo.com",
+    "phoneNumber": "972-591-6370 x93024",
+    "taxIndentification": "21925807",
+    "address": "5371 Diego Corner",
+    "enabled": false,
+    "id": "79"
+  },
+  {
+    "companyName": "Feeney, Murray and Douglas",
+    "companyEmail": "Maya31@yahoo.com",
+    "phoneNumber": "876-867-2486 x1218",
+    "taxIndentification": "42971753",
+    "address": "1052 Claudine Locks",
+    "enabled": true,
+    "id": "80"
+  },
+  {
+    "companyName": "Borer, Ritchie and Treutel",
+    "companyEmail": "Mertie_Fadel@gmail.com",
+    "phoneNumber": "634-266-0346 x79969",
+    "taxIndentification": "01482994",
+    "address": "7385 Lukas Flats",
+    "enabled": true,
+    "id": "81"
+  },
+  {
+    "companyName": "Bergnaum Inc",
+    "companyEmail": "Damaris58@hotmail.com",
+    "phoneNumber": "483-846-5030 x6150",
+    "taxIndentification": "79554606",
+    "address": "5010 Evans Station",
+    "enabled": true,
+    "id": "82"
+  },
+  {
+    "companyName": "Cormier, Volkman and Gottlieb",
+    "companyEmail": "Jena.Hayes79@yahoo.com",
+    "phoneNumber": "(367) 941-1643 x89587",
+    "taxIndentification": "90680278",
+    "address": "0443 Devonte Views",
+    "enabled": true,
+    "id": "83"
+  },
+  {
+    "companyName": "Gleason, Swift and Kshlerin",
+    "companyEmail": "Fredrick.Towne44@yahoo.com",
+    "phoneNumber": "258-665-3203 x3015",
+    "taxIndentification": "43004976",
+    "address": "956 Cali Groves",
+    "enabled": false,
+    "id": "84"
+  },
+  {
+    "companyName": "Howell - Conn",
+    "companyEmail": "Haven_Hansen@yahoo.com",
+    "phoneNumber": "(433) 353-8427",
+    "taxIndentification": "78406772",
+    "address": "5695 Champlin Field",
+    "enabled": false,
+    "id": "85"
+  },
+  {
+    "companyName": "Sanford - Yost",
+    "companyEmail": "Dillan.Veum56@yahoo.com",
+    "phoneNumber": "(629) 267-5532",
+    "taxIndentification": "59803026",
+    "address": "8547 Ronaldo Mall",
+    "enabled": false,
+    "id": "86"
+  },
+  {
+    "companyName": "O'Conner LLC",
+    "companyEmail": "Mateo_Pacocha@gmail.com",
+    "phoneNumber": "1-744-793-3941",
+    "taxIndentification": "26930087",
+    "address": "607 Bernhard Fort",
+    "enabled": false,
+    "id": "87"
+  },
+  {
+    "companyName": "Pollich and Sons",
+    "companyEmail": "Tracey.Howell@gmail.com",
+    "phoneNumber": "974-683-9776",
+    "taxIndentification": "54536794",
+    "address": "34067 Fermin Springs",
+    "enabled": true,
+    "id": "88"
+  },
+  {
+    "companyName": "Smitham, Halvorson and Borer",
+    "companyEmail": "Miles77@hotmail.com",
+    "phoneNumber": "805-344-4742",
+    "taxIndentification": "20903806",
+    "address": "648 Balistreri Way",
+    "enabled": false,
+    "id": "89"
+  },
+  {
+    "companyName": "Considine - Spinka",
+    "companyEmail": "Nadia.Beer@gmail.com",
+    "phoneNumber": "396-872-8607 x62462",
+    "taxIndentification": "91667436",
+    "address": "301 Kilback Mills",
+    "enabled": true,
+    "id": "90"
+  },
+  {
+    "companyName": "Wiza - Bashirian",
+    "companyEmail": "Casimir_Blick18@gmail.com",
+    "phoneNumber": "672.319.2090",
+    "taxIndentification": "34469964",
+    "address": "544 Kallie Island",
+    "enabled": true,
+    "id": "91"
+  },
+  {
+    "companyName": "Boyle and Sons",
+    "companyEmail": "Elouise_Ward@yahoo.com",
+    "phoneNumber": "824-427-8402",
+    "taxIndentification": "02126321",
+    "address": "62031 Koch Rapids",
+    "enabled": false,
+    "id": "92"
+  },
+  {
+    "companyName": "O'Conner, Nicolas and Hamill",
+    "companyEmail": "Zoey_Leffler93@yahoo.com",
+    "phoneNumber": "1-650-310-1530 x86897",
+    "taxIndentification": "18304238",
+    "address": "8970 Evan Manor",
+    "enabled": true,
+    "id": "93"
+  },
+  {
+    "companyName": "Emard, Schmeler and Grimes",
+    "companyEmail": "Ryder_Maggio@yahoo.com",
+    "phoneNumber": "1-669-373-3094",
+    "taxIndentification": "55354435",
+    "address": "4852 Ashton Lane",
+    "enabled": false,
+    "id": "94"
+  },
+  {
+    "companyName": "Howell, Quitzon and Parker",
+    "companyEmail": "Orrin47@hotmail.com",
+    "phoneNumber": "233.385.1495",
+    "taxIndentification": "08692635",
+    "address": "79543 Rolfson Shoal",
+    "enabled": true,
+    "id": "95"
+  },
+  {
+    "companyName": "Fahey, Schneider and Kovacek",
+    "companyEmail": "Yolanda.Bergstrom@gmail.com",
+    "phoneNumber": "204.555.9160 x63948",
+    "taxIndentification": "74371200",
+    "address": "01139 Kitty Crossing",
+    "enabled": false,
+    "id": "96"
+  },
+  {
+    "companyName": "Kuvalis LLC",
+    "companyEmail": "Pablo.Barrows@gmail.com",
+    "phoneNumber": "1-750-820-8014",
+    "taxIndentification": "41254551",
+    "address": "74632 Von Point",
+    "enabled": true,
+    "id": "97"
+  },
+  {
+    "companyName": "Cruickshank, Beier and Schimmel",
+    "companyEmail": "Dolores_Murazik23@hotmail.com",
+    "phoneNumber": "(285) 411-8987",
+    "taxIndentification": "42223948",
+    "address": "84632 Goodwin Loop",
+    "enabled": true,
+    "id": "98"
+  },
+  {
+    "companyName": "Lakin, Marvin and Kihn",
+    "companyEmail": "Hannah.Schinner@hotmail.com",
+    "phoneNumber": "(481) 957-9601 x123",
+    "taxIndentification": "14776693",
+    "address": "86798 Hirthe Branch",
+    "enabled": true,
+    "id": "99"
+  },
+  {
+    "companyName": "Reichert, Yundt and Yundt",
+    "companyEmail": "Lee.McLaughlin70@gmail.com",
+    "phoneNumber": "233.545.2305 x06942",
+    "taxIndentification": "79610652",
+    "address": "3762 Prohaska Keys",
+    "enabled": true,
+    "id": "100"
+  }
+]

@@ -1,0 +1,36 @@
+.semi-datepicker-weekday .semi-datepicker-weekday-item {
+  line-height: 20px;
+}
+.semi-navigation-item-selected {
+  background-color: rgba(255, 255, 255, 0.22);
+}
+.semi-navigation-header-collapsed #logo {
+  width: 130%;
+  height: 100%;
+}
+.semi-select-multiple.semi-select-filterable .semi-input-wrapper {
+  width: 100% !important;
+}
+.loader {
+  border-top-color: #3498db;
+  -webkit-animation: spinner 1.5s linear infinite;
+  animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

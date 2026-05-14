@@ -1,0 +1,10 @@
+.beam-table {
+  border-top: 8px solid #1f5567;
+  overflow: hidden;
+  border-radius: 4px !important;
+}
+.beam-table .semi-table-thead > .semi-table-row > .semi-table-row-head {
+  background-color: #e9eef0;
+  color: #000;
+  word-break: break-word;
+}/*# sourceMappingURL=table.css.map */
