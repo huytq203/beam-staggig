@@ -73,8 +73,6 @@ import { NewsAPIs } from "./apis";
 //       });
 //   }
 // }
-
-
 export class NewsService {
   static async getAll(filter: any) {
     const params = new URLSearchParams({
