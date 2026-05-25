@@ -85,8 +85,8 @@ export const FileManager = (props: any) => {
             </Button>
             <div>
               <Upload
-                // action={`/api/${url}`}
-                action={`${NEXT_PUBLIC_API_CORE}/file-manager/${url}`}
+                action={`/api/${url}`}
+                // action={`${NEXT_PUBLIC_API_CORE}/file-manager/${url}`}
                 dragIcon={<IconBolt />}
                 draggable={true}
                 accept={fileType}

@@ -113,6 +113,7 @@ axiosInstance.interceptors.response.use(
 
     if (
       statusCode !== 200 &&
+      statusCode !== 204 &&
       statusCode !== 403 &&
       statusCode !== 401 &&
       statusCode !== 406
@@ -206,6 +207,7 @@ axiosInstance.interceptors.response.use(
         return;
       } else if (
         statusCode !== 200 &&
+        statusCode !== 204 &&
         statusCode !== 403 &&
         statusCode !== 401 &&
         statusCode !== 406

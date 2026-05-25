@@ -27,14 +27,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method === "PUT") {
       return withValidation(updateNewsSchema, async (req, res) => {
-        const userId = req.user!.sub;
-        const result = await updateNewsArticle(id, req.body, userId);
+        const username = req.user!.preferred_username ?? req.user!.sub;
+        const result = await updateNewsArticle(id, req.body, username);
         return res.status(200).json({ code: 200, message: "OK", data: result });
       })(req, res);
     }
     if (req.method === "DELETE") {
       await deleteNewsArticle(id);
-      return res.status(200).json({ code: 200, message: "OK" });
+      return res.status(204).end();
     }
     return res.status(405).end();
   } catch (error) {

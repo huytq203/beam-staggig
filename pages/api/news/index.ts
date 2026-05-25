@@ -16,8 +16,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method === "POST") {
       return withValidation(createNewsSchema, async (req, res) => {
-        const userId = req.user!.sub;
-        const result = await createNewArticle(req.body, userId);
+        const username = req.user!.preferred_username ?? req.user!.sub;
+        const result = await createNewArticle(req.body, username);
         return res.status(200).json({ code: 200, message: "OK", data: result });
       })(req, res);
     }
