@@ -19,7 +19,7 @@ export interface ApiHandlerOptions {
 export function withApiHandler(
   handler: NextApiHandler,
   allowedRoles?: string[],
-  options: ApiHandlerOptions = {}
+  options: ApiHandlerOptions = {},
 ): NextApiHandler {
   const { rateLimit = DEFAULT_RATE_LIMIT, strictCors = true } = options;
 
