@@ -1,6 +1,6 @@
 import { UserRole } from '@constants/auth.constants';
 import { Select } from '@douyinfe/semi-ui';
-import { ProtectedWrapper } from '../../../../../../a/beam-master/beam-master/src/components/widgets/Auth';
+import { ProtectedWrapper } from '../Auth';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
 import { forwardRef } from 'react';
 

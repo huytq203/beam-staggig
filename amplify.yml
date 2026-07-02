@@ -1,0 +1,22 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+        - npx prisma generate
+    build:
+      commands:
+        # Amplify Hosting (Gen 1) does NOT pass Console env vars to the SSR Lambda runtime.
+        # Persist them into .env.production so Next.js bakes them into the server bundle.
+        # If your Amplify supports "Compute environment variables" (newer), prefer that and remove this line.
+        - env | grep -E '^(DATABASE_URL|CORS_ALLOWED_ORIGINS|KEYCLOAK_ISSUER|CLOUDFLARE_ACCOUNT_ID|CLOUDFLARE_R2_ACCESS_KEY_ID|CLOUDFLARE_R2_SECRET_ACCESS_KEY|CLOUDFLARE_R2_BUCKET|CLOUDFLARE_R2_PUBLIC_URL)=' >> .env.production
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

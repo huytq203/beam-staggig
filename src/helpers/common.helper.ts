@@ -1,3 +1,3 @@
 export const isProduction = () => {
-  return process.env.NODE_ENV === 'test';
+  return process.env.NODE_ENV === 'production';
 };

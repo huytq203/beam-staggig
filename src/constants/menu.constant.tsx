@@ -401,20 +401,20 @@ export const menuOptions: IMenuOption[] = [
       UserRole.ACCOUNTANT,
     ],
     items: [
-      {
-        itemKey: 'friends-invitation-list',
-        text: 'Danh sách chương trình giới thiệu bạn bè',
-        url: '/invite-friends/referral-program/listProgram',
-        allowedRoles: [
-          UserRole.BEAM_ADMIN,
-          UserRole.SUPER_ADMIN,
-          UserRole.SALE,
-          UserRole.CUSTOMER_SERVICE,
-          UserRole.CONTROLLER,
-          UserRole.RECONCILER,
-          UserRole.ACCOUNTANT,
-        ],
-      },
+      // {
+      //   itemKey: 'friends-invitation-list',
+      //   text: 'Danh sách chương trình giới thiệu bạn bè',
+      //   url: '/invite-friends/referral-program/listProgram',
+      //   allowedRoles: [
+      //     UserRole.BEAM_ADMIN,
+      //     UserRole.SUPER_ADMIN,
+      //     UserRole.SALE,
+      //     UserRole.CUSTOMER_SERVICE,
+      //     UserRole.CONTROLLER,
+      //     UserRole.RECONCILER,
+      //     UserRole.ACCOUNTANT,
+      //   ],
+      // },
       {
         itemKey: 'invite-friends-invitation-list',
         text: 'Danh sách giới thiệu',

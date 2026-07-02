@@ -7,7 +7,7 @@ export interface AppTableProps extends TableProps {}
 const AppTable = (props: AppTableProps) => {
   return (
     <div className={'beam-table'}>
-      <Table {...props} bordered empty={'Không có kết quả'} />
+      <Table {...props}  bordered empty={'Không có kết quả'} />
     </div>
   );
 };

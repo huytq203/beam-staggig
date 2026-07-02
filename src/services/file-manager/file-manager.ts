@@ -7,7 +7,7 @@ export class FileManagerService {
     //   ...filter,
     //   page: filter?.currentPage ? filter?.currentPage : 1,
     // }).toString()
-    const x = await axiosInstance.get(`${FileManagerAPIs.BASE}/${filter}`);
+    const x = await axiosInstance.get(`${FileManagerAPIs.BASE}${filter}`);
     return x?.data?.data;
   }
 }

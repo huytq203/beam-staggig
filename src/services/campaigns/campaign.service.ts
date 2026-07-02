@@ -1,52 +1,14 @@
-import { ResponseHelpers } from "@helpers/response.helper";
-import { axiosInstance } from "../api/axiosInstance";
-import { CampaignAPIs } from "./apis";
+import { ResponseHelpers } from '@helpers/response.helper';
+import { axiosInstance } from '../api/axiosInstance';
+import { CampaignAPIs } from './apis';
 
 export class CampaignService {
-  static async getFriendInvitationVoucherMilestone(filter: any) {
-    const params = new URLSearchParams({
-      ...filter,
-    }).toString();
-    const x = await axiosInstance.get(
-      `${CampaignAPIs.BASE_CAMPAIGN_INVITATION}/voucher-milestone?${params}`
-    );
-    return x?.data?.data;
-  }
-
-  static async exportFriendInvitationVoucherMilestone(filter: any) {
-    const params = new URLSearchParams({
-      ...filter,
-    }).toString();
-
-    const x = await axiosInstance.get(
-      `${CampaignAPIs.BASE_CAMPAIGN_INVITATION}/voucher-milestone/export?${params}`,
-      {
-        responseType: "arraybuffer",
-        headers: {
-          Accept: "application/octet-stream",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return x?.data;
-  }
-
   static async getAll(filter: any) {
     const params = new URLSearchParams({
       ...filter,
     }).toString();
     const x = await axiosInstance.get(
       `${CampaignAPIs.BASE_CAMPAIGN}?${params}`
-    );
-    return x?.data?.data;
-  }
-
-  static async getAllInvitationFriend(filter: any) {
-    const params = new URLSearchParams({
-      ...filter,
-    }).toString();
-    const x = await axiosInstance.get(
-      `${CampaignAPIs.BASE_CAMPAIGN_INVITATION}?${params}`
     );
     return x?.data?.data;
   }
@@ -62,14 +24,6 @@ export class CampaignService {
   static async getCampaign(id: any) {
     return axiosInstance
       .get(`${CampaignAPIs.BASE_CAMPAIGN}/${id}`)
-      .then((x: any) => {
-        return x?.data?.data;
-      });
-  }
-
-  static async getFriendInvitationCampaign(id: any) {
-    return axiosInstance
-      .get(`${CampaignAPIs.BASE_CAMPAIGN_INVITATION}/${id}`)
       .then((x: any) => {
         return x?.data?.data;
       });
@@ -174,7 +128,7 @@ export class CampaignService {
           const response = x?.data;
           if (response) {
             const { code: responseCode, message } = response;
-            if (responseCode == 200 && message == "OK") {
+            if (responseCode == 200 && message == 'OK') {
               return true;
             }
           }
@@ -189,43 +143,7 @@ export class CampaignService {
           const response = x?.data;
           if (response) {
             const { code: responseCode, message } = response;
-            if (responseCode == 200 && message == "OK") {
-              return true;
-            }
-          }
-          return false;
-        });
-    };
-    if (campaignRequest?.id) {
-      return update(campaignRequest);
-    }
-    return add(campaignRequest);
-  }
-
-  static addOrUpdateInvitationCampaign(campaignRequest: any) {
-    const add = (request: any) => {
-      return axiosInstance
-        .post(`${CampaignAPIs.BASE_CAMPAIGN_INVITATION}`, campaignRequest)
-        .then((x: any) => {
-          const response = x?.data;
-          if (response) {
-            const { code: responseCode, message } = response;
-            if (responseCode == 200 && message == "OK") {
-              return true;
-            }
-          }
-          return false;
-        });
-    };
-
-    const update = (request: any) => {
-      return axiosInstance
-        .put(`${CampaignAPIs.BASE_CAMPAIGN_INVITATION}`, campaignRequest)
-        .then((x: any) => {
-          const response = x?.data;
-          if (response) {
-            const { code: responseCode, message } = response;
-            if (responseCode == 200 && message == "OK") {
+            if (responseCode == 200 && message == 'OK') {
               return true;
             }
           }

@@ -1,23 +1,25 @@
-// Khi NEXT_PUBLIC_USE_PROXY=true: gọi API qua đường dẫn tương đối (cùng origin)
-// và next.config.js sẽ rewrite sang backend thật -> tránh CORS khi dev local.
-// Khi false (hoặc không set): gọi thẳng URL backend như bình thường.
-const USE_PROXY = process.env.NEXT_PUBLIC_USE_PROXY === 'true';
+// Next.js chỉ inline process.env.NEXT_PUBLIC_* khi dùng literal — không dùng bracket động
+const USE_PROXY = process.env.NEXT_PUBLIC_USE_PROXY === "true";
 
-export const NEXT_PUBLIC_BEAM_API: any = USE_PROXY
-  ? '/proxy-beam'
-  : process.env.NEXT_PUBLIC_BEAM_API;
-export const NEXT_PUBLIC_API_CORE: any = USE_PROXY
-  ? '/proxy-core'
-  : process.env.NEXT_PUBLIC_API_CORE;
-export const NEXT_PUBLIC_API_CORE2: any = USE_PROXY
-  ? '/proxy-core2'
-  : process.env.NEXT_PUBLIC_API_CORE2;
-export const NEXT_PUBLIC_API_PAYMENT: any = USE_PROXY
-  ? '/proxy-payment'
-  : process.env.NEXT_PUBLIC_API_PAYMENT;
-export const NEXT_PUBLIC_BASE: any = process.env.NEXT_PUBLIC_BASE;
-export const NEXT_PUBLIC_API_NOTIFICATION: any = USE_PROXY
-  ? '/proxy-notification'
-  : process.env.NEXT_PUBLIC_API_NOTIFICATION;
-export const NEXT_PUBLIC_API_MAINTENANCE: any =
-  process.env.NEXT_PUBLIC_API_MAINTENANCE;
+export const NEXT_PUBLIC_BEAM_API: string = USE_PROXY
+  ? (process.env.NEXT_PUBLIC_BEAM_API_PROXY ?? "")
+  : (process.env.NEXT_PUBLIC_BEAM_API_DIRECT ?? "");
+
+export const NEXT_PUBLIC_API_CORE: string = USE_PROXY
+  ? (process.env.NEXT_PUBLIC_API_CORE_PROXY ?? "")
+  : (process.env.NEXT_PUBLIC_API_CORE_DIRECT ?? "");
+
+export const NEXT_PUBLIC_API_CORE2: string = USE_PROXY
+  ? (process.env.NEXT_PUBLIC_API_CORE2_PROXY ?? "")
+  : (process.env.NEXT_PUBLIC_API_CORE2_DIRECT ?? "");
+
+export const NEXT_PUBLIC_API_PAYMENT: string = USE_PROXY
+  ? (process.env.NEXT_PUBLIC_API_PAYMENT_PROXY ?? "")
+  : (process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT ?? "");
+
+export const NEXT_PUBLIC_API_NOTIFICATION: string = USE_PROXY
+  ? (process.env.NEXT_PUBLIC_API_NOTIFICATION_PROXY ?? "")
+  : (process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT ?? "");
+
+export const NEXT_PUBLIC_BASE: string            = process.env.NEXT_PUBLIC_BASE ?? "";
+export const NEXT_PUBLIC_API_MAINTENANCE: string = process.env.NEXT_PUBLIC_API_MAINTENANCE ?? "";

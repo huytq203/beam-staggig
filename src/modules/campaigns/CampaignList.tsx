@@ -204,7 +204,6 @@ export const CampaignList = (props: any) => {
     {
       title: 'Nội dung cập nhật',
       dataIndex: 'id',
-      key: 'changeLog',
       width: 180,
       render: (userId: any, record: any) => {
         return (
@@ -221,7 +220,6 @@ export const CampaignList = (props: any) => {
     {
       title: 'Hành động',
       dataIndex: 'id',
-      key: 'actions',
       width: 150,
       render: (id: any, record: any) => {
         return (

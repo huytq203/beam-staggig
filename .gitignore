@@ -41,11 +41,6 @@ package-lock.json
 .next
 .env
 .env.*
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 
-=======
->>>>>>> 642e587 (update)
->>>>>>> 22f3b0cfec212bcc7cbf4c7fbcf882ff56bc0514
 .DS_Store
+/generated/prisma

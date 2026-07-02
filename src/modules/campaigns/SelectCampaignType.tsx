@@ -1,9 +1,8 @@
 import { Select } from '@douyinfe/semi-ui';
 import { CampaignService } from '@services/campaigns';
-import { forwardRef } from 'react';
 import { useQuery } from 'react-query';
 
-export const SelectCampaignType = forwardRef((props: any, ref: any) => {
+export const SelectCampaignType = (props: any) => {
   const { isAll = false, size } = props;
   const { data, isLoading, refetch } = useQuery(
     ['campaign-type-enabled-list'],
@@ -32,9 +31,5 @@ export const SelectCampaignType = forwardRef((props: any, ref: any) => {
     }
     return dataConvert;
   };
-  return (
-    <Select ref={ref} optionList={getSelectOptions()} size={size} {...props} />
-  );
-});
-
-SelectCampaignType.displayName = 'SelectCampaignType';
+  return <Select optionList={getSelectOptions()} size={size} {...props} />;
+};

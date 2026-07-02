@@ -25,7 +25,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
-import { CreateProfileSchema } from '../../../../../../a/beam-master/beam-master/validations/CreateProfile.schema';
+import { CreateProfileSchema } from '../../../../validations/CreateProfile.schema';
 import SelectConfigPayFormProfile from '../SelectConfigPayFormProfile';
 import { useAuth } from '@contexts/authentication';
 import { UserRole } from '@constants/auth.constants';

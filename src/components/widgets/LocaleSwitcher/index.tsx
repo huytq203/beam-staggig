@@ -24,7 +24,7 @@ export const LocaleSwitcher = () => {
       {otherLocales?.map((locale) => {
         const { pathname, query, asPath } = router
         return (
-          <Link href={{ pathname, query }} as={asPath} locale={locale}>
+          <Link href={{ pathname, query }} as={asPath} locale={locale} legacyBehavior>
             <Button key={locale}>
               <a>
                 {<ReactCountryFlag countryCode={flags[locale].flag} />}{' '}

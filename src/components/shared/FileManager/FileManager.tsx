@@ -1,11 +1,11 @@
-import { COMMON_FORMAT } from '@constants/common-format';
-import { NEXT_PUBLIC_API_CORE } from '@constants/endpoints';
+import { COMMON_FORMAT } from "@constants/common-format";
+import { NEXT_PUBLIC_API_CORE } from "@constants/endpoints";
 import {
   IconBolt,
   IconGridView,
   IconListView,
   IconUpload,
-} from '@douyinfe/semi-icons';
+} from "@douyinfe/semi-icons";
 import {
   Button,
   Image,
@@ -13,13 +13,13 @@ import {
   SplitButtonGroup,
   Toast,
   Upload,
-} from '@douyinfe/semi-ui';
-import { DateTimeHelper } from '@helpers/date-time.helper';
-import { axiosInstance } from '@services/api';
-import { FileManagerService } from '@services/file-manager';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { FileManagerMainView } from './FileManagerMainView';
+} from "@douyinfe/semi-ui";
+import { DateTimeHelper } from "@helpers/date-time.helper";
+import { axiosInstance } from "@services/api";
+import { FileManagerService } from "@services/file-manager";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { FileManagerMainView } from "./FileManagerMainView";
 
 export interface FileManagerProps {
   onSelect: any;
@@ -53,15 +53,15 @@ export const FileManager = (props: any) => {
     {
       cacheTime: 0,
       refetchOnWindowFocus: false,
-    }
+    },
   );
 
   const isImage = (fileType: any) => {
-    return fileType?.startsWith('image');
+    return fileType?.startsWith("image");
   };
 
   const isActiveViewTheme = (currViewType: any) => {
-    return currViewType == viewType ? 'solid' : 'light';
+    return currViewType == viewType ? "solid" : "light";
   };
 
   const onChangeViewType = (newViewType: VIEW_TYPE) => {
@@ -85,7 +85,8 @@ export const FileManager = (props: any) => {
             </Button>
             <div>
               <Upload
-                action={`${NEXT_PUBLIC_API_CORE}/file-manager/${url}`}
+                action={`/api/${url}`}
+                // action={`${NEXT_PUBLIC_API_CORE}/file-manager/${url}`}
                 dragIcon={<IconBolt />}
                 draggable={true}
                 accept={fileType}
@@ -93,7 +94,7 @@ export const FileManager = (props: any) => {
                 disabled={disabled}
                 customRequest={(options: any) => {
                   const data = new FormData();
-                  data.append('file', options.file.fileInstance);
+                  data.append("file", options.file.fileInstance);
                   axiosInstance
                     .post(options.action, data)
                     .then((res: any) => {
@@ -105,7 +106,7 @@ export const FileManager = (props: any) => {
                 onSuccess={(e: any) => {
                   Notification.success({
                     content: `Tải lên thành công!`,
-                    theme: 'light',
+                    theme: "light",
                   });
                   refetch();
                 }}
@@ -113,7 +114,7 @@ export const FileManager = (props: any) => {
                   Toast.error(
                     `Vui lòng tải lên file có dung lượng <= ${
                       fileSize / 1024
-                    } MB`
+                    } MB`,
                   )
                 }
               >
@@ -173,7 +174,7 @@ export const FileManager = (props: any) => {
                   <span className="col-span-2">
                     {DateTimeHelper.convertTimeZone(
                       selected?.createdAt,
-                      COMMON_FORMAT.DATE_TIME
+                      COMMON_FORMAT.DATE_TIME,
                     )}
                   </span>
                 </div>

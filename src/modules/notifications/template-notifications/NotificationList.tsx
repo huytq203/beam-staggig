@@ -6,7 +6,7 @@ import { Tag, Typography } from '@douyinfe/semi-ui';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { StringHelper } from '@helpers/string.helper';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ContentWrapper } from '@components/widgets';
 import { NotificationManagementService } from '@services/notification-management';
@@ -35,10 +35,6 @@ export const NotificationList = (props: any) => {
     subType: '',
     status: 0,
   });
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { data, isLoading, refetch } = useQuery(
     ['notification-list', filter],
@@ -183,30 +179,28 @@ export const NotificationList = (props: any) => {
             <NotificationListFilter onFilter={setFilter} refetch={refetch} />
           </div>
         </div>
-        {mounted && (
-          <AppTable
-            size="small"
-            loading={isLoading}
-            columns={getColums()}
-            className="beam-break-world"
-            dataSource={getTableData()}
-            renderPagination={(e: any) => {
-              return (
-                <div className="py-2 w-full flex justify-end">
-                  <AppPagination
-                    {...data}
-                    onChange={(e: any) => {
-                      setFilter({
-                        ...filter,
-                        page: e,
-                      });
-                    }}
-                  />
-                </div>
-              );
-            }}
-          />
-        )}
+        <AppTable
+          size="small"
+          loading={isLoading}
+          columns={getColums()}
+          className="beam-break-world"
+          dataSource={getTableData()}
+          renderPagination={(e: any) => {
+            return (
+              <div className="py-2 w-full flex justify-end">
+                <AppPagination
+                  {...data}
+                  onChange={(e: any) => {
+                    setFilter({
+                      ...filter,
+                      page: e,
+                    });
+                  }}
+                />
+              </div>
+            );
+          }}
+        />
       </ContentWrapper>
     </div>
   );

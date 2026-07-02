@@ -141,8 +141,9 @@ export const NewsArticleList = () => {
   }
 
   const deleteNews = (id: any) => {
-    NewsService.deleteNews(id).then((x: any) => {
-        if (x?.data?.code == 200 && x?.data?.message == 'OK') {
+    NewsService.deleteNews(id)
+      .then((x: any) => {
+        if (x?.status === 204) {
           Notification.success({
             content: 'Xóa thành công',
             duration: 2,
@@ -156,6 +157,13 @@ export const NewsArticleList = () => {
             theme: 'light',
           });
         }
+      })
+      .catch(() => {
+        Notification.error({
+          content: 'Có lỗi xảy ra. Vui lòng thử lại',
+          duration: 2,
+          theme: 'light',
+        });
       });
     };
 

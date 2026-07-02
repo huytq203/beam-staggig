@@ -736,6 +736,7 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
                       // disabled={checkDisableCreditLimit()}
                       max={999999999999}
                       showClear
+                      placeholder={"Nhập vào giá trị"}
                       {...props}
                     />
                   )}

@@ -12,7 +12,7 @@ export async function getServerSideProps(props: any) {
 
 const CreateProgramPage: NextPage = (props: any) => {
   const router = useRouter();
-  const baseRoute = `/invite-friends/referral-program/listProgram`;
+  const baseRoute = `/referral-program/create-program-invitation`;
   return (
     <PrimaryLayout breadcrumbs={['Thêm mới chương trình giới thiệu bạn bè']}>
       <CreateProgram
