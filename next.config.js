@@ -31,6 +31,24 @@ module.exports = semi({
       },
     ],
   },
+  async rewrites() {
+    // Bật proxy để tránh CORS khi dev: request tới /proxy-* (cùng origin)
+    // được Next rewrite sang backend thật. Tắt (mặc định) -> không proxy.
+    if (process.env.NEXT_PUBLIC_USE_PROXY !== 'true') return [];
+    const proxyMap = [
+      ['/proxy-beam', process.env.NEXT_PUBLIC_BEAM_API],
+      ['/proxy-core', process.env.NEXT_PUBLIC_API_CORE],
+      ['/proxy-core2', process.env.NEXT_PUBLIC_API_CORE2],
+      ['/proxy-payment', process.env.NEXT_PUBLIC_API_PAYMENT],
+      ['/proxy-notification', process.env.NEXT_PUBLIC_API_NOTIFICATION],
+    ];
+    return proxyMap
+      .filter(([, target]) => Boolean(target))
+      .map(([prefix, target]) => ({
+        source: `${prefix}/:path*`,
+        destination: `${target.replace(/\/+$/, '')}/:path*`,
+      }));
+  },
   async headers() {
     const isProd = process.env.NODE_ENV === 'production';
     const baseHeaders = [

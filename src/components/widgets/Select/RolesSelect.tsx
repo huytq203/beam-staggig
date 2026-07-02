@@ -1,9 +1,10 @@
 import { UserRole } from '@constants/auth.constants';
 import { Select } from '@douyinfe/semi-ui';
-import { ProtectedWrapper } from '../Auth';
+import { ProtectedWrapper } from '../../../../../../a/beam-master/beam-master/src/components/widgets/Auth';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
+import { forwardRef } from 'react';
 
-export const RolesSelect = (props: any) => {
+export const RolesSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, multiple = false, showClear = false } = props;
   const roleListSupper = [
     {
@@ -57,6 +58,7 @@ export const RolesSelect = (props: any) => {
     <>
       <ProtectedWrapper allowedRoles={[UserRole.SUPER_ADMIN]}>
         <Select
+          ref={ref}
           // filter={FunctionBase.customSelectFilterOption}
           value={value}
           optionList={roleListSupper}
@@ -70,6 +72,7 @@ export const RolesSelect = (props: any) => {
         allowedRoles={[UserRole.BEAM_ADMIN, UserRole.CONTROLLER, UserRole.SALE]}
       >
         <Select
+          ref={ref}
           // filter={FunctionBase.customSelectFilterOption}
           value={value}
           optionList={roleListBeam}
@@ -81,4 +84,5 @@ export const RolesSelect = (props: any) => {
       </ProtectedWrapper>
     </>
   );
-};
+});
+RolesSelect.displayName = 'RolesSelect';

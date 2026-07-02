@@ -1,12 +1,13 @@
 import { Select } from '@douyinfe/semi-ui';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-export const ReportSourceSelect = (props: any) => {
+export const ReportSourceSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, companyId, multiple = false } = props;
 
   return (
     <Select
+      ref={ref}
       // filter={FunctionBase.customSelectFilterOption}
       value={value}
       optionList={[
@@ -25,4 +26,5 @@ export const ReportSourceSelect = (props: any) => {
       showClear
     />
   );
-};
+});
+ReportSourceSelect.displayName = 'ReportSourceSelect';

@@ -100,8 +100,10 @@ export const HRAdminList = (props: any) => {
       render: (name: any, record: any, a: any) => {
         return (
           <Text>
-            {name?.map((x: any) => (
-              <p className="beam-break-world">-{x}</p>
+            {name?.map((x: any, idx: any) => (
+              <p key={`${x}-${idx}`} className="beam-break-world">
+                -{x}
+              </p>
             ))}
           </Text>
         );
@@ -160,16 +162,19 @@ export const HRAdminList = (props: any) => {
     },
     {
       title: 'Hành động',
-      dataIndex: 'username',
+      key: 'action',
+      dataIndex: 'action',
       width: 140,
-      render: (username: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <ProtectedWrapper
             allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
           >
             <div className="flex gap-3 pl-3">
               <IconEdit
-                onClick={() => router.push(`${username}/edit-information-hr`)}
+                onClick={() =>
+                  router.push(`${record?.username}/edit-information-hr`)
+                }
                 className="cursor-pointer"
               />
             </div>

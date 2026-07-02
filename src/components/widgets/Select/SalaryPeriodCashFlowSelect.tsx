@@ -2,10 +2,10 @@ import { COMMON_FORMAT } from '@constants/common-format';
 import { Select, TreeSelect } from '@douyinfe/semi-ui';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { DebtService } from '@services/debt-cash';
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-export const SalaryPeriodCashFlowSelect = (props: any) => {
+export const SalaryPeriodCashFlowSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, companyId, multiple = false, placeholder } = props;
 
   const { data, isLoading } = useQuery(
@@ -58,6 +58,7 @@ export const SalaryPeriodCashFlowSelect = (props: any) => {
   };
   return (
     <TreeSelect
+      ref={ref}
       // style={{ width: 300 }}
       // dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
       treeData={getOptions()}
@@ -67,4 +68,5 @@ export const SalaryPeriodCashFlowSelect = (props: any) => {
       onChange={(e: any) => onChange(e)}
     />
   );
-};
+});
+SalaryPeriodCashFlowSelect.displayName = 'SalaryPeriodCashFlowSelect';

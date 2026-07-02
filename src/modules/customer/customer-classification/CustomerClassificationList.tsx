@@ -97,9 +97,9 @@ export const CustomerClassificationList = (props: any) => {
       dataIndex: 'phoneNumber',
       width: 150,
       render: (e: any, record: any, a: any) => {
-        return StringHelper.convertStringToArray(e, ',').map((x: any) => {
-          return x && <p>{x}</p>;
-        });
+        return StringHelper.convertStringToArray(e, ',').map(
+          (x: any, idx: any) => x && <p key={`${x}-${idx}`}>{x}</p>
+        );
       },
     },
     {

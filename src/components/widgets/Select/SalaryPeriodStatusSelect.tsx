@@ -1,10 +1,12 @@
 import { Select } from '@douyinfe/semi-ui';
+import { forwardRef } from 'react';
 
-export const SalaryPeriodStatusSelect = (props: any) => {
+export const SalaryPeriodStatusSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, companyId, multiple = false } = props;
 
   return (
     <Select
+      ref={ref}
       value={value}
       optionList={[
         {
@@ -22,4 +24,5 @@ export const SalaryPeriodStatusSelect = (props: any) => {
       showClear
     />
   );
-};
+});
+SalaryPeriodStatusSelect.displayName = 'SalaryPeriodStatusSelect';

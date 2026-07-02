@@ -220,16 +220,19 @@ export const ListHRCompany = (props: any) => {
     },
     {
       title: 'Hành động',
-      dataIndex: 'username',
+      key: 'action',
+      dataIndex: 'action',
       width: 150,
-      render: (username: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <div className="flex gap-3 pl-3">
             <ProtectedWrapper
               allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
             >
               <IconEdit
-                onClick={() => router.push(`${basePath}/${username}/edit`)}
+                onClick={() =>
+                  router.push(`${basePath}/${record?.username}/edit`)
+                }
                 className="cursor-pointer"
               />
             </ProtectedWrapper>

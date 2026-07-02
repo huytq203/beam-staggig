@@ -753,6 +753,30 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
                   errors={errors}
                   control={control}
                 />
+                <InputWrapper
+                  field="maxPayLimitRatioPerEmployee"
+                  label="Hạn mức người lao động"
+                  component={(props: any) => (
+                    <InputNumberByType displayType={1} showClear {...props} placeholder={"Nhập vào giá trị %"} />
+                  )}
+                  control={control}
+                />
+                  <InputWrapper
+                  field="maxPayLimitValuePerEmployee"
+                  label="Hạn mức tối đa trên người lao động"
+                  component={(props: any) => (
+                    <InputNumber
+                      format="thousands"
+                      // disabled={checkDisableCreditLimit()}
+                      max={999999999999}
+                      showClear
+                      {...props}
+
+                      placeholder={"Nhập vào giá trị"}
+                    />
+                  )}
+                  control={control}
+                />
                 {watch('workDayType') === 'FIXED_WORKDAY' && (
                   <InputWrapper
                     required

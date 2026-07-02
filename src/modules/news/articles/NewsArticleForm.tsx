@@ -47,7 +47,7 @@ export const NewsArticleForm = (props: any) => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      reset(data);
+      reset(data?.data);
     }
   }, [data, isLoading]);
 
@@ -64,7 +64,7 @@ export const NewsArticleForm = (props: any) => {
     }
   }, [statusValue, setValue]);
 
-  const isDisabled = !isNew && data?.data?.status === 'ACTIVE';
+  const isDisabled = !isNew && data?.status === 'ACTIVE';
 
   return (
     <>

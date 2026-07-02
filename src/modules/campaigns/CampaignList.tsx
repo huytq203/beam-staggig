@@ -53,8 +53,6 @@ export const CampaignList = (props: any) => {
     if (isLoading || !data?.content) return [];
     return data?.content;
   };
-
-  
   const removeCampaign = (id: any) => {
     CampaignService.removeCampaign(id).then((x: any) => {
       if (x?.data?.code == 200 && x?.data?.message == 'OK') {
@@ -206,6 +204,7 @@ export const CampaignList = (props: any) => {
     {
       title: 'Nội dung cập nhật',
       dataIndex: 'id',
+      key: 'changeLog',
       width: 180,
       render: (userId: any, record: any) => {
         return (
@@ -222,6 +221,7 @@ export const CampaignList = (props: any) => {
     {
       title: 'Hành động',
       dataIndex: 'id',
+      key: 'actions',
       width: 150,
       render: (id: any, record: any) => {
         return (

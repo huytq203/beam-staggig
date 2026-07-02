@@ -20,7 +20,7 @@ export const NewsArticleList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const [filter, setFilter] = useState({
-    name: "",
+    title: "",
     page: 1,
     size: 10,
   });
@@ -310,6 +310,10 @@ export const NewsArticleList = () => {
             <div className="py-2 w-full flex justify-end">
               <AppPagination
                 {...data}
+                //  totalElements={data?.pagination?.total ?? 0}
+                //  number={(data?.pagination?.page ?? 1) - 1}                                                                                          
+                //  size={data?.pagination?.pageSize ?? filter.size}
+                //  numberOfElements={data?.data?.length ?? 0}
                 onChange={(e: any) => {
                   setFilter({
                     ...filter,

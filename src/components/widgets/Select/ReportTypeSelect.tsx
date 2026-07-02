@@ -1,11 +1,12 @@
 import { Select } from '@douyinfe/semi-ui';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-export const ReportTypeSelect = (props: any) => {
+export const ReportTypeSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, companyId, multiple = false } = props;
 
   return (
     <Select
+      ref={ref}
       // filter={FunctionBase.customSelectFilterOption}
       value={value}
       defaultValue={'BEAM'}
@@ -33,4 +34,5 @@ export const ReportTypeSelect = (props: any) => {
       showClear
     />
   );
-};
+});
+ReportTypeSelect.displayName = 'ReportTypeSelect';

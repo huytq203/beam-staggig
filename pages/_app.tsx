@@ -7,6 +7,7 @@ import { Frame } from '@stomp/stompjs';
 import NextNProgress from 'nextjs-progressbar';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import vi_VN from '../src/locale/source/vi_VN';
+import 'swiper/css/bundle';
 import '../styles/globals.scss';
 import '../styles/transition.css';
 import { WidgetProvider } from '@contexts/widgets';

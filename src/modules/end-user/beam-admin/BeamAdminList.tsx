@@ -194,16 +194,19 @@ export const BeamAdminList = (props: any) => {
     },
     {
       title: 'Hành động',
-      dataIndex: 'username',
+      key: 'action',
+      dataIndex: 'action',
       width: 150,
-      render: (username: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <ProtectedWrapper
             allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
           >
             <div className="flex gap-3 pl-3">
               <IconEdit
-                onClick={() => router.push(`${username}/edit-information`)}
+                onClick={() =>
+                  router.push(`${record?.username}/edit-information`)
+                }
                 className="cursor-pointer"
               />
             </div>

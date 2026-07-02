@@ -49,7 +49,6 @@ export const CampaignCompanyPickList = (props: any) => {
           label="Doanh nghiệp"
           component={(props: any) => (
             <Select
-              disabled={watch('applyAll') == true}
               filter={FunctionBase.customSelectFilterOption}
               loading={isLoading}
               optionList={getOptions()}

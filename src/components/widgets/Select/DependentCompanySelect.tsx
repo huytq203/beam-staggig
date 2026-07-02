@@ -1,10 +1,10 @@
 import { Select, Tag } from '@douyinfe/semi-ui';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
 import { CompanyService } from '@services/companies';
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-export const DependentCompanySelect = (props: any) => {
+export const DependentCompanySelect = forwardRef<any, any>((props: any, ref: any) => {
   const {
     onChange,
     value,
@@ -50,6 +50,7 @@ export const DependentCompanySelect = (props: any) => {
   return (
     <>
       <Select
+        ref={ref}
         filter={FunctionBase.customSelectFilterOption}
         loading={isLoading}
         disabled={disabled}
@@ -65,4 +66,5 @@ export const DependentCompanySelect = (props: any) => {
       />
     </>
   );
-};
+});
+DependentCompanySelect.displayName = 'DependentCompanySelect';

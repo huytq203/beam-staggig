@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { RolesSelect } from '@components/widgets/Select/RolesSelect';
-import { endUserStatusOptions } from '../constants';
+import { EnabledStatusSelect } from '../constants';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
@@ -168,17 +168,7 @@ export const EditBeamAdminForm = (props: any) => {
                 required
                 field="enabled"
                 label="Trạng thái"
-                component={(props: any) => (
-                  <Select
-                    optionList={endUserStatusOptions}
-                    {...props}
-                    onSelect={(value: any) => {
-                      if (value === false) {
-                        return setVisible(true);
-                      }
-                    }}
-                  />
-                )}
+                component={(props: any) => <EnabledStatusSelect {...props} />}
                 errors={errors}
                 control={control}
               />

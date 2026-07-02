@@ -1,26 +1,22 @@
-import { BoxWrapper } from "@components/widgets";
-import { Tabs } from "@douyinfe/semi-ui";
-import { useRouter } from "next/router";
+import { BoxWrapper } from '@components/widgets';
+import { Tabs } from '@douyinfe/semi-ui';
+import { useRouter } from 'next/router';
 
 export const InvitaionTabs = (props: any) => {
   const { activeItem } = props;
   const router = useRouter();
-  const baseRoute = "/invite-friends/invitation-list";
+  const baseRoute = '/invite-friends/invitation-list';
   const tabList = [
-    { tab: "Danh sách giới thiệu", itemKey: "referrer" },
-    { tab: "Quản lý voucher", itemKey: "voucher" },
-    { tab: "Người được giới thiệu", itemKey: "presentee" },
+    { tab: 'Danh sách giới thiệu', itemKey: 'referrer' },
+    { tab: 'Người được giới thiệu', itemKey: 'presentee' },
   ];
 
   const onChangeRoute = (e: any) => {
     switch (e) {
-      case "referrer":
+      case 'referrer':
         router.push(`${baseRoute}/referrer`);
         break;
-      case "voucher":
-        router.push(`${baseRoute}/voucher`);
-        break;
-      case "presentee":
+      case 'presentee':
         router.push(`${baseRoute}/presentee`);
         break;
     }
@@ -32,7 +28,7 @@ export const InvitaionTabs = (props: any) => {
         <Tabs
           type="button"
           contentStyle={{
-            display: "none",
+            display: 'none',
           }}
           tabList={tabList}
           activeKey={activeItem}

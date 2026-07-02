@@ -3,10 +3,10 @@ import { Select } from '@douyinfe/semi-ui';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { DebtService } from '@services/debt-cash';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-export const SalaryPeriodSelect = (props: any) => {
+export const SalaryPeriodSelect = forwardRef<any, any>((props: any, ref: any) => {
   const router = useRouter();
   const { companyId: companyRouter } = router.query;
   const {
@@ -61,6 +61,7 @@ export const SalaryPeriodSelect = (props: any) => {
   };
   return (
     <Select
+      ref={ref}
       loading={isLoading}
       value={value}
       optionList={getOptions()}
@@ -70,4 +71,5 @@ export const SalaryPeriodSelect = (props: any) => {
       disabled={disabled}
     />
   );
-};
+});
+SalaryPeriodSelect.displayName = 'SalaryPeriodSelect';

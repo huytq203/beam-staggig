@@ -20,7 +20,7 @@ export const CompanyProfileList = (props: any) => {
   const [filter, setFilter] = useState({
     name: '',
     page: 1,
-    size: 10,
+    size: 10 ,
     sort: ['createdAt,desc'],
   });
 
@@ -197,7 +197,6 @@ export const CompanyProfileList = (props: any) => {
                   });
                 }}
                 showTotal
-                {...data}
               />
             </div>
           );

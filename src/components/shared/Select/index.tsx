@@ -1,11 +1,12 @@
 import { Select } from '@douyinfe/semi-ui'
 import { SelectProps } from '@douyinfe/semi-ui/lib/es/select'
+import { forwardRef } from 'react'
 
 interface CustomSelectProps extends SelectProps {
   allSelectValue?: boolean
 }
 
-export const CustomSelect = (props: CustomSelectProps) => {
+export const CustomSelect = forwardRef<any, CustomSelectProps>((props, ref) => {
   const { allSelectValue, optionList, value = [] as any, onChange } = props
 
   const getSelectOptions = (): any => {
@@ -19,6 +20,7 @@ export const CustomSelect = (props: CustomSelectProps) => {
   }
   return (
     <Select
+      ref={ref}
       multiple
       {...props}
       onChange={(e: any) => {
@@ -31,4 +33,5 @@ export const CustomSelect = (props: CustomSelectProps) => {
       optionList={getSelectOptions()}
     />
   )
-}
+})
+CustomSelect.displayName = 'CustomSelect'

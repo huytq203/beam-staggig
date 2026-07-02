@@ -1,16 +1,16 @@
-import { InputWrapper } from "@components/shared";
-import { CustomMonthRangePicker } from "@components/shared/CustomMonthRangePicker";
-import { listStatusCampaign } from "@constants/select-options.constants";
-import { IconFilter, IconSearch } from "@douyinfe/semi-icons";
-import { Button, Input, Select } from "@douyinfe/semi-ui";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { SelectCampaignType } from "./SelectCampaignType";
-import { TIMEZONE_FORMAT } from "@constants/common-format";
-import { DateTimeHelper } from "@helpers/date-time.helper";
+import { InputWrapper } from '@components/shared';
+import { CustomMonthRangePicker } from '@components/shared/CustomMonthRangePicker';
+import { listStatusCampaign } from '@constants/select-options.constants';
+import { IconFilter, IconSearch } from '@douyinfe/semi-icons';
+import { Button, Input, Select } from '@douyinfe/semi-ui';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { SelectCampaignType } from './SelectCampaignType';
+import { TIMEZONE_FORMAT } from '@constants/common-format';
+import { DateTimeHelper } from '@helpers/date-time.helper';
 
 export const CampaignListFilter = (props: any) => {
-  const { onFilter, refetch, showType = true } = props;
+  const { onFilter, refetch } = props;
   const {
     control,
     handleSubmit,
@@ -19,19 +19,19 @@ export const CampaignListFilter = (props: any) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      searchKey: "",
-      campaignType: "",
-      dateRanges: [""],
+      searchKey: '',
+      campaignType: '',
+      dateRanges: [''],
       page: 1,
       size: 10,
-      status: "",
+      status: '',
     },
   });
 
   useEffect(() => {
     reset({
       ...getValues(),
-      searchKey: "",
+      searchKey: '',
     });
   }, []);
   const onSubmitValues = (values: any) => {
@@ -68,7 +68,7 @@ export const CampaignListFilter = (props: any) => {
               TIMEZONE_FORMAT.GMT7
             ).format()
           )
-        : "",
+        : '',
       startTime: values.dateRanges[0]
         ? DateTimeHelper.fomartDateRangeSubmit(
             DateTimeHelper.setStartTime(
@@ -76,7 +76,7 @@ export const CampaignListFilter = (props: any) => {
               TIMEZONE_FORMAT.GMT7
             ).format()
           )
-        : "",
+        : '',
     });
   };
 
@@ -85,8 +85,8 @@ export const CampaignListFilter = (props: any) => {
       <form
         onSubmit={handleSubmit(onSubmitValues)}
         onKeyDown={(e) => {
-          e.key === "Enter" && e.preventDefault();
-          e.key === "Enter" && onSubmitValues(getValues());
+          e.key === 'Enter' && e.preventDefault();
+          e.key === 'Enter' && onSubmitValues(getValues());
         }}
       >
         <div className="grid grid-cols-3 gap-4 ">
@@ -115,17 +115,15 @@ export const CampaignListFilter = (props: any) => {
               <Select size="large" optionList={listStatusCampaign} {...field} />
             )}
           />
-          {showType ?? (
-            <InputWrapper
-              field="campaignType"
-              label="Loại chiến dịch"
-              control={control}
-              errors={errors}
-              component={(field: any) => (
-                <SelectCampaignType size="large" {...field} isAll={true} />
-              )}
-            />
-          )}
+          <InputWrapper
+            field="campaignType"
+            label="Loại chiến dịch"
+            control={control}
+            errors={errors}
+            component={(field: any) => (
+              <SelectCampaignType size="large" {...field} isAll={true} />
+            )}
+          />
           <InputWrapper
             field="dateRanges"
             label="Lựa chọn thời gian"
@@ -143,7 +141,7 @@ export const CampaignListFilter = (props: any) => {
             )}
           />
           <div className="grid">
-            <label className="mb-2">Hành động</label>
+            <label>Hành động</label>
             <Button
               icon={<IconFilter />}
               theme="solid"

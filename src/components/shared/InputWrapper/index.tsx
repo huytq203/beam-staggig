@@ -40,7 +40,7 @@ export const InputWrapper = (props: InputWrapperProps) => {
         </label>
         <div className="flex flex-col">
           {component({
-            validateStatus: errors[field] ? 'error' : '',
+            validateStatus: errors[field] ? 'error' : 'default',
           })}
 
           {errors && errors[field] && (
@@ -70,7 +70,7 @@ export const InputWrapper = (props: InputWrapperProps) => {
                 <>
                   {component({
                     ...fieldProps,
-                    validateStatus: validatedObject ? 'error' : '',
+                    validateStatus: validatedObject ? 'error' : 'default',
                   })}
                 </>
               );

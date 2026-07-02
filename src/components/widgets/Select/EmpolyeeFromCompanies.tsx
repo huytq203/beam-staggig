@@ -1,11 +1,11 @@
 import { Select } from '@douyinfe/semi-ui';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
 import { useMutation } from 'react-query';
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { EmployeesServices } from '@services/companies/accounts';
 import useDebounce from '@hooks/useDebounce';
 
-export const EmpolyeeFromCompanies = (props: any) => {
+export const EmpolyeeFromCompanies = forwardRef<any, any>((props: any, ref: any) => {
   const [searchWord, setSearchWord] = useState('');
   const {
     onChange,
@@ -46,6 +46,7 @@ export const EmpolyeeFromCompanies = (props: any) => {
   return (
     <>
       <Select
+        ref={ref}
         filter={FunctionBase.customSelectFilterOption}
         loading={mutation.isLoading}
         disabled={disabled}
@@ -62,4 +63,5 @@ export const EmpolyeeFromCompanies = (props: any) => {
       />
     </>
   );
-};
+});
+EmpolyeeFromCompanies.displayName = 'EmpolyeeFromCompanies';

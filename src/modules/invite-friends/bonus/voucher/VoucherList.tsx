@@ -127,6 +127,7 @@ export const VoucherList = (props: any) => {
         {showFilter && <VoucherFilter onFilter={setFilter} />}
 
         <AppTable
+         
           size="small"
           // loading={isLoading}
           columns={columns}

@@ -1,10 +1,12 @@
 import { Select } from '@douyinfe/semi-ui';
+import { forwardRef } from 'react';
 
-export const TransactionTypeSelect = (props: any) => {
+export const TransactionTypeSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, disabled = false, onSelect } = props;
 
   return (
     <Select
+      ref={ref}
       {...props}
       // filter={FunctionBase.customSelectFilterOption}
       value={value}
@@ -24,4 +26,5 @@ export const TransactionTypeSelect = (props: any) => {
       onChange={(e: any) => onChange(e)}
     />
   );
-};
+});
+TransactionTypeSelect.displayName = 'TransactionTypeSelect';

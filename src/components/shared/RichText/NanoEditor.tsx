@@ -1,5 +1,5 @@
 import { Editor } from "@tinymce/tinymce-react";
-import { useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { FileManagerModal } from "../FileManager/FileManagerModal";
 
 export interface RichEditorProps {
@@ -7,12 +7,20 @@ export interface RichEditorProps {
   onChange: any;
   font?: boolean;
   fontsize?: boolean;
-  disabled?: boolean;
 }
 let mainEditor: any;
-export const BeamEditor = (props: RichEditorProps) => {
-  const { value, onChange, font, fontsize, disabled = false } = props;
+export const BeamEditor = forwardRef<any, RichEditorProps>((props, ref) => {
+  const { value, onChange, font, fontsize } = props;
   const [isOpenFileManagement, setIsOpenFileManagement] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div ref={ref} style={{ height: 500 }} />;
+  }
   const onSelectFile = (file: any) => {
     if (file && file.length) {
       mainEditor?.editorManager?.activeEditor?.selection?.setContent(
@@ -26,10 +34,9 @@ export const BeamEditor = (props: RichEditorProps) => {
   };
 
   return (
-    <>
+    <div ref={ref}>
       <Editor
         value={value}
-        disabled={disabled}
         onEditorChange={onChange}
         init={{
           height: 500,
@@ -306,6 +313,7 @@ export const BeamEditor = (props: RichEditorProps) => {
           returnUrlOnly={true}
         />
       )}
-    </>
+    </div>
   );
-};
+});
+BeamEditor.displayName = 'BeamEditor';

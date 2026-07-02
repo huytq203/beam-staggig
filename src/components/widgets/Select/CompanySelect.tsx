@@ -2,11 +2,11 @@ import { Select } from '@douyinfe/semi-ui';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
 import { CompanyService } from '@services/companies';
 import { useMutation, useQuery } from 'react-query';
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { CampaignService } from '@services/campaigns';
 import { ArrayHelper } from '@helpers/array.helper';
 
-export const CompanySelect = (props: any) => {
+export const CompanySelect = forwardRef<any, any>((props: any, ref: any) => {
   const {
     onChange,
     value,
@@ -69,6 +69,7 @@ export const CompanySelect = (props: any) => {
   return (
     <>
       <Select
+        ref={ref}
         filter={FunctionBase.customSelectFilterOption}
         loading={isLoading}
         disabled={disabled}
@@ -82,4 +83,5 @@ export const CompanySelect = (props: any) => {
       />
     </>
   );
-};
+});
+CompanySelect.displayName = 'CompanySelect';

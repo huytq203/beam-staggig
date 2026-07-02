@@ -2,10 +2,10 @@ import { Select } from '@douyinfe/semi-ui';
 import { ArrayHelper } from '@helpers/array.helper';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
 import { CampaignService } from '@services/campaigns';
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
-export const CampaignCodeSelect = (props: any) => {
+export const CampaignCodeSelect = forwardRef<any, any>((props: any, ref: any) => {
   const {
     onChange,
     value,
@@ -49,7 +49,7 @@ export const CampaignCodeSelect = (props: any) => {
       });
     };
     setOption(getOptions());
-    setExpiredCampaign && setExpiredCampaign(
+    setExpiredCampaign(
       getOptions().some((item: any) =>
         ArrayHelper.shallowEqualityCheck(item, expiredCampaign)
       )
@@ -58,6 +58,7 @@ export const CampaignCodeSelect = (props: any) => {
   return (
     <>
       <Select
+        ref={ref}
         filter={FunctionBase.customSelectFilterOption}
         loading={isLoading}
         disabled={disabled}
@@ -71,4 +72,5 @@ export const CampaignCodeSelect = (props: any) => {
       />
     </>
   );
-};
+});
+CampaignCodeSelect.displayName = 'CampaignCodeSelect';

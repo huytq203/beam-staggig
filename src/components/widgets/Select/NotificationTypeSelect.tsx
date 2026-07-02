@@ -1,12 +1,13 @@
 import { Select } from '@douyinfe/semi-ui';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-export const NotificationTypeSelect = (props: any) => {
+export const NotificationTypeSelect = forwardRef<any, any>((props: any, ref: any) => {
   const { onChange, value, disabled, multiple = false } = props;
 
   return (
     <Select
+      ref={ref}
       value={value}
       optionList={[
         // {
@@ -66,4 +67,5 @@ export const NotificationTypeSelect = (props: any) => {
       // showClear
     />
   );
-};
+});
+NotificationTypeSelect.displayName = 'NotificationTypeSelect';

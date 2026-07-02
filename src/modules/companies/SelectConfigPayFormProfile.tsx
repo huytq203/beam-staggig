@@ -1,9 +1,9 @@
 import { Select } from '@douyinfe/semi-ui';
 import { CompanyTypeService } from '@services/companies/companyTypes';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
-const SelectConfigPayFormProfile = (props: any) => {
+const SelectConfigPayFormProfile = forwardRef<any, any>((props, ref) => {
   const [filter, setFilter] = useState({
     name: 1,
     page: 1,
@@ -48,8 +48,15 @@ const SelectConfigPayFormProfile = (props: any) => {
   };
 
   return (
-    <Select className="payForm" optionList={getSelectOptions()} {...props} />
+    <Select
+      ref={ref}
+      className="payForm"
+      optionList={getSelectOptions()}
+      {...props}
+    />
   );
-};
+});
+
+SelectConfigPayFormProfile.displayName = 'SelectConfigPayFormProfile';
 
 export default SelectConfigPayFormProfile;
