@@ -18,6 +18,8 @@ const SKIP_HEADERS = new Set([
   "content-length",
   "transfer-encoding",
   "content-encoding",
+  "origin",
+  "referer",
 ]);
 
 function readRawBody(req: NextApiRequest): Promise<Buffer> {
