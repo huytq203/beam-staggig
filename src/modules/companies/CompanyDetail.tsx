@@ -251,6 +251,16 @@ export const CompanyDetail = (props: any) => {
       render: (e: any) => <>{e !== null ? `${e}%` : '-'}</>,
     },
     {
+      label: 'Hạn mức người lao động',
+      dataField: 'maxPayLimitRatioPerEmployee',
+      render: (e: any) => <>{e !== null ? `${e}%` : '-'}</>,
+    },
+    {
+      label: 'Hạn mức tối đa trên người lao động',
+      dataField: 'maxPayLimitValuePerEmployee',
+       render: (e: any) => <>{StringHelper.formatVND(e, '-')}</>,
+    },
+    {
       label: 'Hạn mức tối đa doanh nghiệp được ứng trong 1 kỳ công',
       dataField: 'maxCreditLimitPerPeriod',
       render: (e: any) => <>{StringHelper.formatVND(e)}</>,
