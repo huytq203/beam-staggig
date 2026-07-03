@@ -32,10 +32,6 @@ function readRawBody(req: NextApiRequest): Promise<Buffer> {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (process.env.NODE_ENV === "production") {
-    return res.status(404).end();
-  }
-
   const segments = req.query.path as string[];
   const [service, ...rest] = segments;
   const targetBase = SERVICE_MAP[service];
