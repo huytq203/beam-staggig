@@ -3,7 +3,8 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        # Repo gitignores package-lock.json, so `npm ci` (requires a lockfile) fails.
+        - npm install --no-audit --no-fund
         - npx prisma generate
     build:
       commands:
