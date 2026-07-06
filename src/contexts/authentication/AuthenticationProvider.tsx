@@ -21,7 +21,13 @@ export interface AuthenticationSignOutRequestProps {
 
 export type signInType = 'credential' | 'google';
 
-const authUrl: any = process.env.NEXT_PUBLIC_BASE ?? '/';
+// Các redirect logout / hết session đều là same-origin và chạy client-side,
+// nên lấy origin thực tế lúc runtime để không bị dính domain build-time (NEXT_PUBLIC_BASE
+// bị nhúng cứng lúc build -> đổi domain sẽ redirect sai). Fallback về env chỉ để phòng SSR.
+const getAuthUrl = (): string =>
+  typeof window !== 'undefined'
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_BASE ?? '';
 
 export const authInitialState: any = {
   isLoggedIn: false,
@@ -224,7 +230,7 @@ export const AuthenticationProvider = ({ children }: any) => {
         (!isValid && isLogout == false) ||
         (!accessData && isLogout == false)
       ) {
-        window.location.href = authUrl + '/dashboard';
+        window.location.href = getAuthUrl() + '/dashboard';
       }
     }
   };
@@ -241,7 +247,7 @@ export const AuthenticationProvider = ({ children }: any) => {
     Cookies.remove('user');
     Cookies.remove('REFRESH_TOKEN');
     window.location.href = decodeURIComponent(
-      `${authUrl}/auth/signin?redirectUrl=${path}`
+      `${getAuthUrl()}/auth/signin?redirectUrl=${path}`
     );
   };
 
