@@ -46,7 +46,8 @@ export const CreateCompanySchema = yup.object({
         .number()
         .typeError('Vui lòng nhập tổng hạn mức tối đa')
         .required('Vui lòng nhập tổng hạn mức tối đa')
-        .min(0, 'Giá trị không hợp lệ');
+        .min(0, 'Giá trị không hợp lệ')
+        .max(10000000000,'Tổng hạn mức không được vượt quá 10 tỷ')
     } else {
       return yup.mixed().nullable().notRequired();
     }
@@ -77,6 +78,27 @@ export const CreateCompanySchema = yup.object({
       return yup.mixed().nullable().notRequired();
     }
   }),
+  maxPayLimitValuePerEmployee: yup
+    .number()
+    .nullable()
+    .notRequired()
+    .typeError('Giá trị không hợp lệ')
+    .test(
+      'less-than-credit-limit',
+      'Hạn mức tối đa trên người lao động phải nhỏ hơn tổng hạn mức tối đa',
+      function (value) {
+        const { creditLimit } = this.parent;
+        // Bỏ qua khi chưa nhập giá trị, hoặc khi creditLimit không áp dụng
+        if (value === undefined || value === null) return true;
+        if (
+          creditLimit === undefined ||
+          creditLimit === null ||
+          (creditLimit as any) === ''
+        )
+          return true;
+        return value < Number(creditLimit);
+      }
+    ),
   // bankHolderName: yup.string().trim().required(requiredText),
   // bankAccountNumber: yup
   //   .string()

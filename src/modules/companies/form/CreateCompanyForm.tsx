@@ -776,6 +776,7 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
                       placeholder={"Nhập vào giá trị"}
                     />
                   )}
+                  errors={errors}
                   control={control}
                 />
                 {watch('workDayType') === 'FIXED_WORKDAY' && (
