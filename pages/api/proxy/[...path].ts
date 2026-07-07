@@ -3,11 +3,11 @@ import https from "https";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const SERVICE_MAP: Record<string, string> = {
-  "beam-api":     "https://identity.devops.beamewa.com.vn",
-  "core":         "https://core.devops.beamewa.com.vn",
-  "core2":        "https://report.devops.beamewa.com.vn",
-  "payment":      "https://payment.devops.beamewa.com.vn",
-  "notification": "https://notification.devops.beamewa.com.vn",
+  "beam-api":     process.env.NEXT_PUBLIC_BEAM_API_DIRECT!,
+  "core":         process.env.NEXT_PUBLIC_API_CORE_DIRECT!,
+  "core2":        process.env.NEXT_PUBLIC_API_CORE2_DIRECT!,
+  "payment":      process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT!,
+  "notification": process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT!,
 };
 
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
