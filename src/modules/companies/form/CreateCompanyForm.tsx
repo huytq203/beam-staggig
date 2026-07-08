@@ -755,6 +755,7 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
                   control={control}
                 />
                 <InputWrapper
+                  required
                   field="maxPayLimitRatioPerEmployee"
                   label="Hạn mức người lao động"
                   component={(props: any) => (
@@ -763,6 +764,7 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
                   control={control}
                 />
                   <InputWrapper
+                  required
                   field="maxPayLimitValuePerEmployee"
                   label="Hạn mức tối đa trên người lao động"
                   component={(props: any) => (

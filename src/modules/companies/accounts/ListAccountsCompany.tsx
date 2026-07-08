@@ -152,7 +152,7 @@ const ListAccountsCompany = (props: any) => {
         return (
           <TextOverflow>
             <p className="beam-break-world">
-              {record.groups.map((groupName: any) => (
+              {(record.groups ?? []).map((groupName: any) => (
                 <p className="hidden-word">{groupName.name}</p>
               ))}
             </p>
@@ -568,7 +568,7 @@ const ListAccountsCompany = (props: any) => {
     hidden: hiddenSelection,
   };
   const getTableData = () => {
-    if (!data) return [];
+    if (!data || !Array.isArray(data?.content)) return [];
 
     return data?.content.map((x: any) => {
       return {

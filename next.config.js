@@ -7,7 +7,6 @@ const semi = require('@douyinfe/semi-next').default({
 
 module.exports = semi({
   reactStrictMode: false,
-  swcMinify: true,
   transpilePackages: ['@douyinfe/semi-ui', '@douyinfe/semi-icons'],
   webpack: (config, { webpack }) => {
     // Semi UI's CJS index.js has `require('./_base/base.css')`, which Node can't parse during SSR.

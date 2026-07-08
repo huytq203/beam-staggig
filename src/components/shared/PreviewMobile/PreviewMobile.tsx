@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './previewMobile.module.scss';
 import { Button, Modal } from '@douyinfe/semi-ui';
+import { sanitizeRichTextClient } from 'src/lib/sanitize/clientSanitize';
 
 export const PreviewMobile = (props: any) => {
   const { type, content } = props;
@@ -35,7 +36,7 @@ export const PreviewMobile = (props: any) => {
 
                 <div
                   className={styles.content}
-                  dangerouslySetInnerHTML={{ __html: content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeRichTextClient(content) }}
                   // style={{
                   //   fontSize: '12.5px',
                   //   fontFamily: 'Nunito, sans-serif',

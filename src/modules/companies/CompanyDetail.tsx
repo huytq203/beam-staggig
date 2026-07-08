@@ -243,12 +243,12 @@ export const CompanyDetail = (props: any) => {
       render: (e: any) => <>{e !== null ? `${e}%` : '-'}</>,
     },
     {
-      label: 'Hạn mức người lao động',
+      label: 'Tỉ lệ hạn mức mỗi người lao động (%)',
       dataField: 'maxPayLimitRatioPerEmployee',
       render: (e: any) => <>{e !== null ? `${e}%` : '-'}</>,
     },
     {
-      label: 'Hạn mức tối đa trên người lao động',
+      label: 'Hạn mức tối đa mỗi người lao động (VNĐ)',
       dataField: 'maxPayLimitValuePerEmployee',
        render: (e: any) => <>{StringHelper.formatVND(e, '-')}</>,
     },

@@ -12,7 +12,8 @@
       "Bash(npm list *)",
       "Bash(echo \"exit:$?\")",
       "Bash(npm uninstall *)",
-      "Bash(grep -r \"ReactDOM.render\\\\|ReactDOM\\\\\\\\.render\" node_modules --include=\"*.js\" -l)"
+      "Bash(grep -r \"ReactDOM.render\\\\|ReactDOM\\\\\\\\.render\" node_modules --include=\"*.js\" -l)",
+      "Bash(git worktree *)"
     ]
   }
 }

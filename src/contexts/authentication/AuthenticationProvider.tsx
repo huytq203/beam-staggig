@@ -21,7 +21,13 @@ export interface AuthenticationSignOutRequestProps {
 
 export type signInType = 'credential' | 'google';
 
-const authUrl: any = process.env.NEXT_PUBLIC_BASE ?? '/';
+// Các redirect logout / hết session đều là same-origin và chạy client-side,
+// nên lấy origin thực tế lúc runtime để không bị dính domain build-time (NEXT_PUBLIC_BASE
+// bị nhúng cứng lúc build -> đổi domain sẽ redirect sai). Fallback về env chỉ để phòng SSR.
+const getAuthUrl = (): string =>
+  typeof window !== 'undefined'
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_BASE ?? '';
 
 export const authInitialState: any = {
   isLoggedIn: false,
@@ -132,21 +138,19 @@ export const AuthenticationProvider = ({ children }: any) => {
   }, [router]);
 
   const startLoadingState = () => {
-    setState({
-      ...state,
+    setState((prev: any) => ({
+      ...prev,
       isLoginPending: true,
       isLoggedIn: false,
       loginError: null,
-    });
+    }));
   };
 
   const stopLoadingState = () => {
-    setState({
-      ...state,
+    setState((prev: any) => ({
+      ...prev,
       isLoginPending: false,
-      isLoggedIn: false,
-      loginError: null,
-    });
+    }));
   };
 
   const signIn = async (
@@ -154,19 +158,17 @@ export const AuthenticationProvider = ({ children }: any) => {
     authRequest: AuthenticationRequestProps
   ) => {
     startLoadingState();
-    const loginResponse = await AuthServices.login(authRequest).then(
-      (x: any) => {
-        stopLoadingState();
-        return x;
+    try {
+      const loginResponse = await AuthServices.login(authRequest);
+      const response = loginResponse?.data?.data;
+      if (response == null) {
+        setState((prev: any) => ({
+          ...prev,
+          loginError: loginResponse?.data,
+        }));
+        return;
       }
-    );
-    const response = loginResponse?.data?.data;
-    if (loginResponse?.data?.data == null) {
-      setState({
-        ...state,
-        loginError: loginResponse?.data,
-      });
-    } else {
+
       const { access_token: accessToken, refresh_token: refreshToken } =
         response;
 
@@ -180,27 +182,40 @@ export const AuthenticationProvider = ({ children }: any) => {
         roles: responseUser.realm_access.roles,
       };
 
-      Cookies.set('user', JSON.stringify(user), {
-        httpOnly: false,
-      });
+      // Cookie do client set qua js-cookie nên KHÔNG thể đặt HttpOnly (chỉ server
+      // đặt được qua Set-Cookie). Vì axios đọc token bằng JS để gắn header
+      // Authorization, HttpOnly thật sự cần chuyển sang mô hình BFF (server proxy).
+      // Trong kiến trúc hiện tại, hardening tối đa: Secure (chỉ gửi qua HTTPS) +
+      // SameSite=Lax (chặn CSRF cho các request unsafe cross-site).
+      const isSecure =
+        typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const secureCookieOptions: Cookies.CookieAttributes = {
+        secure: isSecure,
+        sameSite: 'lax',
+      };
 
-      Cookies.set('REFRESH_TOKEN', refreshToken, {
-        httpOnly: false,
-      });
+      Cookies.set('user', JSON.stringify(user), secureCookieOptions);
 
-      Cookies.set('ACCESS_TOKEN', accessToken, {
-        httpOnly: false,
-      });
+      Cookies.set('REFRESH_TOKEN', refreshToken, secureCookieOptions);
+
+      Cookies.set('ACCESS_TOKEN', accessToken, secureCookieOptions);
       localStorage.setItem('isLogout', 'false');
 
-      setState({
-        ...state,
+      setState((prev: any) => ({
+        ...prev,
         isLoggedIn: true,
-      });
+      }));
       if (authRequest?.callbackUrl) {
         window.location.href = authRequest.callbackUrl;
         // router.push(authRequest.callbackUrl)
       }
+    } catch (error: any) {
+      setState((prev: any) => ({
+        ...prev,
+        loginError: error?.response?.data ?? error,
+      }));
+    } finally {
+      stopLoadingState();
     }
   };
 
@@ -224,7 +239,7 @@ export const AuthenticationProvider = ({ children }: any) => {
         (!isValid && isLogout == false) ||
         (!accessData && isLogout == false)
       ) {
-        window.location.href = authUrl + '/dashboard';
+        window.location.href = getAuthUrl() + '/dashboard';
       }
     }
   };
@@ -241,7 +256,7 @@ export const AuthenticationProvider = ({ children }: any) => {
     Cookies.remove('user');
     Cookies.remove('REFRESH_TOKEN');
     window.location.href = decodeURIComponent(
-      `${authUrl}/auth/signin?redirectUrl=${path}`
+      `${getAuthUrl()}/auth/signin?redirectUrl=${path}`
     );
   };
 

@@ -76,6 +76,10 @@ axiosInstance.interceptors.request.use(
     }
     return {
       ...config,
+      headers: {
+        ...config.headers,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       signal: controller.signal,
     };
   },
