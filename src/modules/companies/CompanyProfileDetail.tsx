@@ -71,6 +71,22 @@ const CompanyProfileDetail = (props: any) => {
       hidden: false,
     },
     {
+      label: 'Tỉ lệ hạn mức mỗi người lao động',
+      dataField: 'maxPayLimitRatioPerEmployee',
+      render: (e: any, record: any) => {
+        return <span>{e + '%'}</span>;
+      },
+      hidden: false,
+    },
+    {
+      label: 'Hạn mức tối đa mỗi người lao động',
+      dataField: 'maxPayLimitValuePerEmployee',
+      render: (e: any, record: any) => {
+        return <span>{StringHelper.formatVND(e)}</span>;
+      },
+      hidden: false,
+    },
+    {
       label: 'Hạn mức khả dụng',
       dataField: 'availablePaylimit',
       render: (e: any, record: any) => {

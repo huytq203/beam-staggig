@@ -18,7 +18,27 @@ const RICH_TEXT_CONFIG: sanitizeHtml.IOptions = {
     iframe: ["src", "width", "height", "frameborder", "allowfullscreen"],
     "*": ["class", "id", "style"],
   },
-  allowedSchemes: ["http", "https", "mailto", "data"],
+  // Chỉ cho phép một tập thuộc tính CSS an toàn: giữ định dạng cơ bản,
+  // chặn position/url() (clickjacking, tải tài nguyên ngoài / rò rỉ dữ liệu).
+  allowedStyles: {
+    "*": {
+      color: [/.*/],
+      "background-color": [/.*/],
+      "text-align": [/^(left|right|center|justify)$/],
+      "text-decoration": [/.*/],
+      "font-weight": [/.*/],
+      "font-style": [/.*/],
+      "font-size": [/^[\d.]+(px|em|rem|%|pt)$/],
+      "line-height": [/.*/],
+      width: [/^[\d.]+(px|em|rem|%)$/],
+      height: [/^[\d.]+(px|em|rem|%)$/],
+      margin: [/.*/],
+      padding: [/.*/],
+    },
+  },
+  // Bỏ "data:" khỏi scheme mặc định để chặn <a href="data:...">
+  // (vector phishing/XSS). data: chỉ còn được phép cho <img> bên dưới.
+  allowedSchemes: ["http", "https", "mailto"],
   allowedSchemesByTag: { img: ["http", "https", "data"] },
   allowedIframeHostnames: ["www.youtube.com", "youtube.com", "player.vimeo.com"],
   transformTags: {

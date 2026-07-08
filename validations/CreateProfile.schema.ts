@@ -6,6 +6,21 @@ export const CreateProfileSchema = yup.object({
     .number()
     .typeError(requiredText)
     .required('Vui lòng nhập tổng hạn mức'),
+  maxPayLimitValuePerEmployee: yup
+    .number()
+    .typeError(requiredNumber)
+    .required('Vui lòng nhập hạn mức tối đa mỗi người lao động')
+    .test(
+      'is-less-than-credit-limit',
+      'Hạn mức tối đa mỗi người lao động phải nhỏ hơn tổng hạn mức',
+      function (maxPayLimitValuePerEmployee) {
+        const { creditLimit } = this.parent;
+        if (creditLimit == null || maxPayLimitValuePerEmployee == null) {
+          return true;
+        }
+        return maxPayLimitValuePerEmployee < creditLimit;
+      }
+    ),
   payLimitSalary: yup
     .number()
     .nullable()
