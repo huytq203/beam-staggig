@@ -138,21 +138,19 @@ export const AuthenticationProvider = ({ children }: any) => {
   }, [router]);
 
   const startLoadingState = () => {
-    setState({
-      ...state,
+    setState((prev: any) => ({
+      ...prev,
       isLoginPending: true,
       isLoggedIn: false,
       loginError: null,
-    });
+    }));
   };
 
   const stopLoadingState = () => {
-    setState({
-      ...state,
+    setState((prev: any) => ({
+      ...prev,
       isLoginPending: false,
-      isLoggedIn: false,
-      loginError: null,
-    });
+    }));
   };
 
   const signIn = async (
@@ -160,19 +158,17 @@ export const AuthenticationProvider = ({ children }: any) => {
     authRequest: AuthenticationRequestProps
   ) => {
     startLoadingState();
-    const loginResponse = await AuthServices.login(authRequest).then(
-      (x: any) => {
-        stopLoadingState();
-        return x;
+    try {
+      const loginResponse = await AuthServices.login(authRequest);
+      const response = loginResponse?.data?.data;
+      if (response == null) {
+        setState((prev: any) => ({
+          ...prev,
+          loginError: loginResponse?.data,
+        }));
+        return;
       }
-    );
-    const response = loginResponse?.data?.data;
-    if (loginResponse?.data?.data == null) {
-      setState({
-        ...state,
-        loginError: loginResponse?.data,
-      });
-    } else {
+
       const { access_token: accessToken, refresh_token: refreshToken } =
         response;
 
@@ -205,14 +201,21 @@ export const AuthenticationProvider = ({ children }: any) => {
       Cookies.set('ACCESS_TOKEN', accessToken, secureCookieOptions);
       localStorage.setItem('isLogout', 'false');
 
-      setState({
-        ...state,
+      setState((prev: any) => ({
+        ...prev,
         isLoggedIn: true,
-      });
+      }));
       if (authRequest?.callbackUrl) {
         window.location.href = authRequest.callbackUrl;
         // router.push(authRequest.callbackUrl)
       }
+    } catch (error: any) {
+      setState((prev: any) => ({
+        ...prev,
+        loginError: error?.response?.data ?? error,
+      }));
+    } finally {
+      stopLoadingState();
     }
   };
 
