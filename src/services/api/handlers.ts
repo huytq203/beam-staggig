@@ -60,6 +60,8 @@ export enum GlobalResponseMessageCodes {
   INVALID_CONTRACT_END_DATE = 'Ngày kết thúc hợp đồng phải lớn hơn ngày hiện tại ',
   COMPANY_CREDIT_LIMIT_EXCEEDED = 'Vượt quá hạn mức doanh nghiệp',
   USERNAME_OR_PASSWORD_INCORRECT = 'Tên đăng nhập hoặc mật khẩu không chính xác',
+  ACCOUNT_TEMPORARILY_LOCKED = 'Tài khoản tạm thời bị khóa do nhập sai quá 5 lần, vui lòng thử lại sau 15 phút',
+  ACCOUNT_LOCKED_PERMANENTLY = 'Tài khoản bị khóa yêu cầu liên hệ quản trị viên',
   USER_NOT_EXIST = 'Người dùng không tồn tại',
   PASSWORD_LINK_EXPIRED = 'Đường dẫn đã hết hạn',
   INVALID_RESET_LINK = 'Đường dẫn đã hết hạn',
