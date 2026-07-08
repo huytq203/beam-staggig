@@ -12,6 +12,7 @@ import { ProtectedWrapper } from "@components/widgets/Auth";
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 import { UserRole } from '@constants/auth.constants';
 import { COMMON_FORMAT } from "@constants/common-format";
+import { sanitizeRichTextClient } from "src/lib/sanitize/clientSanitize";
 
 export const NewsArticleList = () => {
   const { Text } = Typography;
@@ -346,7 +347,7 @@ export const NewsArticleList = () => {
                 {articleDetail.title}   
             </div>
             <div className="md:col-span-4 leading-relaxed break-words overflow-x-auto [&_img]:max-w-full [&_img]:h-auto [&_img]:block [&_img]:my-4 [&_iframe]:max-w-full [&_table]:block [&_table]:w-full">
-              <p className="mb-5" dangerouslySetInnerHTML={{ __html: articleDetail.content }}></p>
+              <p className="mb-5" dangerouslySetInnerHTML={{ __html: sanitizeRichTextClient(articleDetail.content) }}></p>
               <div className="text-right mt-4 mr-5 text-xl text-gray-500 italic">
                   Nguồn: {articleDetail.ref}
               </div>

@@ -72,7 +72,10 @@ export default function CheckReconciliationPage() {
           response;
 
         Cookies.set('ACCESS_TOKEN_LANDING', accessToken, {
-          httpOnly: false,
+          secure:
+            typeof window !== 'undefined' &&
+            window.location.protocol === 'https:',
+          sameSite: 'lax',
         });
         setLoading(false);
       }

@@ -201,6 +201,8 @@ export const CreateCompanyProfileForm = (props: any) => {
       id: values.id,
       companyId: companyId,
       creditLimit: values.creditLimit,
+      maxPayLimitValuePerEmployee: values.maxPayLimitValuePerEmployee,
+      maxPayLimitRatioPerEmployee: values.maxPayLimitRatioPerEmployee,
       startTime: values.startTime,
       endTime: values.endTime,
       payForm: values.payForm,
@@ -378,7 +380,44 @@ export const CreateCompanyProfileForm = (props: any) => {
               errors={errors}
               control={control}
             />
+
+              <InputWrapper
+                  required
+                  field="maxPayLimitRatioPerEmployee"
+                  label={
+                      'Tỉ lệ hạn mức mỗi người lao động'
+                  }
+                  component={(props: any) => (
+                    <InputNumberByType
+                      disabled={!isNew && data?.status == 2}
+                      displayType={'1'}
+                      {...props}
+                    />
+                  )}
+                  errors={errors}
+                  control={control}
+                />
+            <InputWrapper
+              required
+              field="maxPayLimitValuePerEmployee"
+              label="Hạn mức tối đa mỗi người lao động"
+              component={(props: any) => (
+                <InputNumber
+                  showClear
+                  autoComplete="off"
+                  // disabled={!isNew}
+                  placeholder="Nhập vào hạn mức tối đa mỗi người lao động"
+                  suffix={'VNĐ'}
+                  min={0}
+                  format="thousands"
+                  {...props}
+                />
+              )}
+              errors={errors}
+              control={control}
+            />
           </div>
+
 
           <InputWrapper
             required

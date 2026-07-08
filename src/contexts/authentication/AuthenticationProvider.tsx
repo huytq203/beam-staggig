@@ -186,17 +186,23 @@ export const AuthenticationProvider = ({ children }: any) => {
         roles: responseUser.realm_access.roles,
       };
 
-      Cookies.set('user', JSON.stringify(user), {
-        httpOnly: false,
-      });
+      // Cookie do client set qua js-cookie nên KHÔNG thể đặt HttpOnly (chỉ server
+      // đặt được qua Set-Cookie). Vì axios đọc token bằng JS để gắn header
+      // Authorization, HttpOnly thật sự cần chuyển sang mô hình BFF (server proxy).
+      // Trong kiến trúc hiện tại, hardening tối đa: Secure (chỉ gửi qua HTTPS) +
+      // SameSite=Lax (chặn CSRF cho các request unsafe cross-site).
+      const isSecure =
+        typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const secureCookieOptions: Cookies.CookieAttributes = {
+        secure: isSecure,
+        sameSite: 'lax',
+      };
 
-      Cookies.set('REFRESH_TOKEN', refreshToken, {
-        httpOnly: false,
-      });
+      Cookies.set('user', JSON.stringify(user), secureCookieOptions);
 
-      Cookies.set('ACCESS_TOKEN', accessToken, {
-        httpOnly: false,
-      });
+      Cookies.set('REFRESH_TOKEN', refreshToken, secureCookieOptions);
+
+      Cookies.set('ACCESS_TOKEN', accessToken, secureCookieOptions);
       localStorage.setItem('isLogout', 'false');
 
       setState({
