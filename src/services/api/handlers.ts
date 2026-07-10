@@ -1,4 +1,9 @@
 export enum GlobalResponseMessageCodes {
+  EMPTY_RECAPTCHA_TOKEN="Captcha chưa được xác thực!",
+  RECAPTCHA_VERIFICATION_FAILED='Captcha không hợp lệ!',
+  OTP_INVALID = 'Mã OTP không đúng, vui lòng thử lại!',
+  OTP_EXPIRED = 'Mã OTP đã hết hạn, vui lòng gửi lại mã!',
+  OTP_MAX_ATTEMPTS_EXCEEDED = 'Bạn đã nhập sai quá số lần cho phép, vui lòng gửi lại mã!',
   INTERNAL_ERROR = 'Vui lòng thử lại sau hoặc liên hệ quản trị viên để biết thêm thông tin',
   INVALID_GROUP_NAME = 'Tên nhóm không hợp lệ',
   INVALID_GROUP_CODE = 'Mã nhóm không hợp lệ',
@@ -42,6 +47,7 @@ export enum GlobalResponseMessageCodes {
   EMPLOYEE_NOT_EXIST = 'Không tồn tại người lao động',
   TICKET_ALREADY_EXISTS = 'Đã tồn tại yêu cầu xử lý giao dịch lệch tương tự',
   CREDIT_LIMIT_EXCEEDED = 'Tổng hạn mức NLĐ vượt quá hạn mức doanh nghiệp',
+  EMPLOYEE_PAY_LIMIT_EXCEED_COMPANY_RATIO= 'Hạn mức ứng của NLĐ vượt quá hạn mức doanh nghiệp được cấp',
   DEBIT_NOT_EXISTED = 'Vui lòng tạo bản Ghi Nợ trước',
   EXISTED_EMPLOYEE_PHONE_NUMBER = 'Đã tồn tại số điện thoại trong hệ thống',
   DEBIT_EXISTED = 'Bạn đã có bản Ghi Nợ ứng với kỳ lương, vui lòng không thêm mới bản Ghi Nợ nữa',
