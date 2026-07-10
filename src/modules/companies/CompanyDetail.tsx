@@ -54,14 +54,6 @@ export const CompanyDetail = (props: any) => {
       label: 'Email',
       dataField: 'email',
     },
-
-    // {
-    //   label: 'Hạn mức',
-    //   dataField: 'creditLimit',
-    //   render: (e: any) => {
-    //     return <span>{StringHelper.formatVND(e)}</span>;
-    //   },
-    // },
     {
       label: 'Quy mô nhân sự',
       dataField: 'companySize',

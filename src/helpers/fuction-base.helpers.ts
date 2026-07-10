@@ -104,15 +104,14 @@ export const FunctionBase = {
 
   getDataProperty(fieldName: any, commonFields: any, data: any) {
     const fieldValue = commonFields.find((x: any) => x.field == fieldName);
-    if (fieldValue) {
-      if (fieldValue?.hasOwnProperty('convertData')) {
-        return {
-          convertData: fieldValue?.convertData,
-        };
-      }
-      return data;
+    if (fieldValue?.hasOwnProperty('convertData')) {
+      return {
+        convertData: fieldValue?.convertData,
+      };
     }
-    return data;
+    return {
+      convertData: (value: any) => value,
+    };
   },
 
   scrollToErrorField: (errors: any, setFocus: any) => {

@@ -283,7 +283,7 @@ export const MultipleSalaryAdvanceForm = (props: any) => {
           </RadioGroup>
           <div className="grid grid-cols-2 gap-2">
             <Button
-              disabled={selectedRowKeys.length <= 1}
+              disabled={selectedRowKeys.length < 1}
               theme="solid"
               type="primary"
               onClick={async () => onClickAction(isEnable)}
