@@ -9,19 +9,36 @@ import {
 } from "@douyinfe/semi-ui";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "validations/Auth.schema";
-import { AuthCard } from "../components";
+import { AuthCard, VerifyOTP } from "../components";
 import { IconUnlock } from "@douyinfe/semi-icons";
 import { ForgotPassword } from "../components/ForgotPassword";
 import { isProduction } from "@helpers/common.helper";
+import { useGoogleReCaptcha } from "@helpers/recapcha";
+import { OtpServices } from "@services/auth";
+
+interface PendingCredentials {
+  username: string;
+  password: string;
+  callbackUrl: string;
+  recaptchaToken: string;
+}
+
 export const LoginForm = (props: any) => {
   const { profile } = useAuth();
   const router = useRouter();
   const { Text } = Typography;
   const { signIn, state: ContextState } = useAuth();
   const { isLoginPending, isLoggedIn, loginError } = ContextState;
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
+  const [step, setStep] = useState<"credentials" | "otp">("credentials");
+  const [otpDestination, setOtpDestination] = useState("");
+  const [pendingCredentials, setPendingCredentials] =
+    useState<PendingCredentials | null>(null);
+  const [awaitingSignInResult, setAwaitingSignInResult] = useState(false);
 
   useEffect(() => {
     if (profile != null) {
@@ -52,6 +69,19 @@ export const LoginForm = (props: any) => {
     }
   }, [router.query.error]);
 
+  useEffect(() => {
+    if (awaitingSignInResult && loginError) {
+      Notification.error({
+        content: loginError?.message || "Đăng nhập thất bại, vui lòng thử lại!",
+        theme: "light",
+        position: "top",
+      });
+      setAwaitingSignInResult(false);
+      setStep("credentials");
+      setPendingCredentials(null);
+    }
+  }, [loginError, awaitingSignInResult]);
+
   const {
     control,
     handleSubmit,
@@ -79,15 +109,78 @@ export const LoginForm = (props: any) => {
       return "/dashboard";
     }
   };
-  const handleSignIn = (values: any) => {
+
+  const handleSignIn = async (values: any) => {
     const { username, password } = values;
-    signIn("credential", {
-      username: username.trim(),
-      password: password.trim(),
-      callbackUrl: getCallbackUrl(),
-    });
+    let recaptchaToken = "";
+    try {
+      recaptchaToken = await executeRecaptcha("login");
+    } catch (error) {
+      Notification.error({
+        content: "Không xác thực được reCAPTCHA, vui lòng thử lại!",
+        theme: "light",
+        position: "top",
+      });
+      return;
+    }
+
+    try {
+      const { maskedDestination } = await OtpServices.sendOtp(
+        username.trim()
+      );
+      setPendingCredentials({
+        username: username.trim(),
+        password: password.trim(),
+        callbackUrl: getCallbackUrl(),
+        recaptchaToken,
+      });
+      setOtpDestination(maskedDestination);
+      setStep("otp");
+    } catch (error) {
+      Notification.error({
+        content: "Không gửi được mã OTP, vui lòng thử lại!",
+        theme: "light",
+        position: "top",
+      });
+    }
   };
+
+  const handleVerifyOtp = async (otp: string) => {
+    if (!pendingCredentials) return;
+    await OtpServices.verifyOtp({
+      identifier: pendingCredentials.username,
+      otp,
+      purpose: "login",
+    });
+    setAwaitingSignInResult(true);
+    signIn("credential", pendingCredentials);
+  };
+
+  const handleResendOtp = async () => {
+    if (!pendingCredentials) return;
+    const { maskedDestination } = await OtpServices.sendOtp(
+      pendingCredentials.username
+    );
+    setOtpDestination(maskedDestination);
+  };
+
+  const handleBackToCredentials = () => {
+    setStep("credentials");
+    setPendingCredentials(null);
+  };
+
   if (profile) return <></>;
+
+  if (step === "otp") {
+    return (
+      <VerifyOTP
+        maskedDestination={otpDestination}
+        onVerify={handleVerifyOtp}
+        onResend={handleResendOtp}
+        onBack={handleBackToCredentials}
+      />
+    );
+  }
 
   return (
     <>
