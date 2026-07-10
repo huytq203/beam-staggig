@@ -6,7 +6,7 @@ import {
 import { InputWrapper } from '@components/shared/InputWrapper';
 import { CustomSelect } from '@components/shared/Select';
 import { FormWrapper, MainContentWrapper } from '@components/widgets';
-import { COMMON_FORMAT } from '@constants/common-format';
+import { COMMON_FORMAT, TIMEZONE_FORMAT } from '@constants/common-format';
 import {
   simpleStatusOptions,
   statusOptionsWithDraf,
@@ -133,8 +133,14 @@ export const CreateCampaignForm = (props: CreateCampaignForm) => {
     const payload = {
       ...values,
       // applyIds: apply,
-      startTime: DateTimeHelper.fomartDateRangeSubmit(values.startTime),
-      endTime: DateTimeHelper.fomartDateRangeSubmit(values.endTime),
+      startTime: DateTimeHelper.fomartDateRangeSubmit(
+        values.startTime,
+        TIMEZONE_FORMAT.GMT7
+      ),
+      endTime: DateTimeHelper.fomartDateRangeSubmit(
+        values.endTime,
+        TIMEZONE_FORMAT.GMT7
+      ),
       sex: ArrayHelper.convertStringNumberToArray(values.sex),
       // member: ArrayHelper.convertStringNumberToArray(values.member),
       member: [0],

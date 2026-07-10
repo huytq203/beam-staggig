@@ -36,11 +36,11 @@ const ReconciliationBankFilter = (props: any) => {
             insetLabel="Thời gian"
             defaultValue={new Date()}
           />
-          <ProtectedWrapper
+          {/* <ProtectedWrapper
             allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
           >
             <Button theme="solid">Upload file</Button>
-          </ProtectedWrapper>
+          </ProtectedWrapper> */}
         </div>
       )}
       {type == 2 && (

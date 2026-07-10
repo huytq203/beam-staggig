@@ -25,7 +25,7 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
   const {
     maskedDestination,
     length = 6,
-    resendCooldownSeconds = 60,
+    resendCooldownSeconds = 120,
     onVerify,
     onResend,
     onBack,
@@ -132,10 +132,10 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
   return (
     <AuthCard
       title="Xác thực OTP"
-      description={`Vui lòng nhập mã OTP gồm ${length} chữ số đã được gửi tới ${maskedDestination}`}
+      description={`Vui lòng nhập mã OTP gồm ${length} chữ số đã được gửi tới số điện thoại của bạn, hãy kiểm tra hộp thư!`}
     >
       <div className="flex flex-col gap-4">
-        <div className="flex gap-2">
+        <div className="flex justify-center items-center gap-2">
           {digits.map((digit, index) => (
             <input
               key={index}
@@ -180,9 +180,9 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
 
         {onBack && (
           <div className="flex justify-center">
-            <Text link onClick={onBack} icon={<IconArrowLeft />}>
+            <Button className="w-full !hover:bg-primary-500"  onClick={onBack} icon={<IconArrowLeft />}>
               Quay lại
-            </Text>
+            </Button>
           </div>
         )}
       </div>

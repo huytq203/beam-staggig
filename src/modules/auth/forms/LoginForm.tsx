@@ -12,19 +12,23 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "validations/Auth.schema";
-import { AuthCard, VerifyOTP } from "../components";
+import { AuthCard /*, VerifyOTP */ } from "../components";
 import { IconUnlock } from "@douyinfe/semi-icons";
 import { ForgotPassword } from "../components/ForgotPassword";
 import { isProduction } from "@helpers/common.helper";
 import { useGoogleReCaptcha } from "@helpers/recapcha";
-import { OtpServices } from "@services/auth";
+// import { AuthServices, OtpServices } from "@services/auth";
 
-interface PendingCredentials {
-  username: string;
-  password: string;
-  callbackUrl: string;
-  recaptchaToken: string;
-}
+// OTP 2FA flow — implemented, disabled until the backend exposes a real
+// OTP send/verify API. See src/modules/auth/components/VerifyOTP.tsx and
+// src/services/auth/otp.services.ts. Re-enable by uncommenting the blocks
+// marked "OTP:" below and restoring the imports above.
+// interface PendingCredentials {
+//   username: string;
+//   password: string;
+//   callbackUrl: string;
+//   recaptchaToken: string;
+// }
 
 export const LoginForm = (props: any) => {
   const { profile } = useAuth();
@@ -34,11 +38,12 @@ export const LoginForm = (props: any) => {
   const { isLoginPending, isLoggedIn, loginError } = ContextState;
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const [step, setStep] = useState<"credentials" | "otp">("credentials");
-  const [otpDestination, setOtpDestination] = useState("");
-  const [pendingCredentials, setPendingCredentials] =
-    useState<PendingCredentials | null>(null);
-  const [awaitingSignInResult, setAwaitingSignInResult] = useState(false);
+  // OTP: const [step, setStep] = useState<"credentials" | "otp">("credentials");
+  // OTP: const [otpDestination, setOtpDestination] = useState("");
+  // OTP: const [pendingCredentials, setPendingCredentials] =
+  // OTP:   useState<PendingCredentials | null>(null);
+  // OTP: const [awaitingSignInResult, setAwaitingSignInResult] = useState(false);
+  // OTP: const [isCheckingCredentials, setIsCheckingCredentials] = useState(false);
 
   useEffect(() => {
     if (profile != null) {
@@ -69,18 +74,18 @@ export const LoginForm = (props: any) => {
     }
   }, [router.query.error]);
 
-  useEffect(() => {
-    if (awaitingSignInResult && loginError) {
-      Notification.error({
-        content: loginError?.message || "Đăng nhập thất bại, vui lòng thử lại!",
-        theme: "light",
-        position: "top",
-      });
-      setAwaitingSignInResult(false);
-      setStep("credentials");
-      setPendingCredentials(null);
-    }
-  }, [loginError, awaitingSignInResult]);
+  // OTP: useEffect(() => {
+  // OTP:   if (awaitingSignInResult && loginError) {
+  // OTP:     Notification.error({
+  // OTP:       content: loginError?.message || "Đăng nhập thất bại, vui lòng thử lại!",
+  // OTP:       theme: "light",
+  // OTP:       position: "top",
+  // OTP:     });
+  // OTP:     setAwaitingSignInResult(false);
+  // OTP:     setStep("credentials");
+  // OTP:     setPendingCredentials(null);
+  // OTP:   }
+  // OTP: }, [loginError, awaitingSignInResult]);
 
   const {
     control,
@@ -123,64 +128,97 @@ export const LoginForm = (props: any) => {
       });
       return;
     }
-
-    try {
-      const { maskedDestination } = await OtpServices.sendOtp(
-        username.trim()
-      );
-      setPendingCredentials({
-        username: username.trim(),
-        password: password.trim(),
-        callbackUrl: getCallbackUrl(),
-        recaptchaToken,
-      });
-      setOtpDestination(maskedDestination);
-      setStep("otp");
-    } catch (error) {
-      Notification.error({
-        content: "Không gửi được mã OTP, vui lòng thử lại!",
-        theme: "light",
-        position: "top",
-      });
-    }
-  };
-
-  const handleVerifyOtp = async (otp: string) => {
-    if (!pendingCredentials) return;
-    await OtpServices.verifyOtp({
-      identifier: pendingCredentials.username,
-      otp,
-      purpose: "login",
+    signIn("credential", {
+      username: username.trim(),
+      password: password.trim(),
+      callbackUrl: getCallbackUrl(),
+      recaptchaToken,
     });
-    setAwaitingSignInResult(true);
-    signIn("credential", pendingCredentials);
+
+    // OTP: const trimmedUsername = username.trim();
+    // OTP: const trimmedPassword = password.trim();
+    // OTP: const callbackUrl = getCallbackUrl();
+    // OTP:
+    // OTP: setIsCheckingCredentials(true);
+    // OTP: let loginResponse: any;
+    // OTP: try {
+    // OTP:   loginResponse = await AuthServices.login({
+    // OTP:     username: trimmedUsername,
+    // OTP:     password: trimmedPassword,
+    // OTP:     callbackUrl,
+    // OTP:     recaptchaToken,
+    // OTP:   });
+    // OTP: } catch (error) {
+    // OTP:   setIsCheckingCredentials(false);
+    // OTP:   return;
+    // OTP: }
+    // OTP: setIsCheckingCredentials(false);
+    // OTP:
+    // OTP: const isValidCredentials = loginResponse?.data?.data != null;
+    // OTP: if (!isValidCredentials) {
+    // OTP:   // axiosInstance's response interceptor already shows the backend's
+    // OTP:   // error notification (e.g. "Người dùng không tồn tại") — nothing else
+    // OTP:   // to do here besides staying on the credentials form.
+    // OTP:   return;
+    // OTP: }
+    // OTP:
+    // OTP: try {
+    // OTP:   const { maskedDestination } = await OtpServices.sendOtp(
+    // OTP:     trimmedUsername
+    // OTP:   );
+    // OTP:   setPendingCredentials({
+    // OTP:     username: trimmedUsername,
+    // OTP:     password: trimmedPassword,
+    // OTP:     callbackUrl,
+    // OTP:     recaptchaToken,
+    // OTP:   });
+    // OTP:   setOtpDestination(maskedDestination);
+    // OTP:   setStep("otp");
+    // OTP: } catch (error) {
+    // OTP:   Notification.error({
+    // OTP:     content: "Không gửi được mã OTP, vui lòng thử lại!",
+    // OTP:     theme: "light",
+    // OTP:     position: "top",
+    // OTP:   });
+    // OTP: }
   };
 
-  const handleResendOtp = async () => {
-    if (!pendingCredentials) return;
-    const { maskedDestination } = await OtpServices.sendOtp(
-      pendingCredentials.username
-    );
-    setOtpDestination(maskedDestination);
-  };
-
-  const handleBackToCredentials = () => {
-    setStep("credentials");
-    setPendingCredentials(null);
-  };
+  // OTP: const handleVerifyOtp = async (otp: string) => {
+  // OTP:   if (!pendingCredentials) return;
+  // OTP:   await OtpServices.verifyOtp({
+  // OTP:     identifier: pendingCredentials.username,
+  // OTP:     otp,
+  // OTP:     purpose: "login",
+  // OTP:   });
+  // OTP:   setAwaitingSignInResult(true);
+  // OTP:   signIn("credential", pendingCredentials);
+  // OTP: };
+  // OTP:
+  // OTP: const handleResendOtp = async () => {
+  // OTP:   if (!pendingCredentials) return;
+  // OTP:   const { maskedDestination } = await OtpServices.sendOtp(
+  // OTP:     pendingCredentials.username
+  // OTP:   );
+  // OTP:   setOtpDestination(maskedDestination);
+  // OTP: };
+  // OTP:
+  // OTP: const handleBackToCredentials = () => {
+  // OTP:   setStep("credentials");
+  // OTP:   setPendingCredentials(null);
+  // OTP: };
 
   if (profile) return <></>;
 
-  if (step === "otp") {
-    return (
-      <VerifyOTP
-        maskedDestination={otpDestination}
-        onVerify={handleVerifyOtp}
-        onResend={handleResendOtp}
-        onBack={handleBackToCredentials}
-      />
-    );
-  }
+  // OTP: if (step === "otp") {
+  // OTP:   return (
+  // OTP:     <VerifyOTP
+  // OTP:       maskedDestination={otpDestination}
+  // OTP:       onVerify={handleVerifyOtp}
+  // OTP:       onResend={handleResendOtp}
+  // OTP:       onBack={handleBackToCredentials}
+  // OTP:     />
+  // OTP:   );
+  // OTP: }
 
   return (
     <>

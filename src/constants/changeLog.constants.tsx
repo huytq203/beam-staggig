@@ -1074,6 +1074,13 @@ export const COMMON_FIELD = [
     },
   },
   {
+    field: 'usedAmount',
+    text: 'Số tiền đã dùng',
+    convertData: function (data: any) {
+      return StringHelper.formatVND(data);
+    },
+  },
+  {
     field: 'fullName',
     text: 'Họ tên',
     convertData: function (data: any) {
