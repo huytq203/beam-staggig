@@ -45,3 +45,8 @@ package-lock.json
 .DS_Store
 /generated/prisma
 .superpowers/
+
+.env
+.env.development
+.env.production
+.env.staging
