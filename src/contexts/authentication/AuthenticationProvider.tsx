@@ -11,6 +11,7 @@ export interface AuthenticationRequestProps {
   username?: string;
   password?: string;
   callbackUrl?: string;
+  recaptchaToken?: string;
 }
 
 export interface AuthenticationSignOutRequestProps {

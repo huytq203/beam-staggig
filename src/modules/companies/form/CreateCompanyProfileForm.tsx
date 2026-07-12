@@ -382,7 +382,6 @@ export const CreateCompanyProfileForm = (props: any) => {
             />
 
               <InputWrapper
-                  required
                   field="maxPayLimitRatioPerEmployee"
                   label={
                       'Tỉ lệ hạn mức mỗi người lao động'
@@ -398,7 +397,6 @@ export const CreateCompanyProfileForm = (props: any) => {
                   control={control}
                 />
             <InputWrapper
-              required
               field="maxPayLimitValuePerEmployee"
               label="Hạn mức tối đa mỗi người lao động"
               component={(props: any) => (
