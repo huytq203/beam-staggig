@@ -8,6 +8,13 @@ import {
 
 export const AuthenticationContext = createContext({
   signIn: (a: signInType, b: AuthenticationRequestProps) => {},
+  requestLoginOtp: async (a: AuthenticationRequestProps): Promise<any> => {
+    return null;
+  },
+  verifyLoginOtp: async (
+    a: AuthenticationRequestProps,
+    otp: string
+  ): Promise<void> => {},
   signOut: (config: AuthenticationSignOutRequestProps = {}) => {},
   state: authInitialState,
   profile: {

@@ -3,7 +3,43 @@ import { axiosInstance } from '../api/axiosInstance';
 import { CampaignAPIs } from './apis';
 
 export class CampaignService {
-  static async getAll(filter: any) {
+  static async getAll(filter: any = {}) {
+    const {
+      searchKey = '',
+      campaignTypeId = '',
+      campaignType = '',
+      status = '',
+      startTime = '',
+      endTime = '',
+      page,
+      size = '',
+      sort = ['createdAt,desc'],
+    } = filter;
+
+    const query: any = {
+      // FilterCampaignRequestDTO
+      searchKey: `${searchKey}`.trim(),
+      campaignTypeId: campaignTypeId || campaignType || '',
+      status,
+      startTime,
+      endTime,
+      // Pageable (backend page is 0-based, UI filter is 1-based)
+      page: page ? Number(page) - 1 : 0,
+      size,
+      sort,
+    };
+
+    const params = new URLSearchParams(query).toString();
+    const x = await axiosInstance.get(
+      `${CampaignAPIs.ALL_CAMPAIGNS}?${params}`
+    );
+    return x?.data?.data;
+  }
+
+  // Old endpoint: only returns the currently ENABLED campaigns.
+  // Used to compare against /campaigns/all so disabled campaigns can be
+  // rendered as struck-through / non-clickable.
+  static async getEnabled(filter: any = {}) {
     const params = new URLSearchParams({
       ...filter,
     }).toString();

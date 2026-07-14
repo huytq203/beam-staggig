@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { getResponseMessage } from './handlers';
 import { NEXT_PUBLIC_API_MAINTENANCE } from '@constants/endpoints';
 import { useState } from 'react';
+import { refreshAccessToken } from '../auth/token.refresh';
 export const getAccessToken = () => {
   const access_token = Cookies.get('ACCESS_TOKEN');
   return access_token;
@@ -48,12 +49,12 @@ const checkIsMaintenance = async () => {
 
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
-  function (config) {
-    const controller = new AbortController();
+  async function (config) {
     const { pathname } = window.location;
 
-    const token = getAccessToken();
+    let token = getAccessToken();
     const userJSON = Cookies.get('user');
+    const refreshTokenCookie = Cookies.get('REFRESH_TOKEN');
 
     let isByPassed = false;
 
@@ -64,6 +65,24 @@ axiosInstance.interceptors.request.use(
       }
     }
 
+    // Mất access token nhưng phiên vẫn còn (còn user + refresh token) -> refresh
+    // lấy token mới TRƯỚC KHI gửi, thay vì huỷ request. Nếu huỷ thì không có
+    // request nào đi ra -> không có 401 -> interceptor response không refresh được.
+    if (!token && userJSON && refreshTokenCookie && !isByPassed) {
+      try {
+        token = await refreshAccessToken();
+      } catch (refreshError) {
+        // Refresh token cũng hết hạn -> dọn phiên + về trang đăng nhập.
+        Cookies.remove('ACCESS_TOKEN');
+        Cookies.remove('REFRESH_TOKEN');
+        Cookies.remove('user');
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/signin';
+        }
+      }
+    }
+
+    const controller = new AbortController();
     if ((!token || !userJSON) && !isByPassed) {
       controller.abort();
     }
@@ -182,11 +201,36 @@ axiosInstance.interceptors.response.use(
 
     return response;
   },
-  (error) => {
+  async (error) => {
     // NProgress.done();
     let response = error.response;
     const responseData = response?.data;
     const statusCode = responseData?.code ? responseData?.code : response?.code;
+
+    // --- Hướng B: thử refresh token 1 lần trước khi đá về trang đăng nhập ---
+    const originalRequest: any = error.config;
+    const isRefreshCall =
+      typeof originalRequest?.url === 'string' &&
+      originalRequest.url.includes('/account/refresh-token');
+    if (
+      statusCode == 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isRefreshCall &&
+      Cookies.get('REFRESH_TOKEN')
+    ) {
+      originalRequest._retry = true;
+      try {
+        const newToken = await refreshAccessToken();
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          Authorization: `Bearer ${newToken}`,
+        };
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        // refresh thất bại -> rơi xuống nhánh wipe + redirect bên dưới
+      }
+    }
 
     if (statusCode == 401) {
       Cookies.remove('ACCESS_TOKEN');

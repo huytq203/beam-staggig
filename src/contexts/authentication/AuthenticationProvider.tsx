@@ -1,6 +1,7 @@
 import { menuOptions } from '@constants/menu.constant';
 import { AuthHelper } from '@helpers/auth.helper';
 import { AuthServices } from '@services/auth';
+import { saveAuthTokens } from '@services/auth/token.refresh';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/router';
@@ -154,6 +155,100 @@ export const AuthenticationProvider = ({ children }: any) => {
     }));
   };
 
+  // Tạo session từ response chứa token (dùng chung cho login thường + verify-otp).
+  const establishSession = (response: any, callbackUrl?: string) => {
+    const { access_token: accessToken, refresh_token: refreshToken } = response;
+
+    const responseUser: any = jwt_decode(accessToken);
+    const user = {
+      username: responseUser.preferred_username,
+      email: responseUser.email,
+      name: responseUser.name,
+      given_name: responseUser.given_name,
+      family_name: responseUser.family_name,
+      roles: responseUser.realm_access.roles,
+    };
+
+    // Cookie do client set qua js-cookie nên KHÔNG thể đặt HttpOnly (chỉ server
+    // đặt được qua Set-Cookie). Vì axios đọc token bằng JS để gắn header
+    // Authorization, HttpOnly thật sự cần chuyển sang mô hình BFF (server proxy).
+    // Trong kiến trúc hiện tại, hardening tối đa: Secure (chỉ gửi qua HTTPS) +
+    // SameSite=Lax (chặn CSRF cho các request unsafe cross-site).
+    // expires: token sống qua lần đóng/mở browser để refresh session (Hướng B).
+    const isSecure =
+      typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const secureCookieOptions: Cookies.CookieAttributes = {
+      secure: isSecure,
+      sameSite: 'lax',
+      expires: 7,
+    };
+
+    Cookies.set('user', JSON.stringify(user), secureCookieOptions);
+
+    saveAuthTokens(accessToken, refreshToken);
+    localStorage.setItem('isLogout', 'false');
+
+    setState((prev: any) => ({
+      ...prev,
+      isLoggedIn: true,
+    }));
+    if (callbackUrl) {
+      window.location.href = callbackUrl;
+    }
+  };
+
+  // Bước 1: gửi username/password (+recaptcha) tới /account/login. BE xác thực
+  // mật khẩu rồi GỬI OTP SMS và trả { requireOtp, phoneHint } (KHÔNG kèm token).
+  // Trả về data cho LoginForm quyết định hiển thị màn nhập OTP.
+  // (Nếu BE không bật OTP mà trả token trực tiếp thì đăng nhập luôn.)
+  const requestLoginOtp = async (
+    authRequest: AuthenticationRequestProps
+  ): Promise<any> => {
+    startLoadingState();
+    try {
+      const loginResponse = await AuthServices.login(authRequest);
+      const data = loginResponse?.data?.data;
+      if (data == null) {
+        setState((prev: any) => ({
+          ...prev,
+          loginError: loginResponse?.data,
+        }));
+        return null;
+      }
+      if (data.access_token) {
+        establishSession(data, authRequest?.callbackUrl);
+        return { loggedIn: true };
+      }
+      return data; // { requireOtp, phoneHint }
+    } catch (error: any) {
+      setState((prev: any) => ({
+        ...prev,
+        loginError: error?.response?.data ?? error,
+      }));
+      return null;
+    } finally {
+      stopLoadingState();
+    }
+  };
+
+  // Bước 2: xác thực OTP -> /account/login/verify-otp -> nhận token -> tạo session.
+  // Ném lỗi khi OTP sai/hết hạn để màn VerifyOTP hiển thị và cho nhập lại.
+  const verifyLoginOtp = async (
+    authRequest: AuthenticationRequestProps,
+    otp: string
+  ): Promise<void> => {
+    const res = await AuthServices.verifyLoginOtp({
+      username: authRequest.username,
+      password: authRequest.password,
+      otp,
+    });
+    const data = res?.data?.data;
+    if (!data?.access_token) {
+      throw new Error('Mã OTP không đúng hoặc đã hết hạn, vui lòng thử lại!');
+    }
+    establishSession(data, authRequest.callbackUrl);
+  };
+
   const signIn = async (
     providerType: signInType,
     authRequest: AuthenticationRequestProps
@@ -169,47 +264,12 @@ export const AuthenticationProvider = ({ children }: any) => {
         }));
         return;
       }
-
-      const { access_token: accessToken, refresh_token: refreshToken } =
-        response;
-
-      const responseUser: any = jwt_decode(accessToken);
-      const user = {
-        username: responseUser.preferred_username,
-        email: responseUser.email,
-        name: responseUser.name,
-        given_name: responseUser.given_name,
-        family_name: responseUser.family_name,
-        roles: responseUser.realm_access.roles,
-      };
-
-      // Cookie do client set qua js-cookie nên KHÔNG thể đặt HttpOnly (chỉ server
-      // đặt được qua Set-Cookie). Vì axios đọc token bằng JS để gắn header
-      // Authorization, HttpOnly thật sự cần chuyển sang mô hình BFF (server proxy).
-      // Trong kiến trúc hiện tại, hardening tối đa: Secure (chỉ gửi qua HTTPS) +
-      // SameSite=Lax (chặn CSRF cho các request unsafe cross-site).
-      const isSecure =
-        typeof window !== 'undefined' && window.location.protocol === 'https:';
-      const secureCookieOptions: Cookies.CookieAttributes = {
-        secure: isSecure,
-        sameSite: 'lax',
-      };
-
-      Cookies.set('user', JSON.stringify(user), secureCookieOptions);
-
-      Cookies.set('REFRESH_TOKEN', refreshToken, secureCookieOptions);
-
-      Cookies.set('ACCESS_TOKEN', accessToken, secureCookieOptions);
-      localStorage.setItem('isLogout', 'false');
-
-      setState((prev: any) => ({
-        ...prev,
-        isLoggedIn: true,
-      }));
-      if (authRequest?.callbackUrl) {
-        window.location.href = authRequest.callbackUrl;
-        // router.push(authRequest.callbackUrl)
+      if (!response.access_token) {
+        // BE yêu cầu OTP -> luồng này không tự đăng nhập được;
+        // dùng requestLoginOtp + verifyLoginOtp (xem LoginForm).
+        return;
       }
+      establishSession(response, authRequest?.callbackUrl);
     } catch (error: any) {
       setState((prev: any) => ({
         ...prev,
@@ -265,6 +325,8 @@ export const AuthenticationProvider = ({ children }: any) => {
     <AuthenticationContext.Provider
       value={{
         signIn: signIn,
+        requestLoginOtp: requestLoginOtp,
+        verifyLoginOtp: verifyLoginOtp,
         signOut: signOut,
         state: state,
         profile: profile,
