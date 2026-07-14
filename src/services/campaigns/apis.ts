@@ -3,6 +3,7 @@ import { ApiHelper } from 'src/helpers/api.helper';
 
 export enum CampaignAPIEnums {
   BASE_CAMPAIGN = '/campaigns',
+  ALL_CAMPAIGNS = '/campaigns/all',
   BASE_CAMPAIGN_TYPES = '/campaign-types',
   CAMPAIGN_TYPES_ENABLED = '/campaign-types-enabled',
 }

@@ -135,11 +135,9 @@ export const CreateCampaignForm = (props: CreateCampaignForm) => {
       // applyIds: apply,
       startTime: DateTimeHelper.fomartDateRangeSubmit(
         values.startTime,
-        TIMEZONE_FORMAT.GMT7
       ),
       endTime: DateTimeHelper.fomartDateRangeSubmit(
         values.endTime,
-        TIMEZONE_FORMAT.GMT7
       ),
       sex: ArrayHelper.convertStringNumberToArray(values.sex),
       // member: ArrayHelper.convertStringNumberToArray(values.member),

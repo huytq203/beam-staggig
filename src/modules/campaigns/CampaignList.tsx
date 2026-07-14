@@ -45,13 +45,31 @@ export const CampaignList = (props: any) => {
     }
   );
 
+  // Old /campaigns endpoint only returns currently ENABLED campaigns.
+  // We fetch them once to know which rows from /campaigns/all are still enabled.
+  const { data: enabledData } = useQuery(
+    ['campaign-enabled'],
+    () => CampaignService.getEnabled({ page: 1, size: 1000 }),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const enabledIds = new Set(
+    (enabledData?.content ?? []).map((item: any) => item.id)
+  );
+
   const { Text } = Typography;
 
   const router = useRouter();
 
   const getTableData = () => {
     if (isLoading || !data?.content) return [];
-    return data?.content;
+    // Annotate each campaign with whether it is still enabled.
+    return data?.content.map((item: any) => ({
+      ...item,
+      isEnabled: enabledIds.has(item.id),
+    }));
   };
   const removeCampaign = (id: any) => {
     CampaignService.removeCampaign(id).then((x: any) => {
@@ -89,6 +107,23 @@ export const CampaignList = (props: any) => {
       dataIndex: 'name',
       width: 250,
       render: (name: any, record: any, a: any) => {
+        // Disabled campaigns (not in the enabled set) are struck-through,
+        // greyed out and not clickable.
+        if (!record.isEnabled) {
+          return (
+            <Text
+              type="tertiary"
+              className="beam-break-world"
+              style={{
+                textDecoration: 'line-through',
+                color: 'var(--semi-color-disabled-text)',
+                cursor: 'default',
+              }}
+            >
+              {name}
+            </Text>
+          );
+        }
         return (
           <Text onClick={() => onClickViewDetail(record)} link>
             <span className="beam-break-world">{name}</span>

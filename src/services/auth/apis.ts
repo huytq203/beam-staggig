@@ -8,6 +8,8 @@ export enum AuthAPIEnums {
   VERIFY_RESET_TOKEN = '/tokens',
   RESET_CHANGE_PASSWORD = '/users/:userId/change-password',
   LOGIN_RECILIATION = '/account/reconciliation-login',
+  REFRESH_TOKEN = '/account/refresh-token',
+  LOGIN_VERIFY_OTP = '/account/login/verify-otp',
 }
 
 export const AuthAPIs = ApiHelper.getListUri(

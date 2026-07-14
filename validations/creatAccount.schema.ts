@@ -155,7 +155,7 @@ export const EditAccount = yup.object({
     .typeError('Email không hợp lệ')
     .nullable()
     .trim(),
-  // phoneNumber: yup.string().required('Vui lòng nhập số điện thoại'),
+  phoneNumber: yup.string().required('Vui lòng nhập số điện thoại'),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup
     .string()

@@ -8,6 +8,10 @@ export class AuthServices {
     return axiosInstance.post(`${AuthAPIs.LOGIN_ACCESS_TOKEN}`, filter);
   }
 
+  static async verifyLoginOtp(filter: any) {
+    return axiosInstance.post(`${AuthAPIs.LOGIN_VERIFY_OTP}`, filter);
+  }
+
   static logout() {
     return axiosInstance.post(`${AuthAPIs.LOGOUT_ACCESS_TOKEN}`);
   }
