@@ -159,6 +159,7 @@ export const CreateHRAdminForm = (props: any) => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <InputWrapper
+                    required
                     field="phone"
                     label="Số điện thoại"
                     component={(props: any) => <Input {...props} />}
