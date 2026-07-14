@@ -4,7 +4,7 @@ import { ApiHelper } from 'src/helpers/api.helper';
 export enum NotificationManagementAPIEnums {
   TEMPLATE_NOTIFICATION = '/notification-template',
   SCHEDULE_NOTIFICATION = '/schedule-notification',
-  BASE = '',
+  BASE = '/notification',
   WEBSOCKET_CONNECT = '/web-notification',
 }
 

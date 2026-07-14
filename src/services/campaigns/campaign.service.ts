@@ -11,20 +11,18 @@ export class CampaignService {
       status = '',
       startTime = '',
       endTime = '',
-      page,
+      page = 1,
       size = '',
       sort = ['createdAt,desc'],
     } = filter;
 
     const query: any = {
-      // FilterCampaignRequestDTO
       searchKey: `${searchKey}`.trim(),
       campaignTypeId: campaignTypeId || campaignType || '',
       status,
       startTime,
       endTime,
-      // Pageable (backend page is 0-based, UI filter is 1-based)
-      page: page ? Number(page) - 1 : 0,
+      page: page ? Number(page) : 1,
       size,
       sort,
     };
