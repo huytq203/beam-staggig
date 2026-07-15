@@ -33,6 +33,10 @@ const CompanyProfileDetail = (props: any) => {
     }
   );
 
+  const isNull = (value: any) => {
+    return value == null && value == undefined && value == '';
+  };
+
   useEffect(() => {
     setWorkDayType(companyData?.workDayType);
   }, [companyData]);
@@ -66,7 +70,7 @@ const CompanyProfileDetail = (props: any) => {
       label: 'Tổng hạn mức',
       dataField: 'creditLimit',
       render: (e: any, record: any) => {
-        return <span>{StringHelper.formatVND(e)}</span>;
+        return <span>{isNull(e) ?  '-':StringHelper.formatVND(e) }</span>;
       },
       hidden: false,
     },
@@ -74,7 +78,7 @@ const CompanyProfileDetail = (props: any) => {
       label: 'Tỉ lệ hạn mức mỗi người lao động',
       dataField: 'maxPayLimitRatioPerEmployee',
       render: (e: any, record: any) => {
-        return <span>{e + '%'}</span>;
+        return <span>{isNull(e) ?  '-':e + '%' }</span>;
       },
       hidden: false,
     },
@@ -82,7 +86,7 @@ const CompanyProfileDetail = (props: any) => {
       label: 'Hạn mức tối đa mỗi người lao động',
       dataField: 'maxPayLimitValuePerEmployee',
       render: (e: any, record: any) => {
-        return <span>{StringHelper.formatVND(e)}</span>;
+        return <span>{isNull(e) ?  '-':StringHelper.formatVND(e) }</span>;
       },
       hidden: false,
     },
@@ -90,7 +94,7 @@ const CompanyProfileDetail = (props: any) => {
       label: 'Hạn mức khả dụng',
       dataField: 'availablePaylimit',
       render: (e: any, record: any) => {
-        return <span>{StringHelper.formatVND(e)}</span>;
+        return <span>{isNull(e) ?  '-':StringHelper.formatVND(e) }</span>;
       },
       hidden: false,
     },
@@ -98,7 +102,7 @@ const CompanyProfileDetail = (props: any) => {
       label: 'Công nợ chưa thanh toán',
       dataField: 'unpaid',
       render: (e: any, record: any) => {
-        return <span>{StringHelper.formatVND(e)}</span>;
+        return <span>{isNull(e) ?  '-':StringHelper.formatVND(e) }</span>;
       },
       hidden: false,
     },
