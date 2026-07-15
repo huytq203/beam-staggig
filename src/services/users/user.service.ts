@@ -169,6 +169,19 @@ export class UserSevice {
         return x?.data;
       });
   }
+  // Gửi OTP cho luồng reset-by-link (sau khi đã nhập mật khẩu).
+  // Trả về OtpChallengeResponseDTO { requireOtp, phoneHint } khi thành công,
+  // undefined khi lỗi (interceptor đã hiển thị toast).
+  static async sendResetPasswordByLinkOtp(passwordRequest: any) {
+    return axiosInstance
+      .post(
+        `${UserAPIs.BASE_URL}/password/reset-by-link/send-otp`,
+        passwordRequest
+      )
+      .then((x: any) => {
+        return x?.data?.data;
+      });
+  }
   static async checkResetPasswordByLink(passwordRequest: any) {
     return axiosInstance
       .post(

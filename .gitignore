@@ -46,7 +46,7 @@ package-lock.json
 /generated/prisma
 .superpowers/
 
-.env
-.env.development
-.env.production
-.env.staging
+# .env
+# .env.development
+# .env.production
+# .env.staging

@@ -23,6 +23,25 @@ import { UserRole } from '@constants/auth.constants';
 import axios from 'axios';
 import { NEXT_PUBLIC_API_MAINTENANCE } from '@constants/endpoints';
 
+// The list rows come from /campaigns/all, but whether a campaign is currently
+// enabled is authoritative only via the old /campaigns endpoint. So a row's
+// active/inactive state is derived by cross-referencing the two APIs (see
+// `isEnabled`): present in the enabled set -> "Hoạt động", absent -> "Không
+// hoạt động". DRAFT and EXPIRED keep their own labels regardless of `isEnabled`.
+// `status` may be a string (DRAFT/EXPIRED from /campaigns/all) or a legacy
+// numeric code (2/3), so both are matched.
+const isExpiredCampaign = (status: any) =>
+  status === 3 || status === 'EXPIRED';
+const isDraftCampaign = (status: any) => status === 2 || status === 'DRAFT';
+
+const getCampaignStatusTag = (status: any, isEnabled: boolean) => {
+  if (isDraftCampaign(status)) return { label: 'Bản nháp', color: 'teal' };
+  if (isExpiredCampaign(status)) return { label: 'Hết hạn', color: 'red' };
+  return isEnabled
+    ? { label: 'Hoạt động', color: 'green' }
+    : { label: 'Không hoạt động', color: 'grey' };
+};
+
 export const CampaignList = (props: any) => {
   const { basePath, onClickViewDetail, showFilter = true } = props;
   const [filter, setFilter] = useState({
@@ -113,9 +132,8 @@ export const CampaignList = (props: any) => {
           return (
             <Text
               type="tertiary"
-              className="beam-break-world"
+              className="beam-break-world font-bold"
               style={{
-                textDecoration: 'line-through',
                 color: 'var(--semi-color-disabled-text)',
                 cursor: 'default',
               }}
@@ -207,31 +225,11 @@ export const CampaignList = (props: any) => {
       title: 'Trạng thái',
       dataIndex: 'status',
       width: 150,
-      render: (x: any) => {
-        let label = '';
-        let className: any = '';
-
-        switch (x) {
-          case 0:
-            label = 'Hoạt động';
-            className = 'green';
-            break;
-          case 1:
-            label = 'Không hoạt động';
-            className = 'grey';
-            break;
-          case 2:
-            label = 'Bản nháp';
-            className = 'teal';
-            break;
-          case 3:
-            label = 'Hết hạn';
-            className = 'red';
-            break;
-        }
+      render: (x: any, record: any) => {
+        const status = getCampaignStatusTag(x, record?.isEnabled);
         return (
-          <Tag size="small" color={className}>
-            {label}
+          <Tag size="small" color={status.color as any}>
+            {status.label}
           </Tag>
         );
       },
@@ -262,13 +260,13 @@ export const CampaignList = (props: any) => {
             <ProtectedWrapper
               allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
             >
-              {record.status !== 3 && (
+              {!isExpiredCampaign(record.status) && (
                 <IconEdit
                   onClick={() => router.push(`${basePath}/${id}/edit`)}
                   className="cursor-pointer"
                 />
               )}
-              {record.status === 2 ? (
+              {isDraftCampaign(record.status) ? (
                 <Popconfirm
                   title="Bạn có chắc chắn muốn xóa chiến dịch này không?"
                   // content="Bạn có chắc chắn muốn xóa chiến dịch này không?"
