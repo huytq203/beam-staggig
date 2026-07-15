@@ -40,7 +40,7 @@ export const CreateHRAdminForm = (props: any) => {
     defaultValues: {
       fullName: '',
       username: '',
-      phone: '',
+      phoneNumber: '',
       email: '',
       code: '',
       enabled: true,
@@ -77,8 +77,8 @@ export const CreateHRAdminForm = (props: any) => {
       code: FunctionBase.checkTypeofVal(values.code, 'string')
         ? values.code.trim()
         : null,
-      phone: FunctionBase.checkTypeofVal(values.phone, 'string')
-        ? values.phone.trim()
+      phone: FunctionBase.checkTypeofVal(values.phoneNumber, 'string')
+        ? values.phoneNumber.trim()
         : null,
       enabled: values.enabled,
       role: values.role,
@@ -160,7 +160,7 @@ export const CreateHRAdminForm = (props: any) => {
                 <div className="grid grid-cols-2 gap-4">
                   <InputWrapper
                     required
-                    field="phone"
+                    field="phoneNumber"
                     label="Số điện thoại"
                     component={(props: any) => <Input {...props} />}
                     errors={errors}
