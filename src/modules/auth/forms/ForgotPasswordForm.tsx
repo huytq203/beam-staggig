@@ -1,23 +1,18 @@
-import { Button, Input, Notification } from '@douyinfe/semi-ui';
+import { Banner, Button, Input, Space } from '@douyinfe/semi-ui';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AuthCard, BackToLogin, ResetForm, VerifyOTP } from '@modules/auth';
-import { OtpServices } from '@services/auth';
+import { AuthCard, BackToLogin } from '@modules/auth';
+import { AuthServices } from '@services/auth';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ForgotPasswordSchema } from 'validations/Auth.schema';
 
-type Step = 'account' | 'otp' | 'reset';
-
-interface ResetPayload {
-  userId: string;
-  reset_token: string;
-}
+// Trang /auth/forgot: nhập tài khoản, ấn "Gửi thông tin" -> BE gửi email chứa
+// link đặt lại mật khẩu (/auth/reset?users=&token=). Phần nhập mật khẩu + OTP
+// nằm ở trang /auth/reset (ResetLinkForm) vì token chỉ có trong link email.
+type Step = 'account' | 'sent';
 
 export const ForgotPasswordForm = () => {
   const [step, setStep] = useState<Step>('account');
-  const [username, setUsername] = useState('');
-  const [otpDestination, setOtpDestination] = useState('');
-  const [resetPayload, setResetPayload] = useState<ResetPayload | null>(null);
 
   const {
     control,
@@ -30,93 +25,81 @@ export const ForgotPasswordForm = () => {
     },
   });
 
-  const onResetPassword = async (data: any) => {
-    const trimmedUsername = data.username.trim();
-    try {
-      const { maskedDestination } = await OtpServices.sendOtp(
-        trimmedUsername
-      );
-      setUsername(trimmedUsername);
-      setOtpDestination(maskedDestination);
-      setStep('otp');
-    } catch (error) {
-      Notification.error({
-        content: 'Không gửi được mã OTP, vui lòng thử lại!',
-        theme: 'light',
-        position: 'top',
-      });
+  const onSubmitAccount = async (data: any) => {
+    // POST /account-manager/password/forgot/{userName} -> gửi email.
+    // Lỗi (tài khoản không tồn tại...) đã được interceptor báo toast và trả
+    // về undefined -> ở lại màn nhập tài khoản.
+    const res = await AuthServices.resetPassword(data.username.trim());
+    if (res) {
+      setStep('sent');
     }
-  };
-
-  const handleVerifyOtp = async (otp: string) => {
-    const result = await OtpServices.verifyOtp({
-      identifier: username,
-      otp,
-      purpose: 'reset-password',
-    });
-    setResetPayload({
-      userId: result.userId as string,
-      reset_token: result.reset_token as string,
-    });
-    setStep('reset');
-  };
-
-  const handleResendOtp = async () => {
-    const { maskedDestination } = await OtpServices.sendOtp(username);
-    setOtpDestination(maskedDestination);
-  };
-
-  const handleBackToAccount = () => {
-    setStep('account');
   };
 
   const errs: any = errors;
 
-  if (step === 'otp') {
+  if (step === 'sent') {
     return (
-      <VerifyOTP
-        maskedDestination={otpDestination}
-        onVerify={handleVerifyOtp}
-        onResend={handleResendOtp}
-        onBack={handleBackToAccount}
-      />
+      <AuthCard
+        title="Kiểm tra email"
+        description="Chúng tôi đã gửi hướng dẫn đặt lại mật khẩu."
+      >
+        <Banner
+          fullMode={false}
+          bordered
+          icon={null}
+          closeIcon={null}
+          type="success"
+          description="Đường dẫn đặt lại mật khẩu đã được gửi tới email của bạn. Vui lòng kiểm tra hộp thư (kể cả mục spam) và làm theo hướng dẫn."
+          className="my-4"
+        />
+        <Space />
+        <BackToLogin />
+      </AuthCard>
     );
   }
 
-  if (step === 'reset' && resetPayload) {
-    return <ResetForm verifyResponse={resetPayload} />;
-  }
-
   return (
-    <AuthCard title='Quên mật khẩu?' description='Vui lòng nhập tên tài khoản để tiếp tục.'>
-      <form onSubmit={handleSubmit(onResetPassword)}>
-        <div className='py-4 flex flex-col gap-2'>
-          <label className='font-semibold'>Tên tài khoản</label>
+    <AuthCard
+      title="Quên mật khẩu?"
+      description="Vui lòng nhập tên tài khoản để tiếp tục."
+    >
+      <form onSubmit={handleSubmit(onSubmitAccount)}>
+        <div className="py-4 flex flex-col gap-2">
+          <label className="font-semibold">Tên tài khoản</label>
           <Controller
-            name='username'
+            name="username"
             control={control}
             render={({ field }) => (
               <>
                 <Input
-                  placeholder='Nhập tên tài khoản'
-                  size='large'
-                  validateStatus={errs['username']?.message.length ? 'error' : 'default'}
+                  placeholder="Nhập tên tài khoản"
+                  size="large"
+                  validateStatus={
+                    errs['username']?.message.length ? 'error' : 'default'
+                  }
                   {...field}
                 />
               </>
             )}
           />
           {errs?.username?.message?.length > 0 && (
-            <span className='text-red-500 text-sm'>{errs?.username?.message}</span>
+            <span className="text-red-500 text-sm">
+              {errs?.username?.message}
+            </span>
           )}
         </div>
 
-        <Button className='w-full' htmlType='submit' type='primary' theme='solid'>
+        <Button
+          className="w-full"
+          htmlType="submit"
+          type="primary"
+          theme="solid"
+        >
           Gửi thông tin
         </Button>
       </form>
 
-      <div className='mt-4'>
+      <div className="mt-4">
         <BackToLogin />
       </div>
     </AuthCard>
