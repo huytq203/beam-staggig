@@ -231,6 +231,20 @@ export const COMMON_FIELD = [
     },
   },
   {
+    field: 'maxPayLimitRatioPerEmployee',
+    text: 'Tỉ lệ hạn mức mỗi người lao động (%)',
+    convertData: function (data: any) {
+      return data ? `${data}%` : null;
+    },
+  },
+  {
+    field: 'maxPayLimitValuePerEmployee',
+    text: 'Hạn mức tối đa mỗi người lao động (VNĐ)',
+    convertData: function (data: any) {
+      return checkValidCurrency(data);
+    },
+  },
+  {
     field: 'advancedAmount',
     text: 'Giá trị tạm ứng lương Mùng 1',
     convertData: function (data: any) {
