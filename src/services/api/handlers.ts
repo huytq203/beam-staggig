@@ -236,6 +236,9 @@ export enum GlobalResponseMessageCodes {
   INVALID_CHARACTER_CURRENT_WORKDAY = 'Ngày công thực tế không hợp lệ do có ký tự không mã hoá được. Vui lòng nhập lại dữ liệu bằng tay',
   INVALID_CHARACTER_TOTAL_WORKDAY = 'Ngày công tiêu chuẩn không hợp lệ do có ký tự không mã hoá được. Vui lòng nhập lại dữ liệu bằng tay',
   CAN_NOT_CANCEL_PAID_REWARD = 'Phần thưởng đã được trao thành công - không thể huỷ',
+  WAITING_ONE_MINUTE_TO_SEND_OTHER_OTP='Vui lòng đợi 1 phút để gửi mã OTP mới',
+  PHONE_NUMBER_NOT_REGISTERED='Chưa đăng ký số điện thoại với tài khoản, vui lòng liên hệ admin để được hỗ trợ',
+  INVALID_OTP='Mã OTP không chính xác',
 }
 
 export const getResponseMessage = (key: string) => {

@@ -106,7 +106,7 @@ export const CreateHRAdminForm = (props: any) => {
         setLoading(false);
       }
     });
-    // onSave && onSave(values);
+    onSave && onSave(values);
   };
   return (
     <SpinWrapper spinning={loading} size="large">
