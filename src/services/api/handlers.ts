@@ -239,6 +239,7 @@ export enum GlobalResponseMessageCodes {
   WAITING_ONE_MINUTE_TO_SEND_OTHER_OTP='Vui lòng đợi 1 phút để gửi mã OTP mới',
   PHONE_NUMBER_NOT_REGISTERED='Chưa đăng ký số điện thoại với tài khoản, vui lòng liên hệ admin để được hỗ trợ',
   INVALID_OTP='Mã OTP không chính xác',
+  CAMPAIGN_MAXIMUM_BUDGET_NOT_GREATER_THAN_VALUE='Giá trị giảm không được cao hơn ngân sách chiến dịch',
 }
 
 export const getResponseMessage = (key: string) => {
