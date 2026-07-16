@@ -34,9 +34,13 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
   const [digits, setDigits] = useState<string[]>(() => Array(length).fill(''));
   const [error, setError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(resendCooldownSeconds);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  // Khoá đồng bộ chống gọi submit trùng. Phải là ref, không phải state: setState
+  // là bất đồng bộ nên hai lần gọi sát nhau đều đọc được isVerifying === false.
+  const submitLockRef = useRef(false);
 
   useEffect(() => {
     if (secondsLeft <= 0) return;
@@ -48,15 +52,25 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
     inputRefs.current[index]?.focus();
   };
 
+  // Có 3 đường cùng gọi hàm này: tự động khi gõ đủ số, khi paste, và nút "Xác nhận".
+  // OTP chỉ dùng được MỘT lần — verify xong là backend tiêu huỷ mã ngay. Nếu để gọi
+  // lần hai với mã đã dùng, backend từ chối (OTP_EXPIRED) và người dùng thấy báo lỗi
+  // dù thực ra đã đăng nhập thành công ở lần gọi đầu.
   const submit = async (code: string) => {
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
     setIsVerifying(true);
     setError(null);
     try {
       await onVerify(code);
+      // Khoá vĩnh viễn sau khi thành công: mã đã bị tiêu huỷ, gọi lại chỉ sinh lỗi giả.
+      setIsVerified(true);
     } catch (err: any) {
       setError(err?.message ?? 'Xác thực OTP thất bại, vui lòng thử lại!');
       setDigits(Array(length).fill(''));
       focusInput(0);
+      // Chỉ mở khoá khi thất bại, để người dùng nhập lại.
+      submitLockRef.current = false;
     } finally {
       setIsVerifying(false);
     }
@@ -120,6 +134,9 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
       setDigits(Array(length).fill(''));
       setSecondsLeft(resendCooldownSeconds);
       focusInput(0);
+      // Mã mới đã được gửi -> cho phép submit lại.
+      submitLockRef.current = false;
+      setIsVerified(false);
     } catch (err: any) {
       setError(err?.message ?? 'Gửi lại mã OTP thất bại, vui lòng thử lại!');
     } finally {
@@ -146,7 +163,7 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
               inputMode="numeric"
               maxLength={1}
               value={digit}
-              disabled={isVerifying}
+              disabled={isVerifying || isVerified}
               onChange={handleChange(index)}
               onKeyDown={handleKeyDown(index)}
               onPaste={handlePaste}
@@ -172,7 +189,7 @@ export const VerifyOTP = (props: VerifyOTPProps) => {
           theme="solid"
           size="large"
           loading={isVerifying}
-          disabled={!isComplete}
+          disabled={!isComplete || isVerifying || isVerified}
           onClick={() => submit(digits.join(''))}
         >
           Xác nhận
