@@ -111,10 +111,10 @@ export const ArrayHelper = {
       ),
     };
   },
-  compareArray(arr1: any[], arr2: any[] = []) {
+  compareArray(arr1: any[] = [], arr2: any[] = []) {
     if (
-      arr1.length === arr2.length &&
-      arr1.every((el, index) => el === arr2[index])
+      arr1?.length === arr2?.length &&
+      arr1?.every((el, index) => el === arr2[index])
     ) {
       return true;
     } else {

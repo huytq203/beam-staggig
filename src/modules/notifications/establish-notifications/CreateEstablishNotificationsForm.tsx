@@ -300,7 +300,7 @@ export const CreateEstablishNotificationsForm = (props: any) => {
     }
 
     const checkReceiver =
-      receiver.includes('hr_admin') || receiver.includes('user');
+      receiver?.includes('hr_admin') || receiver?.includes('user');
     return !checkReceiver;
   };
 
@@ -438,8 +438,8 @@ export const CreateEstablishNotificationsForm = (props: any) => {
                   />
                 </div>
               )}
-              {(watch('receiver').includes('user') ||
-                watch('receiver').includes('hr_admin')) && (
+              {(watch('receiver')?.includes('user') ||
+                watch('receiver')?.includes('hr_admin')) && (
                 <div className="grid grid-cols-2 gap-12">
                   <InputWrapper
                     required
@@ -481,7 +481,7 @@ export const CreateEstablishNotificationsForm = (props: any) => {
                   />
                 </div>
               )}
-              {watch('receiver').includes('user') && (
+              {watch('receiver')?.includes('user') && (
                 <div className="grid grid-cols-2 gap-12">
                   <InputWrapper
                     required
