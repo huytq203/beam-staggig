@@ -1,8 +1,8 @@
-import { Banner, Button, Input, Space } from '@douyinfe/semi-ui';
+import { Banner, Button, Input, Space, Spin } from '@douyinfe/semi-ui';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AuthCard, BackToLogin, VerifyOTP } from '@modules/auth';
 import { UserSevice } from '@services/users';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { ResetPasswordSchema } from 'validations/Auth.schema';
@@ -29,7 +29,6 @@ export const ResetLinkForm = (props: any) => {
     finished: false,
     isSuccess: false,
   });
-  const [isValid, setIsValid] = useState(true);
   const { data, isLoading } = useQuery(
     ['check_reset'],
     () =>
@@ -100,10 +99,6 @@ export const ResetLinkForm = (props: any) => {
     if (challenge) setOtpDestination(challenge.phoneHint ?? '');
   };
 
-  useEffect(() => {
-    setIsValid(data);
-  }, [isLoading]);
-
   const errs: any = errors;
 
   // Đổi mật khẩu thành công.
@@ -128,8 +123,22 @@ export const ResetLinkForm = (props: any) => {
     );
   }
 
-  // Link không hợp lệ / hết hạn.
-  if (!isValid) {
+  // Đang kiểm tra link -> hiển thị loading, tránh nháy màn "hết hạn".
+  if (isLoading) {
+    return (
+      <AuthCard
+        title="Đặt mật khẩu"
+        description="Vui lòng nhập mật khẩu đúng theo lưu ý của chúng tôi"
+      >
+        <div className="flex justify-center my-8">
+          <Spin size="large" />
+        </div>
+      </AuthCard>
+    );
+  }
+
+  // Link không hợp lệ / hết hạn (chỉ xác định sau khi kiểm tra xong).
+  if (!data) {
     return (
       <AuthCard
         title="Đặt mật khẩu"
