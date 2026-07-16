@@ -99,6 +99,7 @@ export enum GlobalResponseMessageCodes {
   EMPTY_USERNAME = 'Tên người dùng bị trống',
   EMPTY_EMPLOYEE_NAME = 'Vui lòng nhập tên nhân viên',
   EMPTY_PHONE_NUMBER = 'Vui lòng nhập số điện thoại',
+  PHONE_REQUIRED_FOR_OTP = 'Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng Việt Nam (0 và [3,5,7,8,9] rồi 8 số) để nhận OTP',
   EMPTY_EMPLOYEE_POSITION = 'Vui lòng chọn chức vụ',
   EMPTY_DOB = 'Vui lòng nhập ngày sinh',
   EMPTY_GENDER = 'Vui lòng chọn giới tính',

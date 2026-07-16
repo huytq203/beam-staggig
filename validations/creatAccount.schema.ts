@@ -1,6 +1,10 @@
 import yup from './yupGlobal';
 const phoneRegExp =
   /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b|(02[0-9]{1,2})+([0-9]{8})\b/;
+// SĐT VN khớp backend identity AccountManagerValidator (StringHelper.isVietnamesePhoneNumber)
+const vnPhoneRegExp = /^0[35789]\d{8}$/;
+const vnPhoneMsg =
+  'Số điện thoại không hợp lệ (định dạng VN: 0 và [3,5,7,8,9] rồi 8 chữ số)';
 export const CreateAccount = yup.object({
   email: yup
     .string()
@@ -9,7 +13,11 @@ export const CreateAccount = yup.object({
     .typeError('Email không hợp lệ')
     .nullable()
     .trim(),
-  phoneNumber: yup.string().required('Vui lòng nhập số điện thoại'),
+  phone: yup
+    .string()
+    .trim()
+    .required('Vui lòng nhập số điện thoại')
+    .matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup
     .string()
@@ -57,7 +65,11 @@ export const CreateHRAdminAccount = yup.object({
     .typeError('Email không hợp lệ')
     .nullable()
     .trim(),
-  phoneNumber: yup.string().required('Vui lòng nhập số điện thoại').trim(),
+  phone: yup
+    .string()
+    .trim()
+    .required('Vui lòng nhập số điện thoại')
+    .matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup
     .string()
@@ -119,7 +131,11 @@ export const EditHRAdminAccount = yup.object({
     .typeError('Email không hợp lệ')
     .nullable()
     .trim(),
-  // phoneNumber: yup.string().required('Vui lòng nhập số điện thoại'),
+  phone: yup
+    .string()
+    .trim()
+    .required('Vui lòng nhập số điện thoại')
+    .matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup
     .string()
@@ -155,7 +171,11 @@ export const EditAccount = yup.object({
     .typeError('Email không hợp lệ')
     .nullable()
     .trim(),
-  phoneNumber: yup.string().required('Vui lòng nhập số điện thoại'),
+  phone: yup
+    .string()
+    .trim()
+    .required('Vui lòng nhập số điện thoại')
+    .matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup
     .string()
