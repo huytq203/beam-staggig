@@ -10,6 +10,8 @@ import {
 } from '@douyinfe/semi-ui';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { EditAccount } from 'validations/creatAccount.schema';
 import { useQuery } from 'react-query';
 import { RolesSelect } from '@components/widgets/Select/RolesSelect';
 import { EnabledStatusSelect } from '../constants';
@@ -42,7 +44,7 @@ export const EditBeamAdminForm = (props: any) => {
     setValue,
     formState: { errors },
   } = useForm({
-    // resolver: yupResolver(CreateCompanyGroupSchema),
+    resolver: yupResolver(EditAccount),
     defaultValues: {
       fullName: '',
       username: '',
