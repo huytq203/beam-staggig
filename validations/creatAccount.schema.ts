@@ -55,7 +55,7 @@ export const CreateHRAdminAccount = yup.object({
     .typeError("Email không hợp lệ")
     .nullable()
     .trim(),
-  phoneNumber: yup.string().trim().required("Vui lòng nhập số điện thoại").matches(vnPhoneRegExp, vnPhoneMsg),
+  phone: yup.string().trim().required("Vui lòng nhập số điện thoại").matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup.string().trim().required("Vui lòng nhập tên đăng nhập nhân viên").nullable(),
   companyIds: yup.array().required("Vui lòng chọn doanh nghiệp").nullable(),
@@ -141,7 +141,7 @@ export const EditAccount = yup.object({
     .typeError("Email không hợp lệ")
     .nullable()
     .trim(),
-  phoneNumber: yup.string().trim().required("Vui lòng nhập số điện thoại").matches(vnPhoneRegExp, vnPhoneMsg),
+  phone: yup.string().trim().required("Vui lòng nhập số điện thoại").matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup.string().trim().required("Vui lòng nhập tên đăng nhập nhân viên").nullable(),
   // code: yup.string().trim().required('Vui lòng nhập mã nhân viên'),
