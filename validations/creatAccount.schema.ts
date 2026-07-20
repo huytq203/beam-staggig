@@ -26,9 +26,9 @@ export const CreateAccount = yup.object({
           .required("Vui lòng nhập mật khẩu")
           .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            "Mật khẩu phải gồm ít nhất 8 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt",
+            "Mật khẩu phải gồm ít nhất 10 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt",
           )
-          .min(8, "Mật khẩu phải có ít nhất 8 ký tự");
+          .min(8, "Mật khẩu phải có ít nhất 10 ký tự");
       } else {
         return yup.string().nullable().notRequired();
       }
@@ -84,10 +84,10 @@ export const CreateHRAdminAccount = yup.object({
           .nullable()
           .required("Vui lòng nhập mật khẩu")
           .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            "Mật khẩu phải gồm ít nhất 8 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt",
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{10,})/,
+            "Mật khẩu phải gồm ít nhất 10 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt",
           )
-          .min(8, "Mật khẩu phải có ít nhất 8 ký tự");
+          .min(10, "Mật khẩu phải có ít nhất 10 ký tự");
       } else {
         return yup.string().nullable().notRequired();
       }
@@ -222,9 +222,9 @@ export const CreatePassword = yup.object({
           .required("Vui lòng nhập mật khẩu")
           .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            "Mật khẩu phải gồm ít nhất 8 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt",
+            "Mật khẩu phải gồm ít nhất 10 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt",
           )
-          .min(8, "Mật khẩu phải có ít nhất 8 ký tự");
+          .min(8, "Mật khẩu phải có ít nhất 10 ký tự");
       } else {
         return yup.string().nullable().notRequired();
       }
