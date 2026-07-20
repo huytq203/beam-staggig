@@ -26,9 +26,9 @@ export const ChangePasswordSchema = yup.object({
   newPassword: yup
     .string()
     .required('Vui lòng nhập mật khẩu.')
-    .min(8, 'Mật khẩu phải chứ ít nhất 10 ký tự.')
+    .min(10, 'Mật khẩu phải chứ ít nhất 10 ký tự.')
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{10,})/,
       'Mật khẩu phải gồm ít nhất 10 ký tự trong đó phải bao gồm cả chữ viết thường, chữ viết hoa, chữ cái số và ký tự đặc biệt'
     )
     .typeError('Vui lòng nhập mật khẩu.'),

@@ -13,7 +13,8 @@
       "Bash(echo \"exit:$?\")",
       "Bash(npm uninstall *)",
       "Bash(grep -r \"ReactDOM.render\\\\|ReactDOM\\\\\\\\.render\" node_modules --include=\"*.js\" -l)",
-      "Bash(git worktree *)"
+      "Bash(git worktree *)",
+      "Bash(awk -F: '{s+=$2} END{print s}')"
     ]
   }
 }
