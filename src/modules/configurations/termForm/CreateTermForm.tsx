@@ -84,7 +84,9 @@ const CreateTermForm = (props: any) => {
           setLoading(false);
         }
       })
-      .catch((e) => {});
+      .catch((e) => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -182,7 +184,7 @@ const CreateTermForm = (props: any) => {
       </div>
       <PreviewMobile type={watch('type')} content={watch('content')} />
       <div className="flex gap-4 justify-end mt-5">
-        <FormActionButton onCancel={onCancel} isLoading={isLoading} />
+        <FormActionButton onCancel={onCancel} loading={loading} />
       </div>
     </form>
   );

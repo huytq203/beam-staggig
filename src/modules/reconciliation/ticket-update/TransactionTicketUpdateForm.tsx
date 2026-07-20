@@ -32,7 +32,7 @@ export const TransactionTicketUpdateForm = (
     reset,
     getValues,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       id: null,
@@ -81,7 +81,8 @@ export const TransactionTicketUpdateForm = (
   };
 
   const onSubmitForm = (values: any) => {
-    onSubmit && isNew && onSubmit(values, isNew);
+    if (!onSubmit || !isNew) return;
+    return onSubmit(values, isNew);
   };
 
   const getRequest = (confirmationType: any) => {
@@ -226,6 +227,7 @@ export const TransactionTicketUpdateForm = (
                   watch('old_ftCode') === undefined
                 }
                 onCancel={onCancel}
+                loading={isSubmitting}
               />
             )}
 

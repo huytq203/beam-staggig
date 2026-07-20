@@ -124,8 +124,9 @@ export const TicketSalaryAdvanceForm = (props: any) => {
         setVisible(false);
         refetch();
       })
-      .catch((e: any) => {});
-    setLoading(false);
+      .catch((e: any) => {
+        setLoading(false);
+      });
   };
   const convertReason = (field: any) => {
     const ticketErrorReason: any = {
@@ -343,6 +344,7 @@ export const TicketSalaryAdvanceForm = (props: any) => {
               //   return onSubmit(getValues());
               // }}
               onCancel={() => setVisible(false)}
+              loading={loading}
             />
           </form>
         </Modal>

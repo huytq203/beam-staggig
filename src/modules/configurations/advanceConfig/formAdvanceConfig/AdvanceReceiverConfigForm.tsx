@@ -31,7 +31,7 @@ const AdvanceReceiverConfigForm = (props: any) => {
     reset,
     watch,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     // resolver: yupResolver(CreateCompanyGroupSchema),
     defaultValues: {
@@ -145,7 +145,7 @@ const AdvanceReceiverConfigForm = (props: any) => {
             <ListAllEmpConfig rowSelection={rowSelection} />
           )}
         </div>
-        <FormActionButton onCancel={onCancel} />
+        <FormActionButton onCancel={onCancel} loading={isSubmitting} />
       </form>
     </div>
   );

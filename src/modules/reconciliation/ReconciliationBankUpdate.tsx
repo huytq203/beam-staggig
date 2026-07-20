@@ -103,7 +103,7 @@ const ReconciliationBankUpdate = (props: ReconciliationBankUpdateProps) => {
         },
       });
     } else {
-      ReconciliationService.newTransactionTicket(values).then((x: any) => {
+      return ReconciliationService.newTransactionTicket(values).then((x: any) => {
         if (x) {
           Notification.success({
             content: `Thành công cập nhật thông tin!`,

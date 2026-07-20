@@ -38,7 +38,7 @@ export const RolePermissionForm = (props: any) => {
     handleSubmit,
     watch,
     getValues,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       companyId: userCompany?.companyId,
@@ -57,7 +57,7 @@ export const RolePermissionForm = (props: any) => {
       roles.push('hr');
     }
 
-    UserSevice.assignRole(userData?.id, {
+    return UserSevice.assignRole(userData?.id, {
       roles: roles,
     })
       .then((response) => {
@@ -140,7 +140,10 @@ export const RolePermissionForm = (props: any) => {
         </div>
       )}
 
-      <FormActionButton onCancel={() => router.push('/accounts')} />
+      <FormActionButton
+        onCancel={() => router.push('/accounts')}
+        loading={isSubmitting}
+      />
     </form>
   );
 };
