@@ -34,7 +34,7 @@ const CompanyProfileDetail = (props: any) => {
   );
 
   const isNull = (value: any) => {
-    return value == null && value == undefined && value == '';
+    return value == null || value == '' ||value==undefined;
   };
 
   useEffect(() => {
