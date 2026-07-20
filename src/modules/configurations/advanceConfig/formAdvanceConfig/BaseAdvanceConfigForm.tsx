@@ -22,7 +22,7 @@ const BaseAdvanceConfigForm = (props: any) => {
     handleSubmit,
     reset,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     // resolver: yupResolver(CreateCompanyGroupSchema),
     defaultValues: {} as any,
@@ -118,7 +118,7 @@ const BaseAdvanceConfigForm = (props: any) => {
             control={control}
           />
         </div>
-        <FormActionButton onCancel={onCancel} />
+        <FormActionButton onCancel={onCancel} loading={isSubmitting} />
       </form>
     </div>
   );
