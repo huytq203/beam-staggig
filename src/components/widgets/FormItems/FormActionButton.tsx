@@ -36,7 +36,7 @@ export const FormActionButton = (props: any) => {
               onClick={onSubmit}
               htmlType={!onSubmit ? 'submit' : 'button'}
               className="text-white"
-              disabled={disabled}
+              disabled={loading}
               loading={loading}
             >
               {submitButtonText}
