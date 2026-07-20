@@ -245,7 +245,7 @@ export const CompanyDetail = (props: any) => {
     {
       label: 'Tỉ lệ hạn mức mỗi người lao động (%)',
       dataField: 'maxPayLimitRatioPerEmployee',
-      render: (e: any) => <>{e !== null ? `${e}%` : '-'}</>,
+      render: (e: any) => <>{e !== null ?  '-':`${e}%` }</>,
     },
     {
       label: 'Hạn mức tối đa mỗi người lao động (VNĐ)',
