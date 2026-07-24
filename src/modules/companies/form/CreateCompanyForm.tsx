@@ -170,6 +170,10 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
           onOk: async () => {
             CompanyService.saveOrUpdateCompany({
               ...values,
+              maxPayLimitRatioPerEmployee:
+                values.maxPayLimitRatioPerEmployee,
+              maxPayLimitValuePerEmployee:
+                values.maxPayLimitValuePerEmployee,
               noExpiredDates:
                 values.noExpiredDates == null ? false : values.noExpiredDates,
               ticketRegisterSalaryAdvance:
@@ -236,6 +240,8 @@ export const CreateCompanyForm = (props: CreateCompanyForm) => {
       } else {
         CompanyService.saveOrUpdateCompany({
           ...values,
+          maxPayLimitRatioPerEmployee: values.maxPayLimitRatioPerEmployee,
+          maxPayLimitValuePerEmployee: values.maxPayLimitValuePerEmployee,
           noExpiredDates:
             values.noExpiredDates == null ? false : values.noExpiredDates,
           ticketRegisterSalaryAdvance:
