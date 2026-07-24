@@ -172,7 +172,12 @@ export const CompanyDetail = (props: any) => {
       dataField: 'lastWorkingDayOfPeriod',
       label: 'Ngày chốt công',
       render: (x: any) => {
-        return <p>{!x ? '' : x == 32 ? `Ngày cuối tháng` : `${x}`}</p>;
+        if (x === null || x === undefined || x === '') return <p></p>;
+        const days = Array.isArray(x) ? x : String(x).split(',');
+        const text = days
+          .map((d: any) => (Number(d) === 32 ? 'Ngày cuối tháng' : `${d}`.trim()))
+          .join(', ');
+        return <p>{text}</p>;
       },
     },
     {
