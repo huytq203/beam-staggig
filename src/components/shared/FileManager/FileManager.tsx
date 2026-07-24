@@ -17,6 +17,7 @@ import {
 import { DateTimeHelper } from "@helpers/date-time.helper";
 import { axiosInstance } from "@services/api";
 import { FileManagerService } from "@services/file-manager";
+import { resolveFileManagerUrl } from "@services/file-manager/apis";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { FileManagerMainView } from "./FileManagerMainView";
@@ -85,8 +86,8 @@ export const FileManager = (props: any) => {
             </Button>
             <div>
               <Upload
-                action={`/api/${url}`}
-                // action={`${NEXT_PUBLIC_API_CORE}/file-manager/${url}`}
+                // news -> /api/news/upload (route mới), còn lại -> ${API_CORE}/file-manager/... (BE cũ)
+                action={resolveFileManagerUrl(url)}
                 dragIcon={<IconBolt />}
                 draggable={true}
                 accept={fileType}

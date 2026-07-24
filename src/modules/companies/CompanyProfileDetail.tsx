@@ -153,7 +153,13 @@ const CompanyProfileDetail = (props: any) => {
       label: 'Ngày chốt công',
       dataField: 'lastWorkingDayOfPeriod',
       render: (x: any) => {
-        return <p>{!x ? '' : x == 32 ? `Ngày cuối tháng` : `${x}`}</p>;
+        if (x === null || x === undefined || x === '') return <p></p>;
+        // x có thể là string "14,32" hoặc array [14, 32] -> chuẩn hoá về array
+        const days = Array.isArray(x) ? x : String(x).split(',');
+        const text = days
+          .map((d: any) => (Number(d) === 32 ? 'Ngày cuối tháng' : `${d}`.trim()))
+          .join(', ');
+        return <p>{text}</p>;
       },
       hidden: false,
     },
