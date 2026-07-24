@@ -453,7 +453,7 @@ export const CreateCompanyProfileForm = (props: any) => {
                 label="Loại hình trả lương"
                 component={(props: any) => (
                   <SelectConfigPayFormProfile
-                    // disabled={checkDisabled('payForm')}
+                    disabled={checkDisabled('payForm')}
                     {...props}
                   />
                 )}
@@ -498,7 +498,7 @@ export const CreateCompanyProfileForm = (props: any) => {
                 label="Ngày bắt đầu Chu kỳ công"
                 component={(props: any) => (
                   <Select
-                    // disabled={checkDisabled('workday')}
+                    disabled={checkDisabled('workday')}
                     {...props}
                     multiple={watch('payForm') == 1}
                     max={2}
