@@ -120,7 +120,9 @@ export const CreateTranferFeeForm = (props: any) => {
           setLoading(false);
         }
       })
-      .catch((e) => {});
+      .catch((e) => {
+        setLoading(false);
+      });
   };
 
   return (

@@ -71,8 +71,9 @@ export const TicketUpdateInformationForm = (props: any) => {
           setLoading(false);
         }
       })
-      .catch((e: any) => {});
-    setLoading(false);
+      .catch((e: any) => {
+        setLoading(false);
+      });
   };
 
   const onReject = () => {
@@ -104,11 +105,12 @@ export const TicketUpdateInformationForm = (props: any) => {
           });
           setLoading(false);
         }
+        setVisible(false);
       })
-      .catch((e: any) => {});
-    setLoading(false);
-
-    setVisible(false);
+      .catch((e: any) => {
+        setLoading(false);
+        setVisible(false);
+      });
   };
   useEffect(() => {
     if (!data && !isLoading) {
@@ -369,6 +371,7 @@ export const TicketUpdateInformationForm = (props: any) => {
               //   return onSubmit(getValues());
               // }}
               onCancel={() => setVisible(false)}
+              loading={loading}
             />
           </form>
         </Modal>

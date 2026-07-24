@@ -22,7 +22,7 @@ export const NewsArticleForm = (props: any) => {
     watch,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(CreateArticleSchema),
     defaultValues: {
@@ -182,7 +182,7 @@ export const NewsArticleForm = (props: any) => {
                 control={control}
               />
             </div>
-            <FormActionButton onCancel={onCancel} />
+            <FormActionButton onCancel={onCancel} loading={isSubmitting} />
           </div>
         </form>
       </SpinWrapper>

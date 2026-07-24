@@ -93,7 +93,9 @@ const CreateCompanyType = (props: any) => {
           setLoading(false);
         }
       })
-      .catch((e) => {});
+      .catch((e) => {
+        setLoading(false);
+      });
   };
   useEffect(() => {
     if (!data && !isLoading && !isNew) {

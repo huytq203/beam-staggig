@@ -191,7 +191,10 @@ export const FeePolicyForm = (props: any) => {
         setLoading(false);
       }
       setLoading(false);
-    });
+    })
+      .catch(() => {
+        setLoading(false);
+      });
   };
   const onSelectTemplate = (selectedTemplate: any) => {
     const currentFormValues = getValues();
@@ -368,6 +371,7 @@ export const FeePolicyForm = (props: any) => {
                   <FormActionButton
                     submitButtonText="Tiếp theo"
                     onCancel={onCancel}
+                    loading={loading}
                   />
                 </>
               ) : (

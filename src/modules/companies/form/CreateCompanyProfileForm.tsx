@@ -229,7 +229,7 @@ export const CreateCompanyProfileForm = (props: any) => {
       // payLimitWeekendEnabled: values.payLimitWeekendEnabled,
     };
     setLoading(true);
-    CompanyService.saveOrUpdateProfile(requestObject).then((x: any) => {
+    return CompanyService.saveOrUpdateProfile(requestObject).then((x: any) => {
       if (x) {
         let opts: any = {
           with: 3,
@@ -259,7 +259,10 @@ export const CreateCompanyProfileForm = (props: any) => {
         Notification.error({ ...opts });
         setLoading(false);
       }
-    });
+    })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const onSubmit = (values: any) => {
@@ -283,25 +286,30 @@ export const CreateCompanyProfileForm = (props: any) => {
       ),
       endTime: endDate.tz(TIMEZONE_FORMAT.GMT0).format(),
     };
-    // setLoading(true);
-    CompanyService.checkOverlapProfile(requestObject).then((x: any) => {
-      if (x) {
-        Modal.error({
-          title: 'Đã có profile hoạt động',
-          cancelText: 'Đóng',
-          okButtonProps: {
-            style: {
-              display: 'none',
+    setLoading(true);
+    return CompanyService.checkOverlapProfile(requestObject)
+      .then((x: any) => {
+        if (x) {
+          Modal.error({
+            title: 'Đã có profile hoạt động',
+            cancelText: 'Đóng',
+            okButtonProps: {
+              style: {
+                display: 'none',
+              },
             },
-          },
-          onCancel: () => setLoading(false),
-          content:
-            'Có profile đang hoạt động trong thời gian của profile bạn vừa chọn. Vui lòng lựa chọn thời gian hoạt động khác của profile',
-        });
-      } else {
-        onSaveProfile && onSaveProfile(payload);
-      }
-    });
+            onCancel: () => setLoading(false),
+            content:
+              'Có profile đang hoạt động trong thời gian của profile bạn vừa chọn. Vui lòng lựa chọn thời gian hoạt động khác của profile',
+          });
+          setLoading(false);
+        } else {
+          return onSaveProfile && onSaveProfile(payload);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
   useEffect(() => {
     if (!data && !isLoading && !isNew) {
@@ -490,7 +498,7 @@ export const CreateCompanyProfileForm = (props: any) => {
                 label="Ngày bắt đầu Chu kỳ công"
                 component={(props: any) => (
                   <Select
-                    disabled={checkDisabled('workday')}
+                    // disabled={checkDisabled('workday')}
                     {...props}
                     multiple={watch('payForm') == 1}
                     max={2}

@@ -79,8 +79,9 @@ export const TicketRegisterSalaryForm = (props: any) => {
                 setLoading(false);
               }
             })
-            .catch((e: any) => {});
-          setLoading(false);
+            .catch((e: any) => {
+              setLoading(false);
+            });
         },
         content:
           'Người lao động này đang được nghi nhận là đã nghỉ việc. Bạn có chắc chắn muốn chuyển trạng thái thành "Đang làm việc" và ghi đè thông tin người dùng đăng ký không?',
@@ -113,8 +114,9 @@ export const TicketRegisterSalaryForm = (props: any) => {
                 setLoading(false);
               }
             })
-            .catch((e: any) => {});
-          setLoading(false);
+            .catch((e: any) => {
+              setLoading(false);
+            });
         },
         content:
           'Bạn có chắc chắn muốn ghi đè thông tin người dùng đăng ký không?',
@@ -157,10 +159,12 @@ export const TicketRegisterSalaryForm = (props: any) => {
           });
           setLoading(false);
         }
+        setVisible(false);
       })
-      .catch((e: any) => {});
-    setLoading(false);
-    setVisible(false);
+      .catch((e: any) => {
+        setLoading(false);
+        setVisible(false);
+      });
   };
   const tripartiteAgreement = ['96cfddd5-61c2-40fc-9a69-451fab4b3384'];
 
@@ -662,6 +666,7 @@ export const TicketRegisterSalaryForm = (props: any) => {
               //   return onSubmit(getValues());
               // }}
               onCancel={() => setVisible(false)}
+              loading={loading}
             />
           </form>
         </Modal>

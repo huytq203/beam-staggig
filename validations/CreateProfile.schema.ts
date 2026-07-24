@@ -8,8 +8,9 @@ export const CreateProfileSchema = yup.object({
     .required('Vui lòng nhập tổng hạn mức'),
   maxPayLimitValuePerEmployee: yup
     .number()
+    .nullable()
     .typeError(requiredNumber)
-    .required('Vui lòng nhập hạn mức tối đa mỗi người lao động')
+    // .required('Vui lòng nhập hạn mức tối đa mỗi người lao động')
     .test(
       'is-less-than-credit-limit',
       'Hạn mức tối đa mỗi người lao động phải nhỏ hơn tổng hạn mức',

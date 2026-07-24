@@ -192,7 +192,7 @@ const TransitionWarning = () => {
       notification: values.notification,
       status: values.status,
     };
-    ConfigurationService.baseAdvanceConfig(payload)
+    return ConfigurationService.baseAdvanceConfig(payload)
       .then((response: any) => {
         if (response) {
           Notification.success({
@@ -223,7 +223,7 @@ const TransitionWarning = () => {
       toAccounting: values.toAccounting,
       toEmployees: values.toEmployees,
     };
-    ConfigurationService.advanceReceiverConfig(payload)
+    return ConfigurationService.advanceReceiverConfig(payload)
       .then((response: any) => {
         if (response) {
           Notification.success({
