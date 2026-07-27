@@ -276,6 +276,13 @@ const ListAccountsCompany = (props: any) => {
       render: (e: any) => <p>{StringHelper.formatVND(e, '-')}</p>,
     },
     {
+      title:'Hạn mức tối đa mỗi người lao động',
+      dataIndex: 'payLimitPerEmployee',
+       align: 'right',
+      width: 250,
+      render: (e: any) => <p>{StringHelper.formatVND(e, '-')}</p>,
+    },
+    {
       title: `Hạn mức tính theo ngày công thực tế`,
       dataIndex: 'payLimitByWorkDay',
       width: 250,
