@@ -10,6 +10,7 @@ export enum AuthAPIEnums {
   LOGIN_RECILIATION = '/account/reconciliation-login',
   REFRESH_TOKEN = '/account/refresh-token',
   LOGIN_VERIFY_OTP = '/account/login/verify-otp',
+  LOGIN_RECILIATION_VERIFY_OTP = '/account/reconciliation-login/verify-otp',
 }
 
 export const AuthAPIs = ApiHelper.getListUri(

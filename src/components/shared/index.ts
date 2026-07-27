@@ -8,3 +8,4 @@ export * from './InputNumber';
 export * from './InputWrapper';
 export * from './RequiredAsterisk';
 export * from './RangeComponent';
+export * from './StepSlider';
