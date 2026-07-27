@@ -36,7 +36,17 @@ export class AuthServices {
       return false;
     });
   }
+  // Bước 1 của luồng chốt đối soát: BE kiểm tra quyền hr_admin + mật khẩu rồi GỬI OTP SMS,
+  // trả { requireOtp, phoneHint } và KHÔNG kèm token.
   static async loginReciliation(filter: any) {
     return axiosInstance.post(`${AuthAPIs.LOGIN_RECILIATION}`, filter);
+  }
+
+  // Bước 2: đổi OTP lấy token cho phiên chốt đối soát.
+  static async verifyReciliationLoginOtp(filter: any) {
+    return axiosInstance.post(
+      `${AuthAPIs.LOGIN_RECILIATION_VERIFY_OTP}`,
+      filter
+    );
   }
 }
