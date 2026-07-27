@@ -278,7 +278,7 @@ const ListAccountsCompany = (props: any) => {
     {
       title:'Hạn mức tối đa mỗi người lao động',
       dataIndex: 'payLimitPerEmployee',
-       align: 'right',
+       align: 'right' as 'right',
       width: 250,
       render: (e: any) => <p>{StringHelper.formatVND(e, '-')}</p>,
     },
