@@ -1,17 +1,51 @@
-import { InputWrapper } from '@components/shared';
+import {
+  InputWrapper,
+  StepSlider,
+  STEP_SLIDE_EASE,
+  STEP_SLIDE_MS,
+  usePrefersReducedMotion,
+} from '@components/shared';
 import { Button, Input, Modal, Notification } from '@douyinfe/semi-ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { StringHelper } from '@helpers/string.helper';
 import { AuthServices } from '@services/auth';
-import Cookies from 'js-cookie';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoginSchema } from 'validations/Auth.schema';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { COMMON_FORMAT } from '@constants/common-format';
 import { useQuery } from 'react-query';
 import { ReconciliationService } from '@services/reconciliation';
+import { ReconciliationAPIs } from '@services/reconciliation/apis';
+import { getResponseMessage } from '@services/api/handlers';
+import { VerifyOTP, VerifyOTPHandle } from '@modules/auth/components';
+
+type ReconciliationStep = 'credentials' | 'otp';
+
+interface PendingCredentials {
+  username: string;
+  password: string;
+}
+
+interface OtpChallenge {
+  phoneHint: string;
+  /** Tăng mỗi lần backend phát mã mới. Dùng làm key để dựng lại màn OTP
+   *  ở trạng thái sạch, thay vì kế thừa lỗi/đếm ngược của lần trước. */
+  seq: number;
+}
+
+const GENERIC_RECONCILIATION_ERROR =
+  'Chốt đối soát chưa thành công, vui lòng thử lại.';
+
+// getResponseMessage trả về chính key khi không có bản dịch — với người dùng
+// doanh nghiệp thì một mã lỗi trần còn khó hiểu hơn là không nói gì.
+const describeReconciliationError = (message?: string) => {
+  if (!message) return GENERIC_RECONCILIATION_ERROR;
+  const translated = getResponseMessage(message);
+  return translated === message ? GENERIC_RECONCILIATION_ERROR : translated;
+};
+
 export default function CheckReconciliationPage() {
   const router = useRouter();
   const {
@@ -21,7 +55,17 @@ export default function CheckReconciliationPage() {
     accessKey: accessKey,
   } = router.query;
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState<ReconciliationStep>('credentials');
+  const [challenge, setChallenge] = useState<OtpChallenge | null>(null);
+  const [credentials, setCredentials] = useState<PendingCredentials | null>(
+    null
+  );
+  const [isRequestingOtp, setIsRequestingOtp] = useState(false);
+  const otpRef = useRef<VerifyOTPHandle | null>(null);
+  const credentialsPanelRef = useRef<HTMLDivElement | null>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  const slideDuration = reducedMotion ? 0 : STEP_SLIDE_MS;
+
   const param = {
     companyId: companyId,
     startTime: startDate,
@@ -29,7 +73,7 @@ export default function CheckReconciliationPage() {
     accessKey: accessKey,
   };
 
-  const { data, isLoading, refetch } = useQuery(
+  const { data, refetch } = useQuery(
     ['reconciliation-landing', param],
     () => ReconciliationService.getReconciliationLandingPage(param),
     {
@@ -42,7 +86,6 @@ export default function CheckReconciliationPage() {
     control,
     handleSubmit,
     reset,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(LoginSchema),
@@ -53,98 +96,166 @@ export default function CheckReconciliationPage() {
   });
 
   const handleConfirm = () => {
+    setStep('credentials');
+    setChallenge(null);
+    setCredentials(null);
+    reset();
     setShowLoginForm(true);
   };
 
-  const onSubmit = async (values: any) => {
-    const { username, password } = values;
-    const fileName = data?.fileName;
-    const login = async () => {
-      setLoading(true);
+  const closeModal = () => {
+    setShowLoginForm(false);
+    setStep('credentials');
+    setChallenge(null);
+    setCredentials(null);
+    reset();
+  };
 
-      const loginResponse = await AuthServices.loginReciliation({
-        username: username,
-        password: password,
-      });
-      const response = loginResponse?.data?.data;
-      if (response) {
-        const { access_token: accessToken, refresh_token: refreshToken } =
-          response;
+  const backToCredentials = () => setStep('credentials');
 
-        Cookies.set('ACCESS_TOKEN_LANDING', accessToken, {
-          secure:
-            typeof window !== 'undefined' &&
-            window.location.protocol === 'https:',
-          sameSite: 'lax',
-        });
-        setLoading(false);
-      }
-      return response;
-    };
-    login().then((x: any) => {
-      setLoading(true);
-
-      if (x?.access_token !== undefined) {
-        const dataForm = new FormData();
-        dataForm.append('companyId', `${companyId}`);
-        dataForm.append('type', 'COMPANY_FINAL');
-        dataForm.append('startDate', `${startDate}`);
-        dataForm.append('endDate', `${endDate}`);
-        dataForm.append('description', '');
-        dataForm.append('reconciliationSourceType', 'EMAIL');
-        dataForm.append('fileName', fileName);
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_CORE2}/reconciliation/upload-companies-reconciliation`,
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${x?.access_token}`,
-              // 'Content-Type': 'application/json',
-            },
-            body: dataForm,
-          }
-        ).then((res: any) => {
-          if (res?.status == 200) {
-            Notification.success({
-              content: `Chốt đối soát thành công`,
-              theme: 'light',
-            });
-            localStorage.setItem('isReconcilied', 'true');
-            setShowLoginForm(false);
-            setLoading(false);
-            refetch();
-          } else {
-            const errorMessage = {
-              RECONCILIATION_REPORT_UNAUTHORIZED_ACCESS:
-                'Tài khoản không có quyền chốt đối soát',
-              RECONCILIATION_NOT_ELIGIBLE:
-                'Tài khoản không có quyền chốt đối soát',
-            };
-            Notification.error({
-              // content: ObjectHelper.handleMessage(errorMessage, x.message),
-              content: 'Tài khoản không có quyền chốt đối soát',
-              theme: 'light',
-            });
-            setLoading(false);
-          }
-        });
-      } else {
-        setLoading(false);
-      }
+  // Bước 1: backend kiểm tra quyền hr_admin + mật khẩu rồi gửi OTP SMS,
+  // trả { requireOtp, phoneHint } và KHÔNG kèm token.
+  // Trả về null khi thất bại — interceptor của axios đã tự hiện thông báo lỗi.
+  const requestOtp = async (username: string, password: string) => {
+    const response = await AuthServices.loginReciliation({
+      username: username,
+      password: password,
     });
+    return response?.data?.data ?? null;
+  };
+
+  // Gọi API chốt đối soát bằng token vừa cấp sau khi xác thực OTP.
+  // Cố tình KHÔNG ném lỗi ra ngoài: tới bước này OTP đã bị tiêu huỷ, nên bắt người
+  // dùng nhập lại mã cũ là vô nghĩa — hỏng thì đưa hẳn về bước nhập tài khoản.
+  const finalizeReconciliation = async (accessToken: string) => {
+    const payload = new FormData();
+    payload.append('companyId', `${companyId}`);
+    payload.append('type', 'COMPANY_FINAL');
+    payload.append('startDate', `${startDate}`);
+    payload.append('endDate', `${endDate}`);
+    payload.append('description', '');
+    payload.append('reconciliationSourceType', 'EMAIL');
+    payload.append('fileName', data?.fileName);
+
+    try {
+      const response = await fetch(
+        `${ReconciliationAPIs.UPLOAD_FILE_RECONCILIATION_CONCERN}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: payload,
+        }
+      );
+      // Core bọc kết quả trong CommonResponse: HTTP 200 vẫn có thể mang code lỗi.
+      const body = await response.json().catch(() => null);
+      const code = body?.code ?? response.status;
+
+      if (response.ok && (code === 200 || code === 204)) {
+        Notification.success({
+          content: `Chốt đối soát thành công`,
+          theme: 'light',
+        });
+        localStorage.setItem('isReconcilied', 'true');
+        closeModal();
+        refetch();
+        return;
+      }
+
+      Notification.error({
+        content: describeReconciliationError(body?.message),
+        theme: 'light',
+      });
+      backToCredentials();
+    } catch (error) {
+      Notification.error({
+        content: 'Không kết nối được máy chủ, vui lòng thử lại.',
+        theme: 'light',
+      });
+      backToCredentials();
+    }
+  };
+
+  const onSubmitCredentials = async (values: any) => {
+    if (isRequestingOtp) return;
+    const username = `${values.username}`.trim();
+    const password = `${values.password}`.trim();
+
+    setIsRequestingOtp(true);
+    const response = await requestOtp(username, password);
+    setIsRequestingOtp(false);
+
+    if (!response) return;
+
+    setCredentials({ username, password });
+
+    // Backend tắt OTP và trả token thẳng -> chốt luôn, không dựng bước 2.
+    if (response.access_token) {
+      await finalizeReconciliation(response.access_token);
+      return;
+    }
+
+    if (response.requireOtp) {
+      setChallenge((prev) => ({
+        phoneHint: response.phoneHint ?? '',
+        seq: (prev?.seq ?? 0) + 1,
+      }));
+      setStep('otp');
+    }
+  };
+
+  // Ném lỗi ở đây là chủ ý: VerifyOTP bắt để hiện thông báo và cho nhập lại mã.
+  const handleVerifyOtp = async (otp: string) => {
+    if (!credentials) {
+      throw new Error('Phiên xác thực đã hết hạn, vui lòng đăng nhập lại.');
+    }
+    const response = await AuthServices.verifyReciliationLoginOtp({
+      username: credentials.username,
+      password: credentials.password,
+      otp: otp,
+    });
+    const accessToken = response?.data?.data?.access_token;
+    if (!accessToken) {
+      throw new Error('Mã OTP không đúng hoặc đã hết hạn, vui lòng thử lại!');
+    }
+    await finalizeReconciliation(accessToken);
+  };
+
+  const handleResendOtp = async () => {
+    if (!credentials) {
+      throw new Error('Phiên xác thực đã hết hạn, vui lòng đăng nhập lại.');
+    }
+    const response = await requestOtp(
+      credentials.username,
+      credentials.password
+    );
+    if (!response?.requireOtp) {
+      throw new Error('Không gửi lại được mã, vui lòng thử lại sau giây lát!');
+    }
+    // Giữ nguyên seq: VerifyOTP tự dọn ô nhập và đặt lại đếm ngược, dựng lại
+    // component ở đây sẽ xoá luôn trạng thái "đang gửi lại" mà nó đang hiển thị.
+    setChallenge((prev) => ({
+      phoneHint: response.phoneHint ?? prev?.phoneHint ?? '',
+      seq: prev?.seq ?? 1,
+    }));
   };
 
   useEffect(() => {
     window.addEventListener('storage', handleReconciliation);
 
     function handleReconciliation() {
-      let reconciliationValue = JSON.parse(
-        localStorage.getItem('isReconcilied') || ''
-      );
+      const raw = localStorage.getItem('isReconcilied');
+      let reconciliationValue: any = '';
+      try {
+        reconciliationValue = raw ? JSON.parse(raw) : '';
+      } catch {
+        reconciliationValue = '';
+      }
 
       if (reconciliationValue === true || reconciliationValue === '') {
         if (typeof window !== 'undefined') {
-          setShowLoginForm(false);
+          closeModal();
           refetch();
           localStorage.setItem('isReconcilied', 'false');
         }
@@ -152,7 +263,7 @@ export default function CheckReconciliationPage() {
     }
 
     return () => {
-      window.removeEventListener('click', handleReconciliation);
+      window.removeEventListener('storage', handleReconciliation);
     };
   }, []);
 
@@ -167,70 +278,120 @@ export default function CheckReconciliationPage() {
     >
       {showLoginForm && (
         <Modal
-          width={700}
+          width={600}
           size="small"
           visible={showLoginForm}
-          onOk={() => setShowLoginForm(false)}
-          onCancel={() => setShowLoginForm(false)}
+          onCancel={closeModal}
+          maskClosable={false}
           footer={[]}
         >
-          <p className="mb-5">
-            Để thực hiện chốt đối soát vui lòng nhập thông tin tài khoản đã được
-            cấp quyền
-          </p>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <InputWrapper
-              field="username"
-              label="Tài khoản"
-              component={(props: any) => (
-                <Input
-                  size="large"
-                  placeholder="Nhập vào tài khoản"
-                  type="text"
-                  maxLength={30}
-                  {...props}
-                />
-              )}
-              control={control}
-              errors={errors}
+          {/* Thanh tiến trình chạy cùng nhịp với cú trượt: vạch đầy sang phải
+              đúng lúc bước mới trượt vào từ phải. */}
+          <div className="h-[3px] w-full rounded-full bg-gray-100 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{
+                width: step === 'otp' ? '100%' : '50%',
+                transition: `width ${slideDuration}ms ${STEP_SLIDE_EASE}`,
+              }}
             />
+          </div>
 
-            <InputWrapper
-              field="password"
-              label="Mật khẩu"
-              component={(props: any) => (
-                <Input
-                  size="large"
-                  placeholder="Password"
-                  mode="password"
-                  type="password"
-                  maxLength={30}
-                  {...props}
+          <StepSlider
+            activeIndex={step === 'otp' ? 1 : 0}
+            onSettled={(index) => {
+              // Bước vừa rời đi bị ẩn khỏi thứ tự tab, nên focus phải được giao
+              // lại cho bước mới — nếu không, người dùng bàn phím rơi về đầu tài liệu.
+              if (index === 1) {
+                otpRef.current?.focusFirst();
+                return;
+              }
+              credentialsPanelRef.current
+                ?.querySelector<HTMLInputElement>('input')
+                ?.focus({ preventScroll: true });
+            }}
+          >
+            <div className="pt-6" ref={credentialsPanelRef}>
+              <div className="text-xl font-bold text-main">
+                Xác thực tài khoản
+              </div>
+              <div className="mt-2 mb-6 text-subtext">
+                Để thực hiện chốt đối soát vui lòng nhập thông tin tài khoản đã
+                được cấp quyền
+              </div>
+
+              <form onSubmit={handleSubmit(onSubmitCredentials)}>
+                <InputWrapper
+                  field="username"
+                  label="Tài khoản"
+                  component={(props: any) => (
+                    <Input
+                      size="large"
+                      placeholder="Nhập vào tài khoản"
+                      type="text"
+                      maxLength={30}
+                      {...props}
+                    />
+                  )}
+                  control={control}
+                  errors={errors}
                 />
-              )}
-              control={control}
-              errors={errors}
-            />
-            <div className="mt-7 text-right">
-              <Button
-                // className="w-11/12"
-                onClick={() => setShowLoginForm(false)}
-                type="primary"
-              >
-                Đóng
-              </Button>
 
-              <Button
-                className="ml-5"
-                loading={loading}
-                htmlType="submit"
-                type="primary"
-                theme="solid"
-              >
-                Chốt đối soát
-              </Button>
+                <InputWrapper
+                  field="password"
+                  label="Mật khẩu"
+                  component={(props: any) => (
+                    <Input
+                      size="large"
+                      placeholder="Password"
+                      mode="password"
+                      type="password"
+                      maxLength={30}
+                      {...props}
+                    />
+                  )}
+                  control={control}
+                  errors={errors}
+                />
+
+                <div className="mt-7 text-right">
+                  <Button onClick={closeModal} type="primary">
+                    Đóng
+                  </Button>
+
+                  <Button
+                    className="ml-5"
+                    loading={isRequestingOtp}
+                    htmlType="submit"
+                    type="primary"
+                    theme="solid"
+                  >
+                    Tiếp tục
+                  </Button>
+                </div>
+              </form>
             </div>
-          </form>
+
+            <div className="pt-6">
+              {challenge && (
+                <VerifyOTP
+                  key={challenge.seq}
+                  ref={otpRef}
+                  variant="embedded"
+                  maskedDestination={challenge.phoneHint}
+                  description={
+                    challenge.phoneHint
+                      ? `Mã gồm 6 chữ số vừa được gửi tới số điện thoại ${challenge.phoneHint}. Nhập mã để hoàn tất chốt đối soát.`
+                      : 'Mã gồm 6 chữ số vừa được gửi tới số điện thoại của tài khoản. Nhập mã để hoàn tất chốt đối soát.'
+                  }
+                  confirmLabel="Chốt đối soát"
+                  onVerify={handleVerifyOtp}
+                  onResend={handleResendOtp}
+                  onBack={backToCredentials}
+                />
+              )}
+            </div>
+          </StepSlider>
         </Modal>
       )}
       <div className="w-3/5 h-96 rounded-xl flex-col justify-center items-center flex mt-6">
