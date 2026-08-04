@@ -1,6 +1,6 @@
 import { AppPagination } from '@components/shared';
 import AppTable from '@components/shared/AppTable/AppTable';
-import { IconEdit } from '@douyinfe/semi-icons';
+import { IconEdit,IconLock } from '@douyinfe/semi-icons';
 import { Tag, Typography } from '@douyinfe/semi-ui';
 import { StringHelper } from '@helpers/string.helper';
 import { UserSevice } from '@services/users';
@@ -81,6 +81,16 @@ export const UserList = (props: any) => {
                 <span className="beam-break-world">{username}</span>
               </Text>
             )}
+             {record.accountLocked ? (
+              <Tag
+                className="ml-2 align-middle"
+                color="orange"
+                prefixIcon={<IconLock size="small" />}
+                size="small"
+              >
+                Đã khóa
+              </Tag>
+            ) : null}
           </>
         );
       },

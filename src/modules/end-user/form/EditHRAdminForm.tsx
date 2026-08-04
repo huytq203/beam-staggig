@@ -12,8 +12,11 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
-import { EnabledStatusSelect } from '../constants';
+import { useQuery, useQueryClient } from 'react-query';
+import {
+  AccountLockedStatusSelect,
+  EnabledStatusSelect,
+} from '../constants';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { CompanySelect, DependentCompanySelect } from '@components/widgets';
@@ -27,6 +30,7 @@ export const EditHRAdminForm = (props: any) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data, isFetching, isLoading, error, isError } = useQuery(
     ['beam_detail', beamUsername],
     () => UserSevice.getHRAdmin(beamUsername),
@@ -53,6 +57,7 @@ export const EditHRAdminForm = (props: any) => {
       email: '',
       code: '',
       enabled: true,
+      accountLocked: false,
       eligibleCompaniesSwitch: false,
       eligibleCompanies: [],
     } as any,
@@ -73,7 +78,7 @@ export const EditHRAdminForm = (props: any) => {
   //   setValue('eligibleCompanies', watch('companyIds'));
   // }, [watch('eligibleCompaniesSwitch')]);
 
-  const onSubmitValues = (values: any) => {
+  const onSubmitValues = async (values: any) => {
     const payload = {
       // passwordType: createPassword,
       // password: {
@@ -96,6 +101,8 @@ export const EditHRAdminForm = (props: any) => {
         ? values.phone.trim()
         : null,
       enabled: values.enabled,
+      accountLocked:
+        data?.accountLocked === true ? values.accountLocked === true : false,
       role: values.role,
       companyIds: values.companyIds.length > 0 ? values.companyIds : '',
       reason: values.reason,
@@ -103,17 +110,23 @@ export const EditHRAdminForm = (props: any) => {
         ? values.eligibleCompanies
         : [],
     };
-    setLoading(true);
-    UserSevice.updateHRAdmin(payload).then((x: any) => {
+    try {
+      setLoading(true);
+      const x: any = await UserSevice.updateHRAdmin(payload);
+
       if (x?.code == 200 && x?.message == 'OK') {
+        await queryClient.invalidateQueries(['hr-list'], {
+          refetchInactive: true,
+        });
         Notification.success({
           content: 'Chỉnh sửa HR Admin thành công',
           theme: 'light',
         });
-        router.push(`/end-user/hr-admin`);
+        await router.push(`/end-user/hr-admin`);
       }
-    });
-    setLoading(false);
+    } finally {
+      setLoading(false);
+    }
     // onSave && onSave(values);
   };
   useEffect(() => {
@@ -190,6 +203,17 @@ export const EditHRAdminForm = (props: any) => {
                 errors={errors}
                 control={control}
               />
+              <InputWrapper
+                field="accountLocked"
+                label="Trạng thái tạm khóa"
+                component={(props: any) => (
+                  <AccountLockedStatusSelect {...props} />
+                )}
+                errors={errors}
+                control={control}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="flex grid-cols-2 gap-10">
                   <InputWrapper
@@ -224,41 +248,41 @@ export const EditHRAdminForm = (props: any) => {
                   )}
                 </div>
               </div>
-              <Modal
-                title="Vui lòng nêu lí do chuyển trạng thái hoạt động vào ô bên dưới"
-                visible={visible}
-                onOk={() => {
-                  setVisible(false);
-                  setValue('enabled', false);
-                }}
-                // afterClose={() => setValue('reason', '')}
-                onCancel={() => {
-                  setVisible(false);
-                  setValue('enabled', true);
-                }}
-                closeOnEsc={true}
-                okText={'Xác nhận'}
-                cancelText={'Huỷ'}
-                okButtonProps={{
-                  disabled: watch('reason')?.length > 0 ? false : true,
-                }}
-              >
-                <InputWrapper
-                  field="reason"
-                  component={(props: any) => (
-                    <TextArea
-                      maxLength={200}
-                      maxCount={200}
-                      showCounter
-                      showClear
-                      {...props}
-                    />
-                  )}
-                  errors={errors}
-                  control={control}
-                />
-              </Modal>
             </div>
+            <Modal
+              title="Vui lòng nêu lí do chuyển trạng thái hoạt động vào ô bên dưới"
+              visible={visible}
+              onOk={() => {
+                setVisible(false);
+                setValue('enabled', false);
+              }}
+              // afterClose={() => setValue('reason', '')}
+              onCancel={() => {
+                setVisible(false);
+                setValue('enabled', true);
+              }}
+              closeOnEsc={true}
+              okText={'Xác nhận'}
+              cancelText={'Huỷ'}
+              okButtonProps={{
+                disabled: watch('reason')?.length > 0 ? false : true,
+              }}
+            >
+              <InputWrapper
+                field="reason"
+                component={(props: any) => (
+                  <TextArea
+                    maxLength={200}
+                    maxCount={200}
+                    showCounter
+                    showClear
+                    {...props}
+                  />
+                )}
+                errors={errors}
+                control={control}
+              />
+            </Modal>
             <div className="flex gap-4 justify-end">
               <Button
                 type="primary"

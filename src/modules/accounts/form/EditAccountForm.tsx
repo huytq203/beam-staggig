@@ -9,6 +9,7 @@ import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { CompanySelect } from '@components/widgets';
 import { useAuth } from '@contexts/authentication';
+import { AccountLockedStatusSelect } from '@modules/end-user/constants';
 export const EditAccountForm = (props: any) => {
   const { beamUsername } = props;
   const { profile }: any = useAuth();
@@ -37,6 +38,7 @@ export const EditAccountForm = (props: any) => {
       email: '',
       code: '',
       enabled: true,
+      accountLocked: false,
     },
   });
   useEffect(() => {
@@ -56,6 +58,8 @@ export const EditAccountForm = (props: any) => {
       email: values?.email?.trim(),
       code: values?.code?.trim(),
       phone: values?.phone?.trim(),
+      accountLocked:
+        data?.accountLocked === true ? values.accountLocked === true : false,
     };
     UserSevice.updateAccountInformation(payload).then((x: any) => {
       if (x?.code == 200 && x?.message == 'OK') {
@@ -111,6 +115,15 @@ export const EditAccountForm = (props: any) => {
               field='phone'
               label='Số điện thoại'
               component={(props: any) => <Input {...props} />}
+              errors={errors}
+              control={control}
+            />
+            <InputWrapper
+              field='accountLocked'
+              label='Trạng thái tạm khóa'
+              component={(props: any) => (
+                <AccountLockedStatusSelect {...props} />
+              )}
               errors={errors}
               control={control}
             />
