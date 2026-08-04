@@ -1,7 +1,7 @@
 import { AppPagination } from "@components/shared";
 import AppTable from "@components/shared/AppTable/AppTable";
 import { IconEdit, IconMinus, IconLock } from "@douyinfe/semi-icons";
-import { Tag, Typography } from "@douyinfe/semi-ui";
+import { Tag, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { StringHelper } from "@helpers/string.helper";
 import { UserSevice } from "@services/users";
 import { useRouter } from "next/router";
@@ -79,14 +79,20 @@ export const BeamAdminList = (props: any) => {
               </Text>
             )}
             {record.accountLocked ? (
-              <Tag
-                className="ml-2 align-middle"
-                color="orange"
-                prefixIcon={<IconLock size="small" />}
-                size="small"
+              <Tooltip
+                content="Tài khoản đã bị tạm khóa do đăng nhập sai 5 lần."
+                position="top"
               >
-                Đã khóa
-              </Tag>
+                <Tag
+                  className="ml-2 align-middle"
+                  color="orange"
+                  prefixIcon={<IconLock size="small" />}
+                  size="small"
+                  tabIndex={0}
+                >
+                  Đã khóa
+                </Tag>
+              </Tooltip>
             ) : null}
           </>
         );
