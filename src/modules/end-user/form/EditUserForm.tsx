@@ -15,7 +15,10 @@ import {
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
-import { EnabledStatusSelect } from '../constants';
+import {
+  AccountLockedStatusSelect,
+  EnabledStatusSelect,
+} from '../constants';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
@@ -58,6 +61,7 @@ export const EditUserForm = (props: any) => {
       email: '',
       code: '',
       enabled: true,
+      accountLocked: false,
       reason: '',
     },
   });
@@ -91,6 +95,8 @@ export const EditUserForm = (props: any) => {
         ? values.phone.trim()
         : null,
       enabled: values.enabled,
+      accountLocked:
+        data?.accountLocked === true ? values.accountLocked === true : false,
       role: values.role,
     };
     setLoading(true);
@@ -171,6 +177,15 @@ export const EditUserForm = (props: any) => {
                     field="enabled"
                     label="Trạng thái"
                     component={(props: any) => <EnabledStatusSelect {...props} />}
+                    errors={errors}
+                    control={control}
+                  />
+                  <InputWrapper
+                    field="accountLocked"
+                    label="Trạng thái tạm khóa"
+                    component={(props: any) => (
+                      <AccountLockedStatusSelect {...props} />
+                    )}
                     errors={errors}
                     control={control}
                   />
