@@ -3,6 +3,7 @@ import { IconFilter, IconSearch, IconPlus } from '@douyinfe/semi-icons';
 import { Button, Input, Select } from '@douyinfe/semi-ui';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { accountLockedFilterOptions } from '../constants';
 export const HRAdminFilter = (props: any) => {
   const { onFilter, refetch } = props;
   const {
@@ -17,6 +18,7 @@ export const HRAdminFilter = (props: any) => {
       companyIds: '',
       page: 1,
       size: 10,
+      accountLocked: '',
     },
   });
 
@@ -38,6 +40,9 @@ export const HRAdminFilter = (props: any) => {
     return onFilter({
       searchWord: values.searchWord.trim(),
       companyIds: values.companyIds,
+      ...(values.accountLocked === ''
+        ? {}
+        : { accountLocked: values.accountLocked === 'true' }),
       page: 1,
       size: 10,
     });
@@ -61,12 +66,25 @@ export const HRAdminFilter = (props: any) => {
             )}
           />
           <Controller
+            name="accountLocked"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                className="w-full"
+                size="large"
+                optionList={accountLockedFilterOptions}
+              />
+            )}
+          />
+          <Controller
             name="companyIds"
             control={control}
             render={({ field }) => (
               <CompanySelect {...field} multiple={true} filter={true} />
             )}
           />
+          
           {/* <div className='flex-grow'>
             <Controller name='role' control={control} render={({ field }) => <RolesSelect {...field} />} />
           </div> */}

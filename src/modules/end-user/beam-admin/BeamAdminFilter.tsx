@@ -3,6 +3,7 @@ import { IconFilter, IconSearch } from '@douyinfe/semi-icons';
 import { Button, Input, Select } from '@douyinfe/semi-ui';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { accountLockedFilterOptions } from '../constants';
 export const BeamAdminFilter = (props: any) => {
   const { onFilter, refetch } = props;
   const {
@@ -17,6 +18,7 @@ export const BeamAdminFilter = (props: any) => {
       page: 1,
       size: 10,
       role: '',
+      accountLocked: '',
     },
   });
 
@@ -38,6 +40,9 @@ export const BeamAdminFilter = (props: any) => {
     return onFilter({
       searchWord: values.searchWord.trim(),
       role: values.role ? values.role : '',
+      ...(values.accountLocked === ''
+        ? {}
+        : { accountLocked: values.accountLocked === 'true' }),
       page: 1,
       size: 10,
     });
@@ -62,6 +67,21 @@ export const BeamAdminFilter = (props: any) => {
               )}
             />
           </div>
+           <div className="flex-grow">
+            <Controller
+              name="accountLocked"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  className="w-full"
+                  size="large"
+                  showClear={true}
+                  optionList={accountLockedFilterOptions}
+                />
+              )}
+            />
+          </div>
           <div className="flex-grow">
             <Controller
               name="role"
@@ -71,6 +91,7 @@ export const BeamAdminFilter = (props: any) => {
               )}
             />
           </div>
+         
           <Button
             icon={<IconFilter />}
             theme="solid"

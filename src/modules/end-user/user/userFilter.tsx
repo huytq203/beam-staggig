@@ -9,6 +9,7 @@ import { Button, DatePicker, Input, Select } from '@douyinfe/semi-ui';
 import moment from 'moment-timezone';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { accountLockedFilterOptions } from '../constants';
 export const UserFilter = (props: any) => {
   const { onFilter, refetch } = props;
   const {
@@ -26,6 +27,7 @@ export const UserFilter = (props: any) => {
       status: '',
       dateType: 3,
       dateRanges: [],
+      accountLocked: '',
     },
   });
 
@@ -62,6 +64,9 @@ export const UserFilter = (props: any) => {
         : '',
       companyId: values.companyId ? values.companyId : '',
       status: values.status,
+      ...(values.accountLocked === ''
+        ? {}
+        : { accountLocked: values.accountLocked === 'true' }),
     });
   };
   return (
@@ -122,6 +127,18 @@ export const UserFilter = (props: any) => {
                 insetInput
                 format="dd/MM/yyyy"
                 {...field}
+              />
+            )}
+          />
+          <Controller
+            name="accountLocked"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                className="w-full"
+                size="large"
+                optionList={accountLockedFilterOptions}
               />
             )}
           />
