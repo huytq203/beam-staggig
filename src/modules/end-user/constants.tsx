@@ -24,6 +24,12 @@ export const accountLockedStatusOptions = [
   { value: 1, label: 'Đang tạm khóa', disabled: true },
 ];
 
+export const accountLockedFilterOptions = [
+  { value: '', label: 'Tất cả trạng thái khóa' },
+  { value: 'false', label: 'Không bị khóa' },
+  { value: 'true', label: 'Đang tạm khóa' },
+];
+
 export const AccountLockedStatusSelect = forwardRef<any, any>(
   ({ value, onChange, ...rest }, ref) => (
     <Select
