@@ -25,7 +25,7 @@ export const accountLockedStatusOptions = [
 ];
 
 export const accountLockedFilterOptions = [
-  { value: '', label: 'Tất cả trạng thái khóa' },
+  { value: '', label: 'Chọn trạng thái khóa' },
   { value: 'false', label: 'Không bị khóa' },
   { value: 'true', label: 'Đang tạm khóa' },
 ];
