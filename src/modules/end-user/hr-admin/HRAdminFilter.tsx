@@ -73,6 +73,7 @@ export const HRAdminFilter = (props: any) => {
                 {...field}
                 className="w-full"
                 size="large"
+                showClear={true}
                 optionList={accountLockedFilterOptions}
               />
             )}
