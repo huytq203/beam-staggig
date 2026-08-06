@@ -1,86 +1,60 @@
 import { UserRole } from '@constants/auth.constants';
 import { Select } from '@douyinfe/semi-ui';
+import type { SelectProps } from '@douyinfe/semi-ui/lib/es/select';
 import { ProtectedWrapper } from '../Auth';
-import { FunctionBase } from '@helpers/fuction-base.helpers';
 import { forwardRef } from 'react';
 
-export const RolesSelect = forwardRef<any, any>((props: any, ref: any) => {
-  const { onChange, value, multiple = false, showClear = false } = props;
-  const roleListSupper = [
-    {
-      value: 'beam_admin',
-      label: 'Beam Admin',
-    },
-    {
-      value: 'reconciler',
-      label: 'Đối soát viên',
-    },
-    {
-      value: 'accountant',
-      label: 'Kế toán viên',
-    },
-    {
-      value: 'controller',
-      label: 'Kiểm soát viên',
-    },
-    {
-      value: 'sale',
-      label: 'Cán bộ kinh doanh',
-    },
-    {
-      value: 'cs',
-      label: 'Dịch vụ khách hàng',
-    },
-  ];
-  const roleListBeam = [
-    {
-      value: 'reconciler',
-      label: 'Đối soát viên',
-    },
-    {
-      value: 'accountant',
-      label: 'Kế toán viên',
-    },
-    {
-      value: 'controller',
-      label: 'Kiểm soát viên',
-    },
-    {
-      value: 'sale',
-      label: 'Cán bộ kinh doanh',
-    },
-    {
-      value: 'cs',
-      label: 'Dịch vụ khách hàng',
-    },
-  ];
+const roleListSuper = [
+  { value: 'beam_admin', label: 'Beam Admin' },
+  { value: 'reconciler', label: 'Đối soát viên' },
+  { value: 'accountant', label: 'Kế toán viên' },
+  { value: 'controller', label: 'Kiểm soát viên' },
+  { value: 'sale', label: 'Cán bộ kinh doanh' },
+  { value: 'cs', label: 'Dịch vụ khách hàng' },
+];
+
+const roleListBeam = roleListSuper.filter(
+  ({ value }) => value !== UserRole.BEAM_ADMIN
+);
+
+type RolesSelectProps = Omit<SelectProps, 'optionList'>;
+
+export const RolesSelect = forwardRef<any, RolesSelectProps>((props, ref) => {
+  const {
+    className = 'w-full',
+    multiple = false,
+    onChange,
+    placeholder = 'Chọn quyền',
+    showClear = false,
+    size = 'large',
+    value,
+    ...selectProps
+  } = props;
+
+  const renderSelect = (optionList: SelectProps['optionList']) => (
+    <Select
+      {...selectProps}
+      ref={ref}
+      className={className}
+      multiple={multiple}
+      onChange={onChange}
+      optionList={optionList}
+      placeholder={placeholder}
+      showClear={showClear}
+      size={size}
+      value={value}
+    />
+  );
+
   return (
     <>
       <ProtectedWrapper allowedRoles={[UserRole.SUPER_ADMIN]}>
-        <Select
-          ref={ref}
-          // filter={FunctionBase.customSelectFilterOption}
-          value={value}
-          optionList={roleListSupper}
-          placeholder="Chọn quyền"
-          onChange={(e: any) => onChange(e)}
-          multiple={multiple}
-          showClear={showClear}
-        />
+        {renderSelect(roleListSuper)}
       </ProtectedWrapper>
       <ProtectedWrapper
         allowedRoles={[UserRole.BEAM_ADMIN, UserRole.CONTROLLER, UserRole.SALE]}
       >
-        <Select
-          ref={ref}
-          // filter={FunctionBase.customSelectFilterOption}
-          value={value}
-          optionList={roleListBeam}
-          placeholder="Chọn quyền"
-          onChange={(e: any) => onChange(e)}
-          multiple={multiple}
-          showClear={showClear}
-        />
+        {renderSelect(roleListBeam)}
       </ProtectedWrapper>
     </>
   );

@@ -1,16 +1,16 @@
-import { AppPagination } from '@components/shared';
-import AppTable from '@components/shared/AppTable/AppTable';
-import { IconEdit } from '@douyinfe/semi-icons';
-import { Tag, Typography } from '@douyinfe/semi-ui';
-import { StringHelper } from '@helpers/string.helper';
-import { UserSevice } from '@services/users';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { BeamAdminFilter } from './BeamAdminFilter';
-import { useAuth } from '@contexts/authentication';
-import { UserRole } from '@constants/auth.constants';
-import { ProtectedWrapper } from '@components/widgets/Auth';
+import { AppPagination } from "@components/shared";
+import AppTable from "@components/shared/AppTable/AppTable";
+import { IconEdit, IconMinus, IconLock } from "@douyinfe/semi-icons";
+import { Tag, Tooltip, Typography } from "@douyinfe/semi-ui";
+import { StringHelper } from "@helpers/string.helper";
+import { UserSevice } from "@services/users";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { BeamAdminFilter } from "./BeamAdminFilter";
+import { useAuth } from "@contexts/authentication";
+import { UserRole } from "@constants/auth.constants";
+import { ProtectedWrapper } from "@components/widgets/Auth";
 export const BeamAdminList = (props: any) => {
   const { basePath, onClickViewDetail, showFilter = true } = props;
   const { authCheckByRole, profile } = useAuth();
@@ -21,20 +21,20 @@ export const BeamAdminList = (props: any) => {
     UserRole.CONTROLLER,
   ]);
   const [filter, setFilter] = useState({
-    searchWord: '',
+    searchWord: "",
     page: 1,
     size: 10,
     // enable: true,
   });
 
   const { data, isLoading, refetch } = useQuery(
-    ['beam-admin-list', filter],
+    ["beam-admin-list", filter],
     () => UserSevice.getAllBeamAdmin(filter),
     {
       // enabled: !isLoading,
       refetchOnWindowFocus: false,
       refetchIntervalInBackground: true,
-    }
+    },
   );
 
   const { Text } = Typography;
@@ -47,8 +47,8 @@ export const BeamAdminList = (props: any) => {
   };
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'index',
+      title: "STT",
+      dataIndex: "index",
       width: 100,
       render: (name: any, record: any, index: any) => {
         return (
@@ -59,8 +59,8 @@ export const BeamAdminList = (props: any) => {
       },
     },
     {
-      title: 'Tài khoản',
-      dataIndex: 'username',
+      title: "Tài khoản",
+      dataIndex: "username",
       width: 250,
       render: (username: any, record: any, a: any) => {
         return (
@@ -78,13 +78,29 @@ export const BeamAdminList = (props: any) => {
                 <span className="beam-break-world">{username}</span>
               </Text>
             )}
+            {record.accountLocked ? (
+              <Tooltip
+                content="Tài khoản đã bị tạm khóa do đăng nhập sai 5 lần."
+                position="top"
+              >
+                <Tag
+                  className="ml-2 align-middle"
+                  color="orange"
+                  prefixIcon={<IconLock size="small" />}
+                  size="small"
+                  tabIndex={0}
+                >
+                  Đã khóa
+                </Tag>
+              </Tooltip>
+            ) : null}
           </>
         );
       },
     },
     {
-      title: 'Tên nhân viên',
-      dataIndex: 'fullName',
+      title: "Tên nhân viên",
+      dataIndex: "fullName",
       width: 250,
       render: (name: any, record: any, a: any) => {
         return (
@@ -95,48 +111,48 @@ export const BeamAdminList = (props: any) => {
       },
     },
     {
-      title: 'Mã nhân viên',
-      dataIndex: 'code',
+      title: "Mã nhân viên",
+      dataIndex: "code",
       width: 200,
     },
     {
-      title: 'Quyền',
-      dataIndex: 'role',
+      title: "Quyền",
+      dataIndex: "role",
       width: 200,
       render: (e: any) => {
-        let label = '';
+        let label = "";
         switch (e) {
-          case 'super_admin':
-            label = 'Supper Admin';
+          case "super_admin":
+            label = "Supper Admin";
             break;
-          case 'beam_admin':
-            label = 'Beam Admin';
+          case "beam_admin":
+            label = "Beam Admin";
             break;
-          case 'reconciler':
-            label = 'Đối soát viên';
+          case "reconciler":
+            label = "Đối soát viên";
             break;
-          case 'accountant':
-            label = 'Kế toán viên';
+          case "accountant":
+            label = "Kế toán viên";
             break;
-          case 'controller':
-            label = 'Kiểm soát viên';
+          case "controller":
+            label = "Kiểm soát viên";
             break;
-          case 'hr_admin':
-            label = 'HR Admin';
+          case "hr_admin":
+            label = "HR Admin";
             break;
-          case 'sale':
-            label = 'Cán bộ kinh doanh';
+          case "sale":
+            label = "Cán bộ kinh doanh";
             break;
-          case 'cs':
-            label = 'Dịch vụ khách hàng';
+          case "cs":
+            label = "Dịch vụ khách hàng";
             break;
         }
         return <span>{label}</span>;
       },
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
+      title: "Email",
+      dataIndex: "email",
       width: 250,
       render: (email: any, record: any, a: any) => {
         return (
@@ -147,26 +163,26 @@ export const BeamAdminList = (props: any) => {
       },
     },
     {
-      title: 'Số điện thoại',
-      dataIndex: 'phone',
+      title: "Số điện thoại",
+      dataIndex: "phone",
       width: 180,
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'enabled',
+      title: "Trạng thái",
+      dataIndex: "enabled",
       width: 150,
       render: (x: any) => {
-        let label = '';
-        let className: any = '';
+        let label = "";
+        let className: any = "";
 
         switch (x) {
           case true:
-            label = 'Hoạt động';
-            className = 'green';
+            label = "Hoạt động";
+            className = "green";
             break;
           case false:
-            label = 'Không hoạt động';
-            className = 'grey';
+            label = "Không hoạt động";
+            className = "grey";
             break;
         }
         return (
@@ -177,8 +193,8 @@ export const BeamAdminList = (props: any) => {
       },
     },
     {
-      title: 'Nội dung cập nhật',
-      dataIndex: 'id',
+      title: "Nội dung cập nhật",
+      dataIndex: "id",
       width: 180,
       render: (userId: any, record: any) => {
         return (
@@ -193,9 +209,9 @@ export const BeamAdminList = (props: any) => {
       },
     },
     {
-      title: 'Hành động',
-      key: 'action',
-      dataIndex: 'action',
+      title: "Hành động",
+      key: "action",
+      dataIndex: "action",
       width: 150,
       render: (_: any, record: any) => {
         return (

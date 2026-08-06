@@ -18,3 +18,28 @@ export const EnabledStatusSelect = forwardRef<any, any>(
   )
 );
 EnabledStatusSelect.displayName = 'EnabledStatusSelect';
+
+export const accountLockedStatusOptions = [
+  { value: 0, label: 'Hoạt động' },
+  { value: 1, label: 'Đang tạm khóa', disabled: true },
+];
+
+export const accountLockedFilterOptions = [
+  { value: '', label: 'Chọn trạng thái khóa' },
+  { value: 'false', label: 'Không bị khóa' },
+  { value: 'true', label: 'Đang tạm khóa' },
+];
+
+export const AccountLockedStatusSelect = forwardRef<any, any>(
+  ({ value, onChange, ...rest }, ref) => (
+    <Select
+      {...rest}
+      ref={ref}
+      disabled={value !== true}
+      optionList={accountLockedStatusOptions}
+      value={value === true ? 1 : 0}
+      onChange={(v: any) => onChange?.(v === 1)}
+    />
+  )
+);
+AccountLockedStatusSelect.displayName = 'AccountLockedStatusSelect';

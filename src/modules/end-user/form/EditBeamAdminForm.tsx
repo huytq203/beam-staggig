@@ -12,9 +12,12 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { EditAccount } from 'validations/creatAccount.schema';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { RolesSelect } from '@components/widgets/Select/RolesSelect';
-import { EnabledStatusSelect } from '../constants';
+import {
+  AccountLockedStatusSelect,
+  EnabledStatusSelect,
+} from '../constants';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
@@ -26,6 +29,7 @@ export const EditBeamAdminForm = (props: any) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data, isFetching, isLoading, error, isError } = useQuery(
     ['beam_detail', beamUsername],
     () => UserSevice.getAdmin(beamUsername),
@@ -52,6 +56,7 @@ export const EditBeamAdminForm = (props: any) => {
       email: '',
       code: '',
       enabled: true,
+      accountLocked: false,
     } as any,
   });
 
@@ -64,7 +69,7 @@ export const EditBeamAdminForm = (props: any) => {
     }
   }, [isLoading, isFetching]);
 
-  const onSubmitValues = (values: any) => {
+  const onSubmitValues = async (values: any) => {
     const payload = {
       // passwordType: createPassword,
       // password: {
@@ -87,20 +92,28 @@ export const EditBeamAdminForm = (props: any) => {
         ? values.phone.trim()
         : null,
       enabled: values.enabled,
+      accountLocked:
+        data?.accountLocked === true ? values.accountLocked === true : false,
       role: values.role,
       reason: values.reason,
     };
-    setLoading(true);
-    UserSevice.updateAdmin(payload).then((x: any) => {
+    try {
+      setLoading(true);
+      const x: any = await UserSevice.updateAdmin(payload);
+
       if (x?.code == 200 && x?.message == 'OK') {
+        await queryClient.invalidateQueries(['beam-admin-list'], {
+          refetchInactive: true,
+        });
         Notification.success({
           content: 'Chỉnh sửa quản trị viên thành công',
           theme: 'light',
         });
-        router.push(`/end-user/beam-admin`);
+        await router.push(`/end-user/beam-admin`);
       }
-    });
-    setLoading(false);
+    } finally {
+      setLoading(false);
+    }
     // onSave && onSave(values);
   };
   useEffect(() => {
@@ -171,6 +184,15 @@ export const EditBeamAdminForm = (props: any) => {
                 field="enabled"
                 label="Trạng thái"
                 component={(props: any) => <EnabledStatusSelect {...props} />}
+                errors={errors}
+                control={control}
+              />
+              <InputWrapper
+                field="accountLocked"
+                label="Trạng thái tạm khóa"
+                component={(props: any) => (
+                  <AccountLockedStatusSelect {...props} />
+                )}
                 errors={errors}
                 control={control}
               />

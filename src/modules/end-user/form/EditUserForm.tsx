@@ -14,8 +14,11 @@ import {
 } from '@douyinfe/semi-ui';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
-import { EnabledStatusSelect } from '../constants';
+import { useQuery, useQueryClient } from 'react-query';
+import {
+  AccountLockedStatusSelect,
+  EnabledStatusSelect,
+} from '../constants';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
 import { FunctionBase } from '@helpers/fuction-base.helpers';
@@ -26,6 +29,7 @@ import { SpinWrapper } from '@components/widgets/ContentWrapper/SpinWrapper';
 export const EditUserForm = (props: any) => {
   const { beamUsername, setCheckData } = props;
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data, isFetching, isLoading, error, isError } = useQuery(
     ['beam_detail', beamUsername],
     () => UserSevice.getAdmin(beamUsername),
@@ -58,6 +62,7 @@ export const EditUserForm = (props: any) => {
       email: '',
       code: '',
       enabled: true,
+      accountLocked: false,
       reason: '',
     },
   });
@@ -68,7 +73,7 @@ export const EditUserForm = (props: any) => {
     }
   }, [isLoading, isFetching]);
 
-  const onSubmitValues = (values: any) => {
+  const onSubmitValues = async (values: any) => {
     const payload = {
       // passwordType: createPassword,
       // password: {
@@ -91,19 +96,27 @@ export const EditUserForm = (props: any) => {
         ? values.phone.trim()
         : null,
       enabled: values.enabled,
+      accountLocked:
+        data?.accountLocked === true ? values.accountLocked === true : false,
       role: values.role,
     };
-    setLoading(true);
-    UserSevice.updateUser(payload).then((x: any) => {
+    try {
+      setLoading(true);
+      const x: any = await UserSevice.updateUser(payload);
+
       if (x?.code == 200 && x?.message == 'OK') {
+        await queryClient.invalidateQueries(['user-list'], {
+          refetchInactive: true,
+        });
         Notification.success({
           content: 'Chỉnh sửa người dùng thành công',
           theme: 'light',
         });
-        router.push(`/end-user/user`);
+        await router.push(`/end-user/user`);
       }
-    });
-    setLoading(false);
+    } finally {
+      setLoading(false);
+    }
     // onSave && onSave(values);
   };
   useEffect(() => {
@@ -171,6 +184,15 @@ export const EditUserForm = (props: any) => {
                     field="enabled"
                     label="Trạng thái"
                     component={(props: any) => <EnabledStatusSelect {...props} />}
+                    errors={errors}
+                    control={control}
+                  />
+                  <InputWrapper
+                    field="accountLocked"
+                    label="Trạng thái tạm khóa"
+                    component={(props: any) => (
+                      <AccountLockedStatusSelect {...props} />
+                    )}
                     errors={errors}
                     control={control}
                   />
