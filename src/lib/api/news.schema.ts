@@ -28,6 +28,12 @@ export const createNewsSchema = yup.object({
     .nullable()
     .default(null)
     .transform((v) => sanitizeRichText(v) ?? null),
+  ref: yup
+    .string()
+    .max(512, "Nguồn tối đa 512 ký tự")
+    .nullable()
+    .default(null)
+    .transform((v) => sanitizePlainText(v) ?? null),
   isHotNew: yup.boolean().default(false),
   tags: yup.array().of(yup.string().max(50)).nullable().default(null),
   shows: yup.boolean().default(true),
@@ -44,6 +50,11 @@ export const updateNewsSchema = yup.object({
     .nullable()
     .transform((v) => sanitizePlainText(v) ?? null),
   content: yup.string().nullable().transform((v) => sanitizeRichText(v) ?? null),
+  ref: yup
+    .string()
+    .max(512)
+    .nullable()
+    .transform((v) => sanitizePlainText(v) ?? null),
   isHotNew: yup.boolean(),
   tags: yup.array().of(yup.string().max(50)).nullable(),
   shows: yup.boolean(),
