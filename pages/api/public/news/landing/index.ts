@@ -28,8 +28,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const result = await getPublicNewsList({ name, page, size });
 
-    // Nội dung công khai, đổi ít → cho CDN/proxy của landing cache được.
-    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+    // Dữ liệu được quản trị trực tiếp từ admin và cần phản ánh ngay trên landing.
+    // Không cache ở API này để tránh CDN tiếp tục trả phiên bản trước khi chỉnh sửa.
+    res.setHeader("Cache-Control", "no-store, max-age=0");
     return res.status(200).json(publicOk(result));
   } catch (error) {
     console.error("[PUBLIC NEWS LANDING ERROR]", error);
