@@ -7,11 +7,13 @@ import {
   findAll,
   findById,
   findPagination,
+  findPublicBySlug,
+  findPublicPagination,
   setIsHotNew,
   setShows,
   updateArticle,
 } from "./news.repository";
-import { CreateNew, FindParams, UpdateNews } from "./types/type";
+import { CreateNew, FindParams, PublicFindParams, UpdateNews } from "./types/type";
 
 export async function getListNews() {
   return findAll();
@@ -19,6 +21,18 @@ export async function getListNews() {
 
 export async function getListNewsWithPagination(params: FindParams) {
   return findPagination(params);
+}
+
+/** Danh sách cho landing page — chỉ bài ACTIVE + đang hiện, không kèm body. */
+export async function getPublicNewsList(params: PublicFindParams) {
+  return findPublicPagination(params);
+}
+
+/** Chi tiết cho landing page. Bài ẩn/DRAFT trả 404 như BE cũ. */
+export async function getPublicNewsBySlug(slug: string) {
+  const result = await findPublicBySlug(slug);
+  if (!result) throw new NotFoundError("Không tìm thấy bài viết");
+  return result;
 }
 
 export async function getNewsById(id: string) {

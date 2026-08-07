@@ -15,6 +15,7 @@ model news_articles {
   cover_image String?   @db.VarChar(512)
   description String?   @db.Text
   content     String?   @db.LongText
+  ref         String?   @db.VarChar(512)
   is_hot_new  Boolean?  @default(false)
   tags        Json?
   shows       Boolean?  @default(true)

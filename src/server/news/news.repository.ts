@@ -5,8 +5,18 @@ import crypto from "crypto";
 import { NotFoundError } from "src/lib/api/errors";
 import { prisma } from "src/lib/prisma/prisma";
 import { ApiResponse, toApiRestponse } from "src/lib/response-api/response";
-import { NewsResponse, toNewsEntity, toNewsResponse } from "./news.entity";
-import { CreateNew, FindParams, UpdateNews } from "./types/type";
+import { SpringPage, toSpringPage } from "src/lib/response-api/springPage";
+import {
+  NewsResponse,
+  PUBLIC_LIST_SELECT,
+  PublicNewsDetail,
+  PublicNewsListItem,
+  toNewsEntity,
+  toNewsResponse,
+  toPublicNewsDetail,
+  toPublicNewsListItem,
+} from "./news.entity";
+import { CreateNew, FindParams, PublicFindParams, UpdateNews } from "./types/type";
 
 const MAX_PAGE_SIZE = 100;
 
@@ -44,6 +54,43 @@ export async function findPagination(params: FindParams): Promise<ApiResponse<Ne
 export async function findById(id: string): Promise<NewsResponse | null> {
   const row = await prisma.news_articles.findUnique({ where: { id } });
   return row ? toNewsResponse(row) : null;
+}
+
+/**
+ * Chỉ bài đã phát hành và đang bật hiển thị.
+ * `shows` dùng `not: false` thay vì `true` để row cũ có giá trị NULL vẫn hiện —
+ * khớp với cách `toNewsResponse` mặc định `shows ?? true`.
+ */
+const PUBLIC_WHERE: Prisma.news_articlesWhereInput = {
+  status: "ACTIVE",
+  shows: { not: false },
+};
+
+export async function findPublicPagination(
+  params: PublicFindParams
+): Promise<SpringPage<PublicNewsListItem>> {
+  const page = Math.max(Math.floor(params.page ?? 1), 1);
+  const size = clampPageSize(params.size ?? 10);
+  const where: Prisma.news_articlesWhereInput = params.name
+    ? { ...PUBLIC_WHERE, title: { contains: params.name } }
+    : PUBLIC_WHERE;
+
+  const [rows, total] = await prisma.$transaction([
+    prisma.news_articles.findMany({
+      where,
+      select: PUBLIC_LIST_SELECT,
+      orderBy: { created_at: "desc" },
+      skip: (page - 1) * size,
+      take: size,
+    }),
+    prisma.news_articles.count({ where }),
+  ]);
+  return toSpringPage(rows, total, page, size, toPublicNewsListItem);
+}
+
+export async function findPublicBySlug(slug: string): Promise<PublicNewsDetail | null> {
+  const row = await prisma.news_articles.findFirst({ where: { ...PUBLIC_WHERE, slug } });
+  return row ? toPublicNewsDetail(row) : null;
 }
 
 export async function addNewArticle(body: CreateNew, userId: string): Promise<NewsResponse> {

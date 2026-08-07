@@ -30,6 +30,22 @@ module.exports = semi({
       },
     ],
   },
+  // Landing page gọi `/news/landing` và `/news/detail/{slug}` (không có prefix
+  // `/api`) theo contract của BE cũ. Map sang route handler tương ứng.
+  //
+  // CẢNH BÁO: chỉ khớp đúng hai path này. Tuyệt đối không dùng `/news/:path*`
+  // — sẽ đè trang admin `/news/articles` (pages/news/articles/index.tsx).
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: '/news/landing', destination: '/api/public/news/landing' },
+        { source: '/news/detail/:slug', destination: '/api/public/news/detail/:slug' },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
+
   async headers() {
     const isProd = process.env.NODE_ENV === 'production';
     const baseHeaders = [
