@@ -113,7 +113,7 @@ export const EditHRAdminAccount = yup.object({
     .typeError("Email không hợp lệ")
     .nullable()
     .trim(),
-  phone: yup.string().trim().required("Vui lòng nhập số điện thoại").matches(vnPhoneRegExp, vnPhoneMsg),
+  // phone: yup.string().trim().required("Vui lòng nhập số điện thoại").matches(vnPhoneRegExp, vnPhoneMsg),
   // fullName: yup.string().trim().required('Vui lòng nhập họ và tên').nullable(),
   username: yup.string().trim().required("Vui lòng nhập tên đăng nhập nhân viên").nullable(),
   companyIds: yup.array().min(1, "Vui lòng chọn doanh nghiệp").required("Vui lòng chọn doanh nghiệp").nullable(),
