@@ -228,7 +228,7 @@ export const ChangeLogDetail = (props: any) => {
         setCampaignTypePrevious(response?.name);
       });
     }
-  }, [openModal?.isOpenModal, curentData, previousData]);
+  }, [openModal?.isOpenModal]);
 
   const arrayModel = Object.values(ModelTypeEnum);
   const onOpenPicker = () => {
