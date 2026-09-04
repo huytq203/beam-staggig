@@ -7,7 +7,7 @@ import { AuthAPIs } from './apis';
 // phiên"; đừng thêm `expires` lại vì tiện, sẽ phá yêu cầu đó.
 //
 // Mốc hết hạn thật của phiên không nằm ở cookie mà ở claim `exp` của refresh
-// token, do useIdleLogout kiểm mỗi giây.
+// token, do useIdleLogout kiểm theo chu kỳ ngắn.
 const getCookieOptions = (): Cookies.CookieAttributes => {
   const isSecure =
     typeof window !== 'undefined' && window.location.protocol === 'https:';

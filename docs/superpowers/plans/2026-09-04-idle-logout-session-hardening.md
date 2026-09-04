@@ -4,7 +4,14 @@
 
 **Goal:** Tự động đăng xuất khi user không tương tác với web trong 15 phút, xoá sạch access + refresh token, và mất phiên khi đóng trình duyệt.
 
-**Architecture:** Một hook `useIdleLogout` chạy `setInterval(1s)` trong `AuthenticationProvider`, so sánh timestamp thay vì dùng `setTimeout` dài (timer dài bị browser throttle khi tab ở nền và sai giờ khi máy sleep). Mốc hoạt động cuối lưu ở `localStorage` nên đồng bộ giữa mọi tab. Cookie token đổi sang dạng session cookie (không có `expires`) để chết khi đóng browser. Mốc hết hạn tuyệt đối của phiên đọc động từ claim `exp` của refresh token thay vì hardcode.
+> **Cập nhật yêu cầu sau triển khai (04/09/2026):** Bỏ modal cảnh báo và thời
+> gian chờ 60 giây; khi đủ 15 phút không tương tác thì đăng xuất ngay. Giảm
+> throttle ghi nhận hoạt động từ 5 giây xuống 1 giây và kiểm tra trạng thái phiên
+> mỗi 500ms. Cập nhật này thay thế các phần liên quan đến `IDLE_WARNING_MS`,
+> `IdleWarningModal`, `showWarning`, `remainingMs` và `extendSession` bên dưới;
+> các phần đó được giữ lại để lưu lịch sử quyết định ban đầu.
+
+**Architecture:** Một hook `useIdleLogout` chạy `setInterval(500ms)` trong `AuthenticationProvider`, so sánh timestamp thay vì dùng `setTimeout` dài (timer dài bị browser throttle khi tab ở nền và sai giờ khi máy sleep). Mốc hoạt động cuối lưu ở `localStorage` nên đồng bộ giữa mọi tab. Cookie token đổi sang dạng session cookie (không có `expires`) để chết khi đóng browser. Mốc hết hạn tuyệt đối của phiên đọc động từ claim `exp` của refresh token thay vì hardcode.
 
 **Tech Stack:** Next.js 15 (Pages Router), React 18, TypeScript, `js-cookie`, `jwt-decode@3.1.2`, Semi UI (`@douyinfe/semi-ui`), axios.
 
