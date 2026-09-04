@@ -62,6 +62,32 @@ export const LoginForm = (props: any) => {
     }
   }, [router.query.error]);
 
+  useEffect(() => {
+    const reason = router.query.reason;
+    if (!reason) {
+      return;
+    }
+
+    // Nội dung khác nhau vì hai lý do này khác nhau với user: một cái do họ để
+    // máy không dùng, một cái do phiên đã sống hết đời.
+    const messages: Record<string, string> = {
+      idle:
+        "Phiên làm việc đã hết hạn do không có thao tác trong 15 phút. Vui lòng đăng nhập lại!",
+      expired: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!",
+    };
+    const content = messages[String(reason)];
+    if (!content) {
+      return;
+    }
+
+    Notification.warning({
+      content,
+      theme: "light",
+      position: "top",
+      duration: 8,
+    });
+  }, [router.query.reason]);
+
   const {
     control,
     handleSubmit,
