@@ -8,7 +8,7 @@ const readEnvMs = (raw: string | undefined, fallback: number): number => {
 /** Không thao tác quá mốc này thì đăng xuất. */
 export const IDLE_TIMEOUT_MS = readEnvMs(
   process.env.NEXT_PUBLIC_IDLE_TIMEOUT_MS,
-  15 * 60 * 1000
+  16 * 60 * 1000
 );
 
 // Scroll bắn hàng trăm event mỗi giây; ghi localStorage mỗi event sẽ giật UI.
