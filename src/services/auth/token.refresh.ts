@@ -2,17 +2,18 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { AuthAPIs } from './apis';
 
-// Cookie sống N ngày để token còn qua lần đóng/mở browser.
-// Nên đặt <= SSO Session Max của Keycloak realm `ewa` (cần chỉnh phía Keycloak).
-const TOKEN_COOKIE_EXPIRES_DAYS = 7;
-
+// Không đặt `expires` -> đây là session cookie, trình duyệt tự xoá khi đóng
+// hẳn browser. Đây chính là cơ chế đáp ứng yêu cầu "đóng trình duyệt thì mất
+// phiên"; đừng thêm `expires` lại vì tiện, sẽ phá yêu cầu đó.
+//
+// Mốc hết hạn thật của phiên không nằm ở cookie mà ở claim `exp` của refresh
+// token, do useIdleLogout kiểm mỗi giây.
 const getCookieOptions = (): Cookies.CookieAttributes => {
   const isSecure =
     typeof window !== 'undefined' && window.location.protocol === 'https:';
   return {
     secure: isSecure,
     sameSite: 'lax',
-    expires: TOKEN_COOKIE_EXPIRES_DAYS,
   };
 };
 
