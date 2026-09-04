@@ -1,6 +1,10 @@
 import { menuOptions } from '@constants/menu.constant';
+import { IdleWarningModal } from '@components/widgets/IdleWarningModal';
 import { AuthHelper } from '@helpers/auth.helper';
+import { useIdleLogout } from '@hooks/useIdleLogout';
 import { AuthServices } from '@services/auth';
+import { clearSession } from '@services/auth/session.cleanup';
+import { startSessionTracking } from '@services/auth/session.activity';
 import { saveAuthTokens } from '@services/auth/token.refresh';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
@@ -62,6 +66,10 @@ export const AuthenticationProvider = ({ children }: any) => {
   const [state, setState] = useState(authInitialState);
 
   const [profile, setProfile] = useState<any>(null);
+
+  // Đặt ở đây vì AuthenticationProvider bọc toàn bộ app (pages/_app.tsx),
+  // không cần thêm provider riêng.
+  const { showWarning, remainingMs, extendSession } = useIdleLogout();
 
   const [listAllowedUrl, setListAllowedUrl] = useState(() => {
     let listAllowedUrl: any = [];
@@ -173,20 +181,23 @@ export const AuthenticationProvider = ({ children }: any) => {
     // đặt được qua Set-Cookie). Vì axios đọc token bằng JS để gắn header
     // Authorization, HttpOnly thật sự cần chuyển sang mô hình BFF (server proxy).
     // Trong kiến trúc hiện tại, hardening tối đa: Secure (chỉ gửi qua HTTPS) +
-    // SameSite=Lax (chặn CSRF cho các request unsafe cross-site).
-    // expires: token sống qua lần đóng/mở browser để refresh session (Hướng B).
+    // SameSite=Lax + session cookie (không `expires`) để đóng browser là mất phiên.
     const isSecure =
       typeof window !== 'undefined' && window.location.protocol === 'https:';
     const secureCookieOptions: Cookies.CookieAttributes = {
       secure: isSecure,
       sameSite: 'lax',
-      expires: 7,
     };
 
     Cookies.set('user', JSON.stringify(user), secureCookieOptions);
 
     saveAuthTokens(accessToken, refreshToken);
-    localStorage.setItem('isLogout', 'false');
+    try {
+      localStorage.setItem('isLogout', 'false');
+    } catch {
+      // mất cờ đồng bộ không được phép làm hỏng lần đăng nhập thành công
+    }
+    startSessionTracking();
 
     setState((prev: any) => ({
       ...prev,
@@ -311,11 +322,8 @@ export const AuthenticationProvider = ({ children }: any) => {
     //   ? `companyId=${companyId}&startDate=${startDate}&endDate=${endDate}`
     //   : config.redirectPath;
     stopLoadingState();
-    localStorage.setItem('isLogout', 'true');
     const path = config.noRedirect ? '/' : decodeURIComponent(redirectPath);
-    Cookies.remove('ACCESS_TOKEN');
-    Cookies.remove('user');
-    Cookies.remove('REFRESH_TOKEN');
+    clearSession();
     window.location.href = decodeURIComponent(
       `${getAuthUrl()}/auth/signin?redirectUrl=${path}`
     );
@@ -334,6 +342,11 @@ export const AuthenticationProvider = ({ children }: any) => {
       }}
     >
       {children}
+      <IdleWarningModal
+        visible={showWarning}
+        remainingMs={remainingMs}
+        onExtend={extendSession}
+      />
     </AuthenticationContext.Provider>
   );
 };

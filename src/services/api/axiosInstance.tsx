@@ -6,6 +6,7 @@ import { getResponseMessage } from './handlers';
 import { NEXT_PUBLIC_API_MAINTENANCE } from '@constants/endpoints';
 import { useState } from 'react';
 import { refreshAccessToken } from '../auth/token.refresh';
+import { clearSession } from '../auth/session.cleanup';
 export const getAccessToken = () => {
   const access_token = Cookies.get('ACCESS_TOKEN');
   return access_token;
@@ -73,9 +74,7 @@ axiosInstance.interceptors.request.use(
         token = await refreshAccessToken();
       } catch (refreshError) {
         // Refresh token cũng hết hạn -> dọn phiên + về trang đăng nhập.
-        Cookies.remove('ACCESS_TOKEN');
-        Cookies.remove('REFRESH_TOKEN');
-        Cookies.remove('user');
+        clearSession();
         if (typeof window !== 'undefined') {
           window.location.href = '/auth/signin';
         }
@@ -127,8 +126,7 @@ axiosInstance.interceptors.response.use(
     // }
 
     if (statusCode == 403 || statusCode == 401) {
-      Cookies.remove('ACCESS_TOKEN');
-      Cookies.remove('REFRESH_TOKEN');
+      clearSession();
       if (typeof window !== 'undefined') {
         window.location.href = '/auth/signin';
       }
@@ -233,9 +231,7 @@ axiosInstance.interceptors.response.use(
     }
 
     if (statusCode == 401) {
-      Cookies.remove('ACCESS_TOKEN');
-      Cookies.remove('REFRESH_TOKEN');
-      Cookies.remove('user');
+      clearSession();
 
       if (typeof window !== 'undefined') {
         window.location.href = '/auth/signin';
