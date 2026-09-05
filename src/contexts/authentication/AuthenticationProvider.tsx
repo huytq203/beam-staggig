@@ -1,5 +1,4 @@
 import { menuOptions } from '@constants/menu.constant';
-import { IdleWarningModal } from '@components/widgets/IdleWarningModal';
 import { AuthHelper } from '@helpers/auth.helper';
 import { useIdleLogout } from '@hooks/useIdleLogout';
 import { AuthServices } from '@services/auth';
@@ -69,7 +68,7 @@ export const AuthenticationProvider = ({ children }: any) => {
 
   // Đặt ở đây vì AuthenticationProvider bọc toàn bộ app (pages/_app.tsx),
   // không cần thêm provider riêng.
-  const { showWarning, remainingMs, extendSession } = useIdleLogout();
+  useIdleLogout();
 
   const [listAllowedUrl, setListAllowedUrl] = useState(() => {
     let listAllowedUrl: any = [];
@@ -342,11 +341,6 @@ export const AuthenticationProvider = ({ children }: any) => {
       }}
     >
       {children}
-      <IdleWarningModal
-        visible={showWarning}
-        remainingMs={remainingMs}
-        onExtend={extendSession}
-      />
     </AuthenticationContext.Provider>
   );
 };

@@ -8,17 +8,14 @@ const readEnvMs = (raw: string | undefined, fallback: number): number => {
 /** Không thao tác quá mốc này thì đăng xuất. */
 export const IDLE_TIMEOUT_MS = readEnvMs(
   process.env.NEXT_PUBLIC_IDLE_TIMEOUT_MS,
-  15 * 60 * 1000
-);
-
-/** Hiện modal cảnh báo trước thời điểm đăng xuất bấy nhiêu lâu. */
-export const IDLE_WARNING_MS = readEnvMs(
-  process.env.NEXT_PUBLIC_IDLE_WARNING_MS,
-  60 * 1000
+  16 * 60 * 1000
 );
 
 // Scroll bắn hàng trăm event mỗi giây; ghi localStorage mỗi event sẽ giật UI.
-export const ACTIVITY_THROTTLE_MS = 5 * 1000;
+export const ACTIVITY_THROTTLE_MS = 1 * 1000;
+
+// Kiểm tra ngắn hơn 1 giây để logout sát mốc idle hơn mà không tạo timer dài.
+export const SESSION_CHECK_INTERVAL_MS = 500;
 
 // Mạng chậm không được phép giữ user ở lại trong phiên đáng ra đã chết.
 export const LOGOUT_API_TIMEOUT_MS = 3 * 1000;

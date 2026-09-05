@@ -2,8 +2,7 @@ import {
   ACTIVITY_EVENTS,
   ACTIVITY_THROTTLE_MS,
   IDLE_TIMEOUT_MS,
-  IDLE_WARNING_MS,
-  LAST_ACTIVITY_KEY,
+  SESSION_CHECK_INTERVAL_MS,
   SESSION_ENDED_KEY,
 } from '@constants/session.constants';
 import {
@@ -13,46 +12,25 @@ import {
 import { forceSignOut } from '@services/auth/session.cleanup';
 import { getTokenExpMs } from '@services/auth/token.helper';
 import Cookies from 'js-cookie';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 // Gate bằng cookie `user` thay vì import byPassUrl từ @contexts/authentication:
 // contexts đã import ngược lại hook này, thêm import kia sẽ tạo vòng.
 const isAuthenticated = (): boolean => Boolean(Cookies.get('user'));
 
-interface UseIdleLogoutResult {
-  showWarning: boolean;
-  remainingMs: number;
-  extendSession: () => void;
-}
-
-export const useIdleLogout = (): UseIdleLogoutResult => {
-  const [showWarning, setShowWarning] = useState(false);
-  const [remainingMs, setRemainingMs] = useState(IDLE_WARNING_MS);
-
-  // Listener đọc showWarning qua ref: closure của addEventListener sẽ giữ giá
-  // trị state cũ nếu đọc trực tiếp.
-  const showWarningRef = useRef(false);
+export const useIdleLogout = (): void => {
   const lastWriteRef = useRef(0);
-  // Chặn gọi forceSignOut nhiều lần khi tick 1s chạy chồng lúc đang redirect.
+  // Chặn gọi forceSignOut nhiều lần khi các tick chạy chồng lúc đang redirect.
   const signingOutRef = useRef(false);
 
-  useEffect(() => {
-    showWarningRef.current = showWarning;
-  }, [showWarning]);
-
-  const registerActivity = useCallback((force = false) => {
+  const registerActivity = useCallback(() => {
     const nowMs = Date.now();
-    if (!force && nowMs - lastWriteRef.current < ACTIVITY_THROTTLE_MS) {
+    if (nowMs - lastWriteRef.current < ACTIVITY_THROTTLE_MS) {
       return;
     }
     lastWriteRef.current = nowMs;
     touchLastActivity();
   }, []);
-
-  const extendSession = useCallback(() => {
-    registerActivity(true);
-    setShowWarning(false);
-  }, [registerActivity]);
 
   // Lắng nghe tương tác của user.
   useEffect(() => {
@@ -67,16 +45,7 @@ export const useIdleLogout = (): UseIdleLogoutResult => {
       touchLastActivity();
     }
 
-    const onActivity = () => {
-      // Khi modal cảnh báo đang mở, tương tác thường KHÔNG được gia hạn phiên.
-      // Nếu cho phép, chính cú click mở modal hoặc một cú scroll vô ý sẽ đóng
-      // modal ngay lập tức và cảnh báo trở nên vô nghĩa. Chỉ nút "Tiếp tục làm
-      // việc" mới gia hạn.
-      if (showWarningRef.current) {
-        return;
-      }
-      registerActivity();
-    };
+    const onActivity = () => registerActivity();
 
     ACTIVITY_EVENTS.forEach((eventName) => {
       window.addEventListener(eventName, onActivity, { passive: true });
@@ -89,7 +58,7 @@ export const useIdleLogout = (): UseIdleLogoutResult => {
     };
   }, [registerActivity]);
 
-  // Vòng kiểm tra mỗi giây.
+  // Vòng kiểm tra ngắn để logout ngay khi chạm mốc idle.
   useEffect(() => {
     if (!isAuthenticated()) {
       return;
@@ -122,15 +91,7 @@ export const useIdleLogout = (): UseIdleLogoutResult => {
         void forceSignOut('idle');
         return;
       }
-
-      // 3. Sắp hết giờ -> bật cảnh báo và đếm ngược.
-      if (idleForMs >= IDLE_TIMEOUT_MS - IDLE_WARNING_MS) {
-        setShowWarning(true);
-        setRemainingMs(IDLE_TIMEOUT_MS - idleForMs);
-      } else {
-        setShowWarning(false);
-      }
-    }, 1000);
+    }, SESSION_CHECK_INTERVAL_MS);
 
     return () => {
       window.clearInterval(intervalId);
@@ -147,18 +108,6 @@ export const useIdleLogout = (): UseIdleLogoutResult => {
         window.location.href = `/auth/signin?reason=${event.newValue}`;
         return;
       }
-
-      if (event.key === LAST_ACTIVITY_KEY) {
-        // Tab khác vừa có thao tác (hoặc vừa bấm "Tiếp tục làm việc") -> tab này
-        // đóng cảnh báo theo, tránh cảnh báo ma ở tab đang nằm nền.
-        const ts = Number(event.newValue);
-        if (
-          Number.isFinite(ts) &&
-          Date.now() - ts < IDLE_TIMEOUT_MS - IDLE_WARNING_MS
-        ) {
-          setShowWarning(false);
-        }
-      }
     };
 
     window.addEventListener('storage', onStorage);
@@ -166,6 +115,4 @@ export const useIdleLogout = (): UseIdleLogoutResult => {
       window.removeEventListener('storage', onStorage);
     };
   }, []);
-
-  return { showWarning, remainingMs, extendSession };
 };
