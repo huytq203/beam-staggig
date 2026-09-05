@@ -8,13 +8,8 @@ frontend:
         - npx prisma generate
     build:
       commands:
-        # Amplify Hosting (Gen 1) does NOT pass Console env vars to the SSR Lambda runtime.
-        # Persist them into .env.production so Next.js bakes them into the server bundle.
-        # If your Amplify supports "Compute environment variables" (newer), prefer that and remove this line.
-        # `|| true`: grep exits 1 when none of these vars are set in the Amplify
-        # Console (which fails the build). Config already lives in the committed
-        # .env; Console vars, when present, are appended here to override it.
         - env | grep -E '^(DATABASE_URL|CORS_ALLOWED_ORIGINS|KEYCLOAK_ISSUER|CLOUDFLARE_ACCOUNT_ID|CLOUDFLARE_R2_ACCESS_KEY_ID|CLOUDFLARE_R2_SECRET_ACCESS_KEY|CLOUDFLARE_R2_BUCKET|CLOUDFLARE_R2_PUBLIC_URL)=' >> .env.production || true
+        - "echo 'CORS_ALLOWED_ORIGINS=http://localhost:*,http://127.0.0.1:*,https://www.flexpay.vn,https://admin.flexpay.vn,https://beam-staging.vercel.app,https://beam-stagging.vercel.app,https://beam-landing-ewa.vercel.app' >> .env.production"
         - npm run build
   artifacts:
     baseDirectory: .next
