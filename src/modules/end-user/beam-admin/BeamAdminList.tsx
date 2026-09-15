@@ -1,7 +1,7 @@
 import { AppPagination } from "@components/shared";
 import AppTable from "@components/shared/AppTable/AppTable";
-import { IconEdit, IconMinus, IconLock } from "@douyinfe/semi-icons";
-import { Tag, Tooltip, Typography } from "@douyinfe/semi-ui";
+import { IconEdit, IconLock } from "@douyinfe/semi-icons";
+import { Button, Tag, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { StringHelper } from "@helpers/string.helper";
 import { UserSevice } from "@services/users";
 import { useRouter } from "next/router";
@@ -11,6 +11,7 @@ import { BeamAdminFilter } from "./BeamAdminFilter";
 import { useAuth } from "@contexts/authentication";
 import { UserRole } from "@constants/auth.constants";
 import { ProtectedWrapper } from "@components/widgets/Auth";
+import { AccountUnlockButton } from "../AccountUnlockButton";
 export const BeamAdminList = (props: any) => {
   const { basePath, onClickViewDetail, showFilter = true } = props;
   const { authCheckByRole, profile } = useAuth();
@@ -218,13 +219,25 @@ export const BeamAdminList = (props: any) => {
           <ProtectedWrapper
             allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
           >
-            <div className="flex gap-3 pl-3">
-              <IconEdit
-                onClick={() =>
-                  router.push(`${record?.username}/edit-information`)
-                }
-                className="cursor-pointer"
-              />
+            <div className="flex items-center justify-center gap-1">
+              <Tooltip content="Chỉnh sửa tài khoản" position="top">
+                <Button
+                  aria-label={`Chỉnh sửa tài khoản ${record?.username || ""}`}
+                  icon={<IconEdit />}
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={() =>
+                    router.push(`${record?.username}/edit-information`)
+                  }
+                />
+              </Tooltip>
+              {record?.accountLocked ? (
+                <AccountUnlockButton
+                  accountType="admin"
+                  username={record.username}
+                  onSuccess={refetch}
+                />
+              ) : null}
             </div>
           </ProtectedWrapper>
         );

@@ -130,6 +130,13 @@ export const COMMON_FIELD = [
     },
   },
   {
+    field: 'accountLocked',
+    text: 'Trạng thái khóa tài khoản',
+    convertData: function (data: any) {
+      return data === true ? 'Đã khóa' : data === false ? 'Đã mở khóa' : '';
+    },
+  },
+  {
     field: 'status',
     text: 'Trạng thái',
     convertData: function (data: any) {

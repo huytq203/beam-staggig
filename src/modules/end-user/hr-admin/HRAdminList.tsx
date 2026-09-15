@@ -1,7 +1,7 @@
 import { AppPagination } from '@components/shared';
 import AppTable from '@components/shared/AppTable/AppTable';
-import { IconEdit,IconLock } from '@douyinfe/semi-icons';
-import { Tag, Tooltip, Typography } from '@douyinfe/semi-ui';
+import { IconEdit, IconLock } from '@douyinfe/semi-icons';
+import { Button, Tag, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { StringHelper } from '@helpers/string.helper';
 import { UserSevice } from '@services/users';
 import { useRouter } from 'next/router';
@@ -11,6 +11,7 @@ import { HRAdminFilter } from './HRAdminFilter';
 import { ProtectedWrapper } from '@components/widgets/Auth';
 import { UserRole } from '@constants/auth.constants';
 import { useAuth } from '@contexts/authentication';
+import { AccountUnlockButton } from '../AccountUnlockButton';
 export const HRAdminList = (props: any) => {
   const { basePath, onClickViewDetail, showFilter = true } = props;
   const { profile } = useAuth();
@@ -183,18 +184,38 @@ export const HRAdminList = (props: any) => {
       width: 140,
       render: (_: any, record: any) => {
         return (
-          <ProtectedWrapper
-            allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
-          >
-            <div className="flex gap-3 pl-3">
-              <IconEdit
-                onClick={() =>
-                  router.push(`${record?.username}/edit-information-hr`)
-                }
-                className="cursor-pointer"
-              />
-            </div>
-          </ProtectedWrapper>
+          <div className="flex items-center justify-center gap-1">
+            <ProtectedWrapper
+              allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}
+            >
+              <Tooltip content="Chỉnh sửa tài khoản" position="top">
+                <Button
+                  aria-label={`Chỉnh sửa tài khoản ${record?.username || ''}`}
+                  icon={<IconEdit />}
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={() =>
+                    router.push(`${record?.username}/edit-information-hr`)
+                  }
+                />
+              </Tooltip>
+            </ProtectedWrapper>
+            {record?.accountLocked ? (
+              <ProtectedWrapper
+                allowedRoles={[
+                  UserRole.BEAM_ADMIN,
+                  UserRole.SUPER_ADMIN,
+                  UserRole.CUSTOMER_SERVICE,
+                ]}
+              >
+                <AccountUnlockButton
+                  accountType="hr-admin"
+                  username={record.username}
+                  onSuccess={refetch}
+                />
+              </ProtectedWrapper>
+            ) : null}
+          </div>
         );
       },
     },
