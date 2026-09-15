@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { UserFilter } from './userFilter';
+import { AccountUnlockButton } from '../AccountUnlockButton';
 
 const EMPTY_VALUE = '—';
 
@@ -222,17 +223,26 @@ export const UserList = (props: any) => {
               UserRole.CUSTOMER_SERVICE,
             ]}
           >
-            <Tooltip content="Chỉnh sửa tài khoản" position="top">
-              <Button
-                aria-label={`Chỉnh sửa tài khoản ${record?.username || ''}`}
-                icon={<IconEdit />}
-                theme="borderless"
-                type="tertiary"
-                onClick={() =>
-                  router.push(`${record?.username}/edit-information-user`)
-                }
-              />
-            </Tooltip>
+            <div className="flex items-center justify-center gap-1">
+              <Tooltip content="Chỉnh sửa tài khoản" position="top">
+                <Button
+                  aria-label={`Chỉnh sửa tài khoản ${record?.username || ''}`}
+                  icon={<IconEdit />}
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={() =>
+                    router.push(`${record?.username}/edit-information-user`)
+                  }
+                />
+              </Tooltip>
+              {record?.accountLocked ? (
+                <AccountUnlockButton
+                  accountType="user"
+                  username={record.username}
+                  onSuccess={refetch}
+                />
+              ) : null}
+            </div>
           </ProtectedWrapper>
         );
       },

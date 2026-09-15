@@ -2,6 +2,20 @@ import { axiosInstance } from '../api/axiosInstance';
 import { UserAPIs } from './apis';
 
 export class UserSevice {
+  static async unlockAccount(
+    username: string,
+    accountType: 'admin' | 'hr-admin' | 'user'
+  ) {
+    return axiosInstance
+      .put(
+        `${UserAPIs.BASE_URL}/${accountType}/${encodeURIComponent(
+          username
+        )}/account-locked`,
+        { accountLocked: false }
+      )
+      .then((x: any) => x?.data?.data);
+  }
+
   static getAll(filter: any) {
     const params = new URLSearchParams({
       ...filter,

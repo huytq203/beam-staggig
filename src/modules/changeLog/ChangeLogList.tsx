@@ -143,6 +143,7 @@ export const ChangeLogList = (props: any) => {
       SCHEDULE_BLOCK_UNBLOCK_COMPANY: 'Mở/khoá ứng lương công ty',
       REGISTER_SALARY_ADVANCE: 'Đăng ký ứng lương ',
       DEREGISTER_SALARY_ADVANCE: 'Huỷ đăng ký dịch vụ ứng lương',
+      UNLOCK_ACCOUNT: 'Mở khóa tài khoản',
     };
 
     if (!ticketErrorReason[field]) return field;
