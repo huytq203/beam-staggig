@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install --no-audit --no-fund
+        - npx prisma generate
+    build:
+      commands:
+        - node deploy/shared-notification-uat/prepare-runtime-env.cjs
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

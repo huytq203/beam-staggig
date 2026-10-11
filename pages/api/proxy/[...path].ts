@@ -7,7 +7,9 @@ const SERVICE_MAP: Record<string, string> = {
   "core":         process.env.NEXT_PUBLIC_API_CORE_DIRECT!,
   "core2":        process.env.NEXT_PUBLIC_API_CORE2_DIRECT!,
   "payment":      process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT!,
-  "notification": process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT!,
+  "notification": process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_ENABLED === "true"
+    ? (process.env.NOTIFICATION_API_URL ?? process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL ?? "")
+    : process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT! ,
 };
 
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
