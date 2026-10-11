@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ? authorization.slice(7).trim()
       : req.cookies?.ACCESS_TOKEN;
     if (!notificationToken) {
-      return res.status(401).json({ success: false, message: "Chưa đăng nhập" });
+      return res.status(401).json({ success: false, message: "UNAUTHORIZED" });
     }
   }
 
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url: targetUrl,
       headers: forwardHeaders,
       data: rawBody,
-      httpsAgent,
+      httpsAgent: sharedNotification ? undefined : httpsAgent,
       validateStatus: () => true,
       responseType: "arraybuffer",
       timeout: 60_000,
