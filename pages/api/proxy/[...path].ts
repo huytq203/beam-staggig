@@ -36,9 +36,13 @@ function readRawBody(req: NextApiRequest): Promise<Buffer> {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const segments = req.query.path as string[];
   const [service, ...rest] = segments;
-  const targetBase = SERVICE_MAP[service];
   const sharedNotification = service === "notification" &&
     process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_ENABLED === "true";
+  const sharedInbox = sharedNotification && rest[0] === "notification";
+  // EWA owns its existing templates, audience and Quartz schedules; ECS owns delivery/inbox.
+  const targetBase = sharedNotification && !sharedInbox
+    ? (process.env.EWA_NOTIFICATION_MANAGEMENT_URL ?? process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT)
+    : SERVICE_MAP[service];
   let notificationToken: string | undefined;
   if (sharedNotification) {
     const routeFamilies = new Set(["notification", "notification-template", "schedule-notification"]);
@@ -86,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url: targetUrl,
       headers: forwardHeaders,
       data: rawBody,
-      httpsAgent: sharedNotification ? undefined : httpsAgent,
+      httpsAgent: sharedInbox ? undefined : httpsAgent,
       validateStatus: () => true,
       responseType: "arraybuffer",
       timeout: 60_000,
