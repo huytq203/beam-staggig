@@ -81,7 +81,6 @@ export const CreateNotificationForm = (props: any) => {
     const payload = {
       ...values,
       sendTime: DateTimeHelper.fomartDateRangeSubmit(values.sendTime),
-      resendType: 0,
       receiver: 0,
     };
     setLoading(true);
