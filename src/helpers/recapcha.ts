@@ -13,29 +13,55 @@ const SITE_KEY = process.env.NEXT_PUBLIC_RECAPCHA_KEY as string
 
 const SCRIPT_ID = 'google-recaptcha-v3'
 
+const LOAD_TIMEOUT_MS = 10_000
+const MAX_LOAD_ATTEMPTS = 3
+
 let loadPromise: Promise<void> | null = null
+
+/** Thử nạp script 1 lần; lỗi hoặc quá hạn thì gỡ thẻ script hỏng để lần sau nạp lại được. */
+function attemptLoad(): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    document.getElementById(SCRIPT_ID)?.remove()
+    const script = document.createElement('script')
+    script.id = SCRIPT_ID
+    script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`
+    script.async = true
+    script.defer = true
+
+    const fail = () => {
+      clearTimeout(timer)
+      script.remove()
+      reject(new Error('Không tải được reCAPTCHA'))
+    }
+    const timer = setTimeout(fail, LOAD_TIMEOUT_MS)
+    script.onload = () => {
+      clearTimeout(timer)
+      resolve()
+    }
+    script.onerror = fail
+    document.head.appendChild(script)
+  })
+}
+
+async function loadWithRetry(): Promise<void> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await attemptLoad()
+      return
+    } catch (error) {
+      if (attempt >= MAX_LOAD_ATTEMPTS) throw error
+    }
+  }
+}
 
 function loadScript(): Promise<void> {
   if (typeof window === 'undefined') return Promise.resolve()
   if ((window as any).grecaptcha?.execute) return Promise.resolve()
   if (loadPromise) return loadPromise
 
-  loadPromise = new Promise<void>((resolve, reject) => {
-    if (document.getElementById(SCRIPT_ID)) {
-      resolve()
-      return
-    }
-    const script = document.createElement('script')
-    script.id = SCRIPT_ID
-    script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`
-    script.async = true
-    script.defer = true
-    script.onload = () => resolve()
-    script.onerror = () => {
-      loadPromise = null
-      reject(new Error('Không tải được reCAPTCHA'))
-    }
-    document.head.appendChild(script)
+  loadPromise = loadWithRetry().catch((error: unknown) => {
+    loadPromise = null
+    throw error
   })
   return loadPromise
 }
@@ -45,7 +71,16 @@ export async function executeRecaptcha(action: string): Promise<string> {
   await loadScript()
   const grecaptcha = (window as any).grecaptcha
   if (!grecaptcha?.execute) throw new Error('reCAPTCHA chưa sẵn sàng')
-  await new Promise<void>((resolve) => grecaptcha.ready(() => resolve()))
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error('reCAPTCHA khởi tạo quá lâu')),
+      LOAD_TIMEOUT_MS
+    )
+    grecaptcha.ready(() => {
+      clearTimeout(timer)
+      resolve()
+    })
+  })
   return grecaptcha.execute(SITE_KEY, { action })
 }
 

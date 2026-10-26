@@ -11,6 +11,8 @@ export default function Document() {
         />
         <link rel="icon" href="/logo.svg" />
         <link rel="mask-icon" href="/logo.svg" />
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="anonymous" />
         <title>FlexPay - Chi lương linh hoạt</title>
       </Head>
       <body>
