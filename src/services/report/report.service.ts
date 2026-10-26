@@ -10,6 +10,12 @@ export class ReportService {
     );
     return x?.data;
   }
+  static async getTransactionRequestForm(transactionId: string) {
+    const x = await axiosInstance.get(
+      `${ReportAPIs.BASE_REPORT}/transactions/${transactionId}/request-form`
+    );
+    return x?.data;
+  }
   static async exportReportTransaction(filter: any) {
     const params = ObjectHelper.getParamsFilter(filter);
     const x = await axiosInstance.get(

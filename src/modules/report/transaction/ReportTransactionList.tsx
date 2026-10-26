@@ -4,10 +4,15 @@ import { StringHelper } from '@helpers/string.helper';
 import Table from 'rc-table';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IconTriangleUp, IconTriangleDown } from '@douyinfe/semi-icons';
+import { Button } from '@douyinfe/semi-ui';
 import { useAuth } from '@contexts/authentication';
+import { RequestFormModal } from './RequestFormModal';
 export const ReportTransactionList = (props: any) => {
   const { data, setFilter, filter } = props;
   const [sort, setSort] = useState({ keySort: '' });
+  const [requestFormTransactionId, setRequestFormTransactionId] = useState<
+    string | null
+  >(null);
   const { profile } = useAuth();
   const [directionSort, setDirectionSort] = useState('');
   const getTableData = () => {
@@ -255,15 +260,48 @@ export const ReportTransactionList = (props: any) => {
         </span>
       ),
     },
+    {
+      title: 'Phiếu yêu cầu',
+      dataIndex: 'requestFormAvailable',
+      width: 110,
+      align: 'center' as 'center',
+      fixed: 'right' as 'right',
+      render: (value: any, record: any) =>
+        value ? (
+          <Button
+            size="small"
+            theme="borderless"
+            onClick={() => setRequestFormTransactionId(record.id)}
+          >
+            Xem
+          </Button>
+        ) : (
+          <span>—</span>
+        ),
+    },
   ].filter((x: any) => {
     if (profile?.roles[0] == 'hr_admin') {
       return x.dataIndex !== 'bankSource';
     }
     return x;
   });
+  // Ô trống cho các cột sau "Doanh nghiệp thanh toán cho Beam", theo đúng số cột đang hiển thị.
+  const trailingSummaryCells = columns
+    .slice(11)
+    .map((column: any, i: number) => (
+      <Table.Summary.Cell
+        key={11 + i}
+        index={11 + i}
+        className={column.fixed ? 'bg-white' : undefined}
+      />
+    ));
 
   return (
     <div className="transaction-list">
+      <RequestFormModal
+        transactionId={requestFormTransactionId}
+        onClose={() => setRequestFormTransactionId(null)}
+      />
       <Table
         data={getTableData()}
         columns={columns}
@@ -351,16 +389,7 @@ export const ReportTransactionList = (props: any) => {
                         <p>{StringHelper.formatVND(totalAmountToPay)}</p>
                       </div>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={11} />
-                    <Table.Summary.Cell index={12} />
-                    <Table.Summary.Cell index={13} />
-                    <Table.Summary.Cell index={14} />
-                    <Table.Summary.Cell index={15} />
-                    <Table.Summary.Cell index={16} />
-                    <Table.Summary.Cell index={17} />
-                    <Table.Summary.Cell index={18} />
-                    <Table.Summary.Cell index={19} />
-                    <Table.Summary.Cell index={20} />
+                    {trailingSummaryCells}
                   </Table.Summary.Row>
                   <Table.Summary.Row className="total">
                     <Table.Summary.Cell index={0} colSpan={2}>
@@ -416,16 +445,7 @@ export const ReportTransactionList = (props: any) => {
                         </p>
                       </div>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={11} />
-                    <Table.Summary.Cell index={12} />
-                    <Table.Summary.Cell index={13} />
-                    <Table.Summary.Cell index={14} />
-                    <Table.Summary.Cell index={15} />
-                    <Table.Summary.Cell index={16} />
-                    <Table.Summary.Cell index={17} />
-                    <Table.Summary.Cell index={18} />
-                    <Table.Summary.Cell index={19} />
-                    <Table.Summary.Cell index={20} />
+                    {trailingSummaryCells}
                   </Table.Summary.Row>
                 </>
               )}
