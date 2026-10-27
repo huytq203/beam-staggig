@@ -2,13 +2,21 @@ import { AppPagination } from '@components/shared';
 import AppTable from '@components/shared/AppTable/AppTable';
 import { COMMON_FORMAT } from '@constants/common-format';
 import { IconEdit } from '@douyinfe/semi-icons';
-import { Tag, Typography } from '@douyinfe/semi-ui';
+import {
+  Button,
+  Modal,
+  Notification,
+  Spin,
+  Tag,
+  Typography,
+} from '@douyinfe/semi-ui';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { StringHelper } from '@helpers/string.helper';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { TicketService } from '@services/ticket-management';
+import { PaymentService } from '@services/payment';
 import { FilterTicketSalaryAdvance } from './FilterTicketSalaryAdvance';
 import { useAuth } from '@contexts/authentication';
 import { UserRole } from '@constants/auth.constants';
@@ -24,6 +32,31 @@ export const ListTicketSalaryAdvance = (props: any) => {
     ticketStatus: 'ALL',
   });
   const { authCheckByRole, profile } = useAuth();
+  const [requestForm, setRequestForm] = useState<any>(null);
+  const [requestFormLoadingId, setRequestFormLoadingId] = useState('');
+  const [pdfUrl, setPdfUrl] = useState('');
+  const closeRequestForm = () => {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    setPdfUrl('');
+    setRequestForm(null);
+  };
+  const openRequestForm = async (ticketId: string) => {
+    setRequestFormLoadingId(ticketId);
+    try {
+      const form = await PaymentService.getTicketRequestForm(ticketId);
+      const bytes = Uint8Array.from(atob(form.pdfBase64), (c) =>
+        c.charCodeAt(0)
+      );
+      setPdfUrl(
+        URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))
+      );
+      setRequestForm(form);
+    } catch (e) {
+      Notification.error({ content: 'Không tải được phiếu ứng lương' });
+    } finally {
+      setRequestFormLoadingId('');
+    }
+  };
   const { query } = useRouter();
 
   const { data, isLoading, refetch } = useQuery(
@@ -234,6 +267,22 @@ export const ListTicketSalaryAdvance = (props: any) => {
       },
     },
     {
+      title: 'Phiếu ứng lương',
+      dataIndex: 'requestFormAvailable',
+      width: 150,
+      render: (value: any, record: any) =>
+        value ? (
+          <Button
+            size="small"
+            theme="borderless"
+            loading={requestFormLoadingId === record.id}
+            onClick={() => openRequestForm(record.id)}
+          >
+            Xem phiếu
+          </Button>
+        ) : null,
+    },
+    {
       title: 'Hành động',
       dataIndex: 'id',
       width: 130,
@@ -254,6 +303,24 @@ export const ListTicketSalaryAdvance = (props: any) => {
 
   return (
     <div>
+      <Modal
+        title={requestForm?.title || 'Phiếu yêu cầu ứng lương'}
+        visible={!!requestForm}
+        onCancel={closeRequestForm}
+        footer={null}
+        width={900}
+        centered
+      >
+        {pdfUrl ? (
+          <iframe
+            src={pdfUrl}
+            title={requestForm?.fileName}
+            style={{ width: '100%', height: '75vh', border: 0 }}
+          />
+        ) : (
+          <Spin />
+        )}
+      </Modal>
       <div className="px-6 pt-6">
         <div className="flex flex-col gap-5 mb-5">
           <FilterTicketSalaryAdvance
