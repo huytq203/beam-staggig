@@ -1,45 +1,40 @@
-import { COMMON_FORMAT } from '@constants/common-format';
-import { DateTimeHelper } from '@helpers/date-time.helper';
-import { StringHelper } from '@helpers/string.helper';
-import Table from 'rc-table';
-import React, { useCallback, useEffect, useState } from 'react';
-import { IconTriangleUp, IconTriangleDown } from '@douyinfe/semi-icons';
-import { useAuth } from '@contexts/authentication';
-import { Button, Modal, Notification, Spin } from '@douyinfe/semi-ui';
-import { PaymentService } from '@services/payment';
+import { COMMON_FORMAT } from "@constants/common-format";
+import { DateTimeHelper } from "@helpers/date-time.helper";
+import { StringHelper } from "@helpers/string.helper";
+import Table from "rc-table";
+import React, { useCallback, useEffect, useState } from "react";
+import { IconTriangleUp, IconTriangleDown } from "@douyinfe/semi-icons";
+import { useAuth } from "@contexts/authentication";
+import { Button, Modal, Notification, Spin } from "@douyinfe/semi-ui";
+import { PaymentService } from "@services/payment";
 export const ReportTransactionList = (props: any) => {
   const { data, setFilter, filter } = props;
-  const [sort, setSort] = useState({ keySort: '' });
+  const [sort, setSort] = useState({ keySort: "" });
   const [requestFormTransactionId, setRequestFormTransactionId] = useState<
     string | null
   >(null);
   const { profile } = useAuth();
-  const [directionSort, setDirectionSort] = useState('');
+  const [directionSort, setDirectionSort] = useState("");
   const [requestForm, setRequestForm] = useState<any>(null);
-  const [requestFormLoadingId, setRequestFormLoadingId] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
+  const [requestFormLoadingId, setRequestFormLoadingId] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
   const closeRequestForm = () => {
-    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-    setPdfUrl('');
+    setPdfUrl("");
     setRequestForm(null);
   };
   const openRequestForm = async (transactionId: string) => {
     setRequestFormLoadingId(transactionId);
     try {
-      const form = await PaymentService.getTransactionRequestForm(
-        transactionId
-      );
-      const bytes = Uint8Array.from(atob(form.pdfBase64), (c) =>
-        c.charCodeAt(0)
-      );
+      const form =
+        await PaymentService.getTransactionRequestForm(transactionId);
       setPdfUrl(
-        URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))
+        `/api/request-form/transactions/${transactionId}/phieu-yeu-cau-tam-ung-tien-luong.pdf`,
       );
       setRequestForm(form);
     } catch (e) {
-      Notification.error({ content: 'Không tải được phiếu ứng lương' });
+      Notification.error({ content: "Không tải được phiếu ứng lương" });
     } finally {
-      setRequestFormLoadingId('');
+      setRequestFormLoadingId("");
     }
   };
   const getTableData = () => {
@@ -49,12 +44,12 @@ export const ReportTransactionList = (props: any) => {
   const handleSortClick = useCallback((dataIndex: string) => {
     // Thay đổi giá trị directionSort khi nhấp chuột
     setDirectionSort((prevDirectionSort) => {
-      if (prevDirectionSort === '') {
-        return 'asc';
-      } else if (prevDirectionSort === 'asc') {
-        return 'desc';
+      if (prevDirectionSort === "") {
+        return "asc";
+      } else if (prevDirectionSort === "asc") {
+        return "desc";
       } else {
-        return '';
+        return "";
       }
     });
 
@@ -70,7 +65,7 @@ export const ReportTransactionList = (props: any) => {
       ...prevFilter,
       page: 1, // Reset trang về 1 khi thay đổi sắp xếp
       size: 10, // Giới hạn số lượng mỗi trang (nếu cần)
-      sort: directionSort === '' ? [''] : [sort.keySort, directionSort], // Cập nhật bộ lọc
+      sort: directionSort === "" ? [""] : [sort.keySort, directionSort], // Cập nhật bộ lọc
     }));
   }, [directionSort, sort.keySort]);
   const titleSortRender = (title: string, dataIndex: string) => {
@@ -83,9 +78,9 @@ export const ReportTransactionList = (props: any) => {
         <div className="ml-3">
           {dataIndex === sort.keySort ? (
             <span className="h-[12px]">
-              {directionSort == 'asc' ? (
+              {directionSort == "asc" ? (
                 <IconTriangleUp size="small" />
-              ) : directionSort == 'desc' ? (
+              ) : directionSort == "desc" ? (
                 <IconTriangleDown size="small" />
               ) : (
                 <div className="flex flex-col ml-1 mt-1 cursor-pointer">
@@ -114,31 +109,31 @@ export const ReportTransactionList = (props: any) => {
   };
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'id',
+      title: "STT",
+      dataIndex: "id",
       width: 50,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (value: any, record: any, index: any) => (
         <span>{data?.data?.transactions.number * 10 + index + 1}</span>
       ),
     },
     {
-      title: 'Mã nhân viên',
-      dataIndex: 'employeeCode',
+      title: "Mã nhân viên",
+      dataIndex: "employeeCode",
       width: 100,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'Tên đăng nhập',
-      dataIndex: 'phoneNumber',
+      title: "Tên đăng nhập",
+      dataIndex: "phoneNumber",
       width: 100,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: titleSortRender('Thời gian', 'createdTime'),
-      dataIndex: 'createdTime',
+      title: titleSortRender("Thời gian", "createdTime"),
+      dataIndex: "createdTime",
       width: 130,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (value: any) => (
         <span>
           {DateTimeHelper.convertTimeZone(value, COMMON_FORMAT.DATE_TIME)}
@@ -146,77 +141,77 @@ export const ReportTransactionList = (props: any) => {
       ),
     },
     {
-      title: titleSortRender('Số tiền yêu cầu', 'requestedAmount'),
-      dataIndex: 'requestedAmount',
+      title: titleSortRender("Số tiền yêu cầu", "requestedAmount"),
+      dataIndex: "requestedAmount",
       width: 120,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: titleSortRender('Phí theo chính sách', 'feeByPolicy'),
-      dataIndex: 'feeByPolicy',
+      title: titleSortRender("Phí theo chính sách", "feeByPolicy"),
+      dataIndex: "feeByPolicy",
       width: 150,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: titleSortRender('Phí doanh nghiệp chia sẻ', 'feeSharing'),
-      dataIndex: 'feeSharing',
+      title: titleSortRender("Phí doanh nghiệp chia sẻ", "feeSharing"),
+      dataIndex: "feeSharing",
       width: 180,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: titleSortRender('Phí Beam chia sẻ', 'discount'),
-      dataIndex: 'discount',
+      title: titleSortRender("Phí Beam chia sẻ", "discount"),
+      dataIndex: "discount",
       width: 120,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: titleSortRender('Phí NLĐ phải trả', 'fee'),
-      dataIndex: 'fee',
+      title: titleSortRender("Phí NLĐ phải trả", "fee"),
+      dataIndex: "fee",
       width: 120,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: titleSortRender('Số tiền chuyển khoản', 'amount'),
-      dataIndex: 'amount',
+      title: titleSortRender("Số tiền chuyển khoản", "amount"),
+      dataIndex: "amount",
       width: 150,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: 'Doanh nghiệp thanh toán cho Beam',
-      dataIndex: 'amountToPay',
+      title: "Doanh nghiệp thanh toán cho Beam",
+      dataIndex: "amountToPay",
       width: 200,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (e: any) => StringHelper.formatVND(e),
     },
     {
-      title: 'Chủ tài khoản',
-      dataIndex: 'employeeName',
+      title: "Chủ tài khoản",
+      dataIndex: "employeeName",
       width: 160,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'Ngân hàng',
-      dataIndex: 'bankName',
+      title: "Ngân hàng",
+      dataIndex: "bankName",
       width: 140,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'Số tài khoản',
-      dataIndex: 'bankAccountNumber',
+      title: "Số tài khoản",
+      dataIndex: "bankAccountNumber",
       width: 120,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'Doanh nghiệp',
-      dataIndex: 'companyName',
+      title: "Doanh nghiệp",
+      dataIndex: "companyName",
       width: 250,
-      align: 'right' as 'right',
+      align: "right" as "right",
       // render: (e: any, render: any) => {
       //   return (
       //     <TextOverflow line={1}>
@@ -226,63 +221,63 @@ export const ReportTransactionList = (props: any) => {
       // },
     },
     {
-      title: 'Hình thức giao dịch',
-      dataIndex: 'transferType',
+      title: "Hình thức giao dịch",
+      dataIndex: "transferType",
       width: 150,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (value: any) => {
-        return <p>{value == 1 ? 'CITAD' : 'NAPAS'}</p>;
+        return <p>{value == 1 ? "CITAD" : "NAPAS"}</p>;
       },
     },
     {
-      title: 'Mã giao dịch',
-      dataIndex: 'refNum',
+      title: "Mã giao dịch",
+      dataIndex: "refNum",
       width: 200,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'FT',
-      dataIndex: 'bankId',
+      title: "FT",
+      dataIndex: "bankId",
       width: 150,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'Ngân hàng đi tiền',
-      dataIndex: 'bankSource',
+      title: "Ngân hàng đi tiền",
+      dataIndex: "bankSource",
       width: 150,
-      align: 'right' as 'right',
+      align: "right" as "right",
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status',
+      title: "Trạng thái",
+      dataIndex: "status",
       width: 100,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (value: any) => {
-        let label = '';
+        let label = "";
         switch (value) {
-          case 'SUCCESS':
-            label = 'Thành công';
+          case "SUCCESS":
+            label = "Thành công";
             break;
-          case 'FAIL':
-            label = 'Thất bại';
+          case "FAIL":
+            label = "Thất bại";
             break;
-          case 'PENDING':
-            label = 'Đang xử lý';
+          case "PENDING":
+            label = "Đang xử lý";
             break;
-          case 'REFUND':
-            label = 'Hoàn trả';
+          case "REFUND":
+            label = "Hoàn trả";
             break;
         }
         return <span>{label}</span>;
       },
     },
     {
-      title: 'Phiếu ứng lương',
-      dataIndex: 'requestFormAvailable',
+      title: "Phiếu ứng lương",
+      dataIndex: "requestFormAvailable",
       width: 140,
-      align: 'center' as 'center',
+      align: "center" as "center",
       render: (value: any, record: any) =>
-        record.status === 'SUCCESS' && value ? (
+        record.status === "SUCCESS" && value ? (
           <Button
             size="small"
             theme="borderless"
@@ -294,10 +289,10 @@ export const ReportTransactionList = (props: any) => {
         ) : null,
     },
     {
-      title: titleSortRender('Ngày cập nhật', 'updatedAt'),
-      dataIndex: 'updatedAt',
+      title: titleSortRender("Ngày cập nhật", "updatedAt"),
+      dataIndex: "updatedAt",
       width: 130,
-      align: 'right' as 'right',
+      align: "right" as "right",
       render: (value: any) => (
         <span>
           {DateTimeHelper.convertTimeZone(value, COMMON_FORMAT.DATE_TIME)}
@@ -305,31 +300,18 @@ export const ReportTransactionList = (props: any) => {
       ),
     },
   ].filter((x: any) => {
-    if (profile?.roles[0] == 'hr_admin') {
-      return x.dataIndex !== 'bankSource';
+    if (profile?.roles[0] == "hr_admin") {
+      return x.dataIndex !== "bankSource";
     }
     return x;
   });
   return (
     <div className="transaction-list">
       <Modal
-        title="Phiếu YÊU CẦU TẠM ỨNG TIỀN LƯƠNG"
+        title="Phiếu yêu cầu tạm ứng tiền lương"
         visible={!!requestForm}
         onCancel={closeRequestForm}
-        footer={
-          <Button
-            theme="solid"
-            disabled={!pdfUrl}
-            onClick={() => {
-              const a = document.createElement('a');
-              a.href = pdfUrl;
-              a.download = 'Phiếu YÊU CẦU TẠM ỨNG TIỀN LƯƠNG.pdf';
-              a.click();
-            }}
-          >
-            Tải xuống
-          </Button>
-        }
+        footer={null}
         width={900}
         centered
       >
@@ -337,7 +319,7 @@ export const ReportTransactionList = (props: any) => {
           <iframe
             src={pdfUrl}
             title={requestForm?.fileName}
-            style={{ width: '100%', height: '75vh', border: 0 }}
+            style={{ width: "100%", height: "75vh", border: 0 }}
           />
         ) : (
           <Spin />
@@ -347,7 +329,7 @@ export const ReportTransactionList = (props: any) => {
         data={getTableData()}
         columns={columns}
         scroll={{ x: 3900, y: 400 }}
-        emptyText={'Không có kết quả'}
+        emptyText={"Không có kết quả"}
         summary={(dataSummary: any) => {
           let totalRequestedAmount = 0;
           let totalFeePolicy = 0;
@@ -382,7 +364,7 @@ export const ReportTransactionList = (props: any) => {
               totalFee += fee;
               totalAmount += amount;
               totalAmountToPay += amountToPay;
-            }
+            },
           );
           return (
             <Table.Summary fixed={true}>
@@ -453,7 +435,7 @@ export const ReportTransactionList = (props: any) => {
                       <div className="float-right">
                         <p>
                           {StringHelper.formatVND(
-                            data?.data?.totalRequestedAmount
+                            data?.data?.totalRequestedAmount,
                           )}
                         </p>
                       </div>

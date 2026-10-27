@@ -1,7 +1,7 @@
-import { AppPagination } from '@components/shared';
-import AppTable from '@components/shared/AppTable/AppTable';
-import { COMMON_FORMAT } from '@constants/common-format';
-import { IconEdit } from '@douyinfe/semi-icons';
+import { AppPagination } from "@components/shared";
+import AppTable from "@components/shared/AppTable/AppTable";
+import { COMMON_FORMAT } from "@constants/common-format";
+import { IconEdit } from "@douyinfe/semi-icons";
 import {
   Button,
   Modal,
@@ -9,64 +9,60 @@ import {
   Spin,
   Tag,
   Typography,
-} from '@douyinfe/semi-ui';
-import { DateTimeHelper } from '@helpers/date-time.helper';
-import { StringHelper } from '@helpers/string.helper';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
-import { TicketService } from '@services/ticket-management';
-import { PaymentService } from '@services/payment';
-import { FilterTicketSalaryAdvance } from './FilterTicketSalaryAdvance';
-import { useAuth } from '@contexts/authentication';
-import { UserRole } from '@constants/auth.constants';
+} from "@douyinfe/semi-ui";
+import { DateTimeHelper } from "@helpers/date-time.helper";
+import { StringHelper } from "@helpers/string.helper";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { TicketService } from "@services/ticket-management";
+import { PaymentService } from "@services/payment";
+import { FilterTicketSalaryAdvance } from "./FilterTicketSalaryAdvance";
+import { useAuth } from "@contexts/authentication";
+import { UserRole } from "@constants/auth.constants";
 
 export const ListTicketSalaryAdvance = (props: any) => {
   const { basePath, companyId } = props;
   const [filter, setFilter] = useState({
-    keyword: '',
+    keyword: "",
     page: 1,
     size: 10,
     sort: [],
-    transactionStatus: 'ALL',
-    ticketStatus: 'ALL',
+    transactionStatus: "ALL",
+    ticketStatus: "ALL",
   });
   const { authCheckByRole, profile } = useAuth();
   const [requestForm, setRequestForm] = useState<any>(null);
-  const [requestFormLoadingId, setRequestFormLoadingId] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
+  const [requestFormLoadingId, setRequestFormLoadingId] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
   const closeRequestForm = () => {
-    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-    setPdfUrl('');
+    setPdfUrl("");
     setRequestForm(null);
   };
   const openRequestForm = async (ticketId: string) => {
     setRequestFormLoadingId(ticketId);
     try {
       const form = await PaymentService.getTicketRequestForm(ticketId);
-      const bytes = Uint8Array.from(atob(form.pdfBase64), (c) =>
-        c.charCodeAt(0)
-      );
       setPdfUrl(
-        URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))
+        `/api/request-form/tickets/${ticketId}/phieu-yeu-cau-tam-ung-tien-luong.pdf`,
       );
       setRequestForm(form);
     } catch (e) {
-      Notification.error({ content: 'Không tải được phiếu ứng lương' });
+      Notification.error({ content: "Không tải được phiếu ứng lương" });
     } finally {
-      setRequestFormLoadingId('');
+      setRequestFormLoadingId("");
     }
   };
   const { query } = useRouter();
 
   const { data, isLoading, refetch } = useQuery(
-    ['campaign-list', filter, query?.companyId],
+    ["campaign-list", filter, query?.companyId],
     () => TicketService.getAllTicketSalaryAdvance(filter, query?.companyId),
     {
       enabled: query?.companyId !== null && query?.companyId !== undefined,
       refetchOnWindowFocus: false,
       refetchIntervalInBackground: true,
-    }
+    },
   );
   const {
     data: isShowTicket,
@@ -74,10 +70,10 @@ export const ListTicketSalaryAdvance = (props: any) => {
     isFetching: isFetchingTicket,
     refetch: reFetchTicket,
   } = useQuery(
-    ['show-ticket', query?.companyId],
+    ["show-ticket", query?.companyId],
     async () => {
       const response = await TicketService.checkHideFeatureTicket(
-        query?.companyId
+        query?.companyId,
       );
       return response;
     },
@@ -85,7 +81,7 @@ export const ListTicketSalaryAdvance = (props: any) => {
       enabled: query?.companyId !== undefined && query?.companyId !== null,
       refetchOnWindowFocus: false,
       refetchIntervalInBackground: true,
-    }
+    },
   );
   authCheckByRole([
     UserRole.BEAM_ADMIN,
@@ -123,8 +119,8 @@ export const ListTicketSalaryAdvance = (props: any) => {
   };
   const columns = [
     {
-      title: 'STT',
-      dataIndex: 'index',
+      title: "STT",
+      dataIndex: "index",
       width: 100,
       render: (name: any, record: any, index: any) => {
         return (
@@ -135,15 +131,15 @@ export const ListTicketSalaryAdvance = (props: any) => {
       },
     },
     {
-      title: 'Mã yêu cầu',
-      dataIndex: 'code',
+      title: "Mã yêu cầu",
+      dataIndex: "code",
       width: 150,
       render: (name: any, record: any, a: any) => {
         return (
           <Text
             onClick={() =>
               router.push(
-                `${basePath}/${record.id}/ticket-salary-advance-detail`
+                `${basePath}/${record.id}/ticket-salary-advance-detail`,
               )
             }
             link
@@ -155,79 +151,79 @@ export const ListTicketSalaryAdvance = (props: any) => {
     },
 
     {
-      title: 'Số điện thoại',
-      dataIndex: 'phoneNumber',
+      title: "Số điện thoại",
+      dataIndex: "phoneNumber",
       width: 180,
     },
     {
-      title: 'Ngày yêu cầu',
-      dataIndex: 'requestTime',
-      width: 180,
-      render: (e: any) => (
-        <>{DateTimeHelper.convertTimeZone(e, COMMON_FORMAT.DATE_TIME)}</>
-      ),
-    },
-    {
-      title: 'Ngày xử lý',
-      dataIndex: 'processTime',
+      title: "Ngày yêu cầu",
+      dataIndex: "requestTime",
       width: 180,
       render: (e: any) => (
         <>{DateTimeHelper.convertTimeZone(e, COMMON_FORMAT.DATE_TIME)}</>
       ),
     },
     {
-      title: 'Người xử lý',
-      dataIndex: 'processedBy',
+      title: "Ngày xử lý",
+      dataIndex: "processTime",
+      width: 180,
+      render: (e: any) => (
+        <>{DateTimeHelper.convertTimeZone(e, COMMON_FORMAT.DATE_TIME)}</>
+      ),
+    },
+    {
+      title: "Người xử lý",
+      dataIndex: "processedBy",
       width: 150,
       render: (e: any, record: any) =>
-        e == 'system' ? (
+        e == "system" ? (
           <p>Hệ thống</p>
-        ) : e == 'enduser' || e == 'Enduser' ? (
-          'Người dùng'
+        ) : e == "enduser" || e == "Enduser" ? (
+          "Người dùng"
         ) : (
           <p>{e}</p>
         ),
     },
     {
-      title: 'Ngày chuyển tiền',
-      dataIndex: 'transferTime',
+      title: "Ngày chuyển tiền",
+      dataIndex: "transferTime",
       width: 180,
       render: (e: any) => (
         <>{DateTimeHelper.convertTimeZone(e, COMMON_FORMAT.DATE_TIME)}</>
       ),
     },
     {
-      title: 'Trạng thái yêu cầu',
-      dataIndex: 'status',
+      title: "Trạng thái yêu cầu",
+      dataIndex: "status",
       width: 150,
       render: (x: any) => {
-        let label = '';
-        let className: any = '';
+        let label = "";
+        let className: any = "";
 
         switch (x) {
-          case 'PENDING':
-            label = 'Chờ xử lý';
-            className = 'yellow';
+          case "PENDING":
+            label = "Chờ xử lý";
+            className = "yellow";
             break;
-          case 'ACCEPTED':
-            label = 'Phê duyệt';
-            className = 'light-blue';
+          case "ACCEPTED":
+            label = "Phê duyệt";
+            className = "light-blue";
             break;
-          case 'REJECTED':
-            label = 'Từ chối';
-            className = 'red';
+          case "REJECTED":
+            label = "Từ chối";
+            className = "red";
             break;
-          case 'FAIL':
-            label = 'Lỗi';
-            className = 'red';
+          case "FAIL":
+            label = "Lỗi";
+            className = "red";
             break;
-          case 'SUCCESS':
-            label = 'Thành công';
-            className = 'green';
+          case "SUCCESS":
+            label = "Thành công";
+            className = "green";
             break;
-          case 'CANCELLED':
-            label = 'Huỷ';
-            className = 'grey';
+          case "CANCELLED":
+            label = "Huỷ";
+            className = "grey";
             break;
         }
         return (
@@ -238,25 +234,25 @@ export const ListTicketSalaryAdvance = (props: any) => {
       },
     },
     {
-      title: 'Trạng thái giao dịch',
-      dataIndex: 'transferStatus',
+      title: "Trạng thái giao dịch",
+      dataIndex: "transferStatus",
       width: 180,
       render: (x: any) => {
-        let label = '';
-        let className: any = '';
+        let label = "";
+        let className: any = "";
 
         switch (x) {
-          case 'PENDING':
-            label = 'Chờ xử lý';
-            className = 'yellow';
+          case "PENDING":
+            label = "Chờ xử lý";
+            className = "yellow";
             break;
-          case 'FAIL':
-            label = 'Lỗi';
-            className = 'red';
+          case "FAIL":
+            label = "Lỗi";
+            className = "red";
             break;
-          case 'SUCCESS':
-            label = 'Thành công';
-            className = 'green';
+          case "SUCCESS":
+            label = "Thành công";
+            className = "green";
             break;
         }
         return (
@@ -267,8 +263,8 @@ export const ListTicketSalaryAdvance = (props: any) => {
       },
     },
     {
-      title: 'Phiếu ứng lương',
-      dataIndex: 'requestFormAvailable',
+      title: "Phiếu ứng lương",
+      dataIndex: "requestFormAvailable",
       width: 150,
       render: (value: any, record: any) =>
         value ? (
@@ -283,11 +279,11 @@ export const ListTicketSalaryAdvance = (props: any) => {
         ) : null,
     },
     {
-      title: 'Hành động',
-      dataIndex: 'id',
+      title: "Hành động",
+      dataIndex: "id",
       width: 130,
       render: (id: any, record: any) => {
-        return record.status == 'PENDING' ? (
+        return record.status == "PENDING" ? (
           <IconEdit
             onClick={() =>
               router.push(`${basePath}/${id}/ticket-salary-advance-detail`)
@@ -295,7 +291,7 @@ export const ListTicketSalaryAdvance = (props: any) => {
             className="cursor-pointer"
           />
         ) : (
-          ''
+          ""
         );
       },
     },
@@ -304,23 +300,10 @@ export const ListTicketSalaryAdvance = (props: any) => {
   return (
     <div>
       <Modal
-        title="Phiếu YÊU CẦU TẠM ỨNG TIỀN LƯƠNG"
+        title="Phiếu yêu cầu tạm ứng tiền lương"
         visible={!!requestForm}
         onCancel={closeRequestForm}
-        footer={
-          <Button
-            theme="solid"
-            disabled={!pdfUrl}
-            onClick={() => {
-              const a = document.createElement('a');
-              a.href = pdfUrl;
-              a.download = 'Phiếu YÊU CẦU TẠM ỨNG TIỀN LƯƠNG.pdf';
-              a.click();
-            }}
-          >
-            Tải xuống
-          </Button>
-        }
+        footer={null}
         width={900}
         centered
       >
@@ -328,7 +311,7 @@ export const ListTicketSalaryAdvance = (props: any) => {
           <iframe
             src={pdfUrl}
             title={requestForm?.fileName}
-            style={{ width: '100%', height: '75vh', border: 0 }}
+            style={{ width: "100%", height: "75vh", border: 0 }}
           />
         ) : (
           <Spin />
