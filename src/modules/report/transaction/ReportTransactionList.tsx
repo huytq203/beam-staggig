@@ -5,11 +5,40 @@ import Table from 'rc-table';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IconTriangleUp, IconTriangleDown } from '@douyinfe/semi-icons';
 import { useAuth } from '@contexts/authentication';
+import { Button, Modal, Notification, Spin } from '@douyinfe/semi-ui';
+import { PaymentService } from '@services/payment';
 export const ReportTransactionList = (props: any) => {
   const { data, setFilter, filter } = props;
   const [sort, setSort] = useState({ keySort: '' });
   const { profile } = useAuth();
   const [directionSort, setDirectionSort] = useState('');
+  const [requestForm, setRequestForm] = useState<any>(null);
+  const [requestFormLoadingId, setRequestFormLoadingId] = useState('');
+  const [pdfUrl, setPdfUrl] = useState('');
+  const closeRequestForm = () => {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    setPdfUrl('');
+    setRequestForm(null);
+  };
+  const openRequestForm = async (transactionId: string) => {
+    setRequestFormLoadingId(transactionId);
+    try {
+      const form = await PaymentService.getTransactionRequestForm(
+        transactionId
+      );
+      const bytes = Uint8Array.from(atob(form.pdfBase64), (c) =>
+        c.charCodeAt(0)
+      );
+      setPdfUrl(
+        URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))
+      );
+      setRequestForm(form);
+    } catch (e) {
+      Notification.error({ content: 'Không tải được phiếu ứng lương' });
+    } finally {
+      setRequestFormLoadingId('');
+    }
+  };
   const getTableData = () => {
     if (!data) return [];
     return data?.data?.transactions?.content;
@@ -245,6 +274,23 @@ export const ReportTransactionList = (props: any) => {
       },
     },
     {
+      title: 'Phiếu ứng lương',
+      dataIndex: 'requestFormAvailable',
+      width: 140,
+      align: 'center' as 'center',
+      render: (value: any, record: any) =>
+        record.status === 'SUCCESS' && value ? (
+          <Button
+            size="small"
+            theme="borderless"
+            loading={requestFormLoadingId === record.id}
+            onClick={() => openRequestForm(record.id)}
+          >
+            Xem phiếu
+          </Button>
+        ) : null,
+    },
+    {
       title: titleSortRender('Ngày cập nhật', 'updatedAt'),
       dataIndex: 'updatedAt',
       width: 130,
@@ -264,6 +310,24 @@ export const ReportTransactionList = (props: any) => {
 
   return (
     <div className="transaction-list">
+      <Modal
+        title={requestForm?.title || 'Phiếu yêu cầu ứng lương'}
+        visible={!!requestForm}
+        onCancel={closeRequestForm}
+        footer={null}
+        width={900}
+        centered
+      >
+        {pdfUrl ? (
+          <iframe
+            src={pdfUrl}
+            title={requestForm?.fileName}
+            style={{ width: '100%', height: '75vh', border: 0 }}
+          />
+        ) : (
+          <Spin />
+        )}
+      </Modal>
       <Table
         data={getTableData()}
         columns={columns}
@@ -361,6 +425,7 @@ export const ReportTransactionList = (props: any) => {
                     <Table.Summary.Cell index={18} />
                     <Table.Summary.Cell index={19} />
                     <Table.Summary.Cell index={20} />
+                    <Table.Summary.Cell index={21} />
                   </Table.Summary.Row>
                   <Table.Summary.Row className="total">
                     <Table.Summary.Cell index={0} colSpan={2}>
@@ -426,6 +491,7 @@ export const ReportTransactionList = (props: any) => {
                     <Table.Summary.Cell index={18} />
                     <Table.Summary.Cell index={19} />
                     <Table.Summary.Cell index={20} />
+                    <Table.Summary.Cell index={21} />
                   </Table.Summary.Row>
                 </>
               )}

@@ -2,6 +2,12 @@ import { axiosInstance } from '../api/axiosInstance';
 import { PaymentAPIs } from './apis';
 
 export class PaymentService {
+  static async getTransactionRequestForm(transactionId: string) {
+    const x = await axiosInstance.get(
+      `${PaymentAPIs.EMPTY_BANK}/payment/reporting/transactions/${transactionId}/request-form`
+    );
+    return x?.data?.data;
+  }
   static async getPaymentAccountInfoVPBank() {
     const x = await axiosInstance.get(`${PaymentAPIs.BASE_BANK}/account-info`);
     const response = x?.data?.data;
