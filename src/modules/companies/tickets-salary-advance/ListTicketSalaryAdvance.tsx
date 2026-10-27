@@ -304,10 +304,23 @@ export const ListTicketSalaryAdvance = (props: any) => {
   return (
     <div>
       <Modal
-        title={requestForm?.title || 'Phiếu yêu cầu ứng lương'}
+        title="Phiếu YÊU CẦU TẠM ỨNG TIỀN LƯƠNG"
         visible={!!requestForm}
         onCancel={closeRequestForm}
-        footer={null}
+        footer={
+          <Button
+            theme="solid"
+            disabled={!pdfUrl}
+            onClick={() => {
+              const a = document.createElement('a');
+              a.href = pdfUrl;
+              a.download = 'Phiếu YÊU CẦU TẠM ỨNG TIỀN LƯƠNG.pdf';
+              a.click();
+            }}
+          >
+            Tải xuống
+          </Button>
+        }
         width={900}
         centered
       >
