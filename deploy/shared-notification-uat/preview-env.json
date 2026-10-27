@@ -1,0 +1,13 @@
+{
+  "NEXT_PUBLIC_SHARED_NOTIFICATION_ENABLED": "true",
+  "NEXT_PUBLIC_USE_PROXY": "true",
+  "NEXT_PUBLIC_API_NOTIFICATION_PROXY": "/api/proxy/notification",
+  "NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL": "https://api.dev.ewallet.flexpay.vn/notification",
+  "NOTIFICATION_API_URL": "https://api.dev.ewallet.flexpay.vn/notification",
+  "NEXT_PUBLIC_BASE": "https://notification-uat-20261011.d42afkpbarff5.amplifyapp.com",
+  "NEXT_PUBLIC_BEAM_API_DIRECT": "https://identity.devops.beamewa.com.vn",
+  "NEXT_PUBLIC_BEAM_API_PROXY": "/api/proxy/beam-api",
+  "IDENTITY_VERIFY_URL": "https://identity.devops.beamewa.com.vn",
+  "KEYCLOAK_ISSUER": "https://18.140.180.230:8443/realms/ewa",
+  "CORS_ALLOWED_ORIGINS": "https://notification-uat-20261011.d42afkpbarff5.amplifyapp.com"
+}

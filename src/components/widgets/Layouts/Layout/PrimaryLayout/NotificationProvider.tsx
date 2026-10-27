@@ -1,4 +1,4 @@
-import { NotificationEnum } from '@constants/notification.constants';
+import { USE_SHARED_NOTIFICATION } from '@constants/endpoints';
 import { notificationConfigs } from '@constants/notificationConfis.constants';
 import { useAuth } from '@contexts/authentication';
 import { Notification } from '@douyinfe/semi-ui';
@@ -13,7 +13,7 @@ import { Frame } from '@stomp/stompjs';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useInfiniteQuery, useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 
 interface Props {
   onError?: (error: Frame | string) => any;
@@ -28,6 +28,7 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
 
   const token = Cookies.get('ACCESS_TOKEN') ?? null;
   const subscriptionRef = React.useRef<any | null>(null);
+  const newestNotification = React.useRef<{ owner: string; ids: Set<string>; time: number } | null>(null);
   const router = useRouter();
 
   const exceptUrl = ['/privacyPolicy', '/landing-page-report'];
@@ -48,7 +49,7 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery(
-    ['notifications'],
+    ['notifications', profile?.username ?? 'current'],
     (pageParam) => {
       if (token != null) {
         const noti = NotificationManagementService.getMyNotificationList({
@@ -59,23 +60,28 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
       }
     },
     {
-      enabled: !checkExceptUrl(),
-      refetchOnWindowFocus: false,
-      refetchIntervalInBackground: true,
+      enabled: Boolean(token && profile?.username) && !checkExceptUrl(),
+      refetchOnWindowFocus: USE_SHARED_NOTIFICATION,
+      refetchInterval: USE_SHARED_NOTIFICATION ? 15_000 : false,
+      refetchIntervalInBackground: false,
       getNextPageParam: (lastPage: any, allPage: any) => {
+        const page = lastPage?.notifications;
+        if (!page || page.last || allPage.length >= page.totalPages) return undefined;
         return allPage.length + 1;
       },
     }
   );
   const onSeenNotification = async (notificationId: any) => {
-    const response = await NotificationManagementService.seenNotification(
-      notificationId
-    );
+    await NotificationManagementService.seenNotification(notificationId);
+    await reFetchNotification();
   };
   const onViewNotification = async (notificationId: any, data: any) => {
-    if (!data) return;
-    const companyId = data?.data.companyId;
-    const employeeId = data?.data.employeeId;
+    if (!data) {
+      await onSeenNotification(notificationId);
+      return;
+    }
+    const companyId = data?.data?.companyId;
+    const employeeId = data?.data?.employeeId;
     const profileId = data?.data?.profileId ? data?.data?.profileId : null;
     const startTime = data?.data?.startTime ? data?.data?.startTime : null;
     const endTime = data?.data?.endTime ? data?.data?.endTime : null;
@@ -104,7 +110,7 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
   };
 
   React.useEffect(() => {
-    if (token && !checkExceptUrl()) {
+    if (!USE_SHARED_NOTIFICATION && token && !checkExceptUrl()) {
       connect({
         url: `${NotificationManagementAPIs.WEBSOCKET_CONNECT}?token=${token}`,
         heartbeat: {
@@ -140,15 +146,53 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
     }
 
     return () => {
-      if (token) {
-        unsubscribe(subscriptionRef);
+      if (!USE_SHARED_NOTIFICATION && token) {
+        unsubscribe(subscriptionRef.current);
         disconnect();
       }
     };
-  }, []);
+  }, [token, router.route]);
+
+  // Shared ECS service exposes authenticated REST. Poll only while visible;
+  // notifications already present at mount never trigger historical popups.
+  React.useEffect(() => {
+    if (!USE_SHARED_NOTIFICATION) return;
+    if (!token || !profile?.username) {
+      newestNotification.current = null;
+      return;
+    }
+    if (!dataNotifications?.pages?.[0]) return;
+    const owner = String(profile?.username ?? '');
+    const items = dataNotifications?.pages?.[0]?.notifications?.content ?? [];
+    if (!Array.isArray(items)) return;
+    const previous = newestNotification.current;
+    const latestTime = items.reduce((latest: number, item: any) =>
+      Math.max(latest, Date.parse(item.createdAt ?? '') || 0),
+      previous?.owner === owner ? previous.time : 0);
+    if (previous && previous.owner === owner) {
+      for (const item of items) {
+        if (!item.id || previous.ids.has(item.id) ||
+            (Date.parse(item.createdAt ?? '') || 0) <= previous.time) continue;
+        let payload = null;
+        try {
+          payload = typeof item.body === 'string' ? JSON.parse(item.body) : item.body;
+        } catch (_) {}
+        Notification.info({
+          title: item.title,
+          content: item.message,
+          onClick: () => onViewNotification(item.id, payload),
+        });
+      }
+    }
+    newestNotification.current = {
+      owner,
+      ids: new Set(items.map((item: any) => String(item.id))),
+      time: latestTime,
+    };
+  }, [dataNotifications, token, profile?.username]);
 
   const provider: INotificationContext = {
-    notifications: dataNotifications,
+    notifications: token && profile?.username ? dataNotifications : undefined,
     refetch: reFetchNotification,
     isLoading: isLoadingNotification,
     isFetching: isFetchingNotification,

@@ -241,6 +241,8 @@ export enum GlobalResponseMessageCodes {
   PHONE_NUMBER_NOT_REGISTERED='Chưa đăng ký số điện thoại với tài khoản, vui lòng liên hệ admin để được hỗ trợ',
   INVALID_OTP='Mã OTP không chính xác',
   CAMPAIGN_MAXIMUM_BUDGET_NOT_GREATER_THAN_VALUE='Giá trị giảm không được cao hơn ngân sách chiến dịch',
+  REQUEST_FORM_NOT_FOUND='Giao dịch này không có phiếu yêu cầu ứng lương',
+  REQUEST_FORM_UNAVAILABLE='Không mở được phiếu yêu cầu ứng lương, vui lòng liên hệ quản trị viên',
 }
 
 export const getResponseMessage = (key: string) => {

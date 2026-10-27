@@ -7,7 +7,9 @@ const SERVICE_MAP: Record<string, string> = {
   "core":         process.env.NEXT_PUBLIC_API_CORE_DIRECT!,
   "core2":        process.env.NEXT_PUBLIC_API_CORE2_DIRECT!,
   "payment":      process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT!,
-  "notification": process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT!,
+  "notification": process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_ENABLED === "true"
+    ? (process.env.NOTIFICATION_API_URL ?? process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL ?? "")
+    : process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT! ,
 };
 
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
@@ -34,7 +36,27 @@ function readRawBody(req: NextApiRequest): Promise<Buffer> {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const segments = req.query.path as string[];
   const [service, ...rest] = segments;
-  const targetBase = SERVICE_MAP[service];
+  const sharedNotification = service === "notification" &&
+    process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_ENABLED === "true";
+  const sharedInbox = sharedNotification && rest[0] === "notification";
+  // EWA owns its existing templates, audience and Quartz schedules; ECS owns delivery/inbox.
+  const targetBase = sharedNotification && !sharedInbox
+    ? (process.env.EWA_NOTIFICATION_MANAGEMENT_URL ?? process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT)
+    : SERVICE_MAP[service];
+  let notificationToken: string | undefined;
+  if (sharedNotification) {
+    const routeFamilies = new Set(["notification", "notification-template", "schedule-notification"]);
+    if (!routeFamilies.has(rest[0]) || rest.some((segment) => !/^[A-Za-z0-9_-]+$/.test(segment))) {
+      return res.status(404).json({ success: false, message: "Notification route không tồn tại" });
+    }
+    const authorization = req.headers.authorization;
+    notificationToken = authorization?.startsWith("Bearer ")
+      ? authorization.slice(7).trim()
+      : req.cookies?.ACCESS_TOKEN;
+    if (!notificationToken) {
+      return res.status(401).json({ success: false, message: "UNAUTHORIZED" });
+    }
+  }
 
   if (!targetBase) {
     return res.status(404).json({ success: false, message: `Proxy service không tồn tại: ${service}` });
@@ -51,6 +73,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       forwardHeaders[key] = value;
     }
   }
+  if (sharedNotification) {
+    delete forwardHeaders["cookie"];
+    delete forwardHeaders["x-api-key"];
+    forwardHeaders["authorization"] = `Bearer ${notificationToken}`;
+  }
   forwardHeaders["host"] = new URL(targetBase).host;
 
   // Đọc raw body để giữ nguyên multipart/form-data
@@ -63,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url: targetUrl,
       headers: forwardHeaders,
       data: rawBody,
-      httpsAgent,
+      httpsAgent: sharedInbox ? undefined : httpsAgent,
       validateStatus: () => true,
       responseType: "arraybuffer",
       timeout: 60_000,

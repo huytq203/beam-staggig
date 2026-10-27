@@ -10,6 +10,9 @@ import { PaymentService } from '@services/payment';
 export const ReportTransactionList = (props: any) => {
   const { data, setFilter, filter } = props;
   const [sort, setSort] = useState({ keySort: '' });
+  const [requestFormTransactionId, setRequestFormTransactionId] = useState<
+    string | null
+  >(null);
   const { profile } = useAuth();
   const [directionSort, setDirectionSort] = useState('');
   const [requestForm, setRequestForm] = useState<any>(null);
@@ -307,7 +310,6 @@ export const ReportTransactionList = (props: any) => {
     }
     return x;
   });
-
   return (
     <div className="transaction-list">
       <Modal
