@@ -183,6 +183,18 @@ export const NotificationSubTypeSelect = forwardRef<any, any>((props: any, ref: 
           label: 'Yêu cầu ứng lương bị huỷ',
           value: 'CANCELED_SALARY_ADVANCE_TICKET',
         },
+        {
+          label: 'NLĐ hủy yêu cầu thay đổi thông tin',
+          value: 'INFORMATION_CANCEL',
+        },
+        {
+          label: 'NLĐ hủy yêu cầu đăng ký giải pháp ứng lương',
+          value: 'SALARY_ADVANCE_CANCEL',
+        },
+        {
+          label: 'NLĐ rút yêu cầu ứng lương từng lần',
+          value: 'USER_CANCELED_SALARY_ADVANCE_TICKET',
+        },
       ],
     },
     {

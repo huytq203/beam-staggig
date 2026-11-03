@@ -54,6 +54,10 @@ export enum NotificationEnum {
   SALARY_ADVANCE_REJECT = 'SALARY_ADVANCE_REJECT',
   TICKET_NEW_COMPANY = 'TICKET_NEW_COMPANY',
   NEW_SALARY_ADVANCE_PENDING_TICKET = 'NEW_SALARY_ADVANCE_PENDING_TICKET',
+  INFORMATION_CANCEL = 'INFORMATION_CANCEL',
+  SALARY_ADVANCE_CANCEL = 'SALARY_ADVANCE_CANCEL',
+  USER_CANCELED_SALARY_ADVANCE_TICKET = 'USER_CANCELED_SALARY_ADVANCE_TICKET',
+  TEMP_BLOCK_SALARY_ADVANCE = 'TEMP_BLOCK_SALARY_ADVANCE',
   FRIEND_INVITATION_ALERT_BUDGET_UNDER_500K_ADMIN = 'FRIEND_INVITATION-ALERT_BUDGET_UNDER_500K_ADMIN',
   PROFILE = 'PROFILE',
   RECONCILIATION = 'RECONCILIATION',
@@ -229,6 +233,18 @@ export const notificationSubType = [
   {
     label: 'Yêu cầu ứng lương bị huỷ',
     value: 'CANCELED_SALARY_ADVANCE_TICKET',
+  },
+  {
+    label: 'NLĐ hủy yêu cầu thay đổi thông tin',
+    value: 'INFORMATION_CANCEL',
+  },
+  {
+    label: 'NLĐ hủy yêu cầu đăng ký giải pháp ứng lương',
+    value: 'SALARY_ADVANCE_CANCEL',
+  },
+  {
+    label: 'NLĐ rút yêu cầu ứng lương từng lần',
+    value: 'USER_CANCELED_SALARY_ADVANCE_TICKET',
   },
   {
     label: 'Hạn mức chi thưởng của chương trình sắp hết',

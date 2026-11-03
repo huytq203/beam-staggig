@@ -34,6 +34,36 @@ export const notificationConfigs = [
     },
   },
   {
+    type: NotificationEnum.INFORMATION_CANCEL,
+    onAction: (data: any) => {
+      Router.push(
+        `/companies/${data.companyId}/ticket/${data.ticketId}/ticket-update-information`
+      );
+    },
+  },
+  {
+    type: NotificationEnum.SALARY_ADVANCE_CANCEL,
+    onAction: (data: any) => {
+      Router.push(
+        `/companies/${data.companyId}/ticket/${data.ticketId}/ticket-register-salary`
+      );
+    },
+  },
+  {
+    type: NotificationEnum.USER_CANCELED_SALARY_ADVANCE_TICKET,
+    onAction: (data: any) => {
+      Router.push(
+        `/companies/${data.companyId}/ticket-salary-advance/${data.ticketId}/ticket-salary-advance-detail`
+      );
+    },
+  },
+  {
+    type: NotificationEnum.TEMP_BLOCK_SALARY_ADVANCE,
+    onAction: (data: any) => {
+      Router.push(`/companies/${data.companyId}`);
+    },
+  },
+  {
     type: NotificationEnum.FRIEND_INVITATION_ALERT_BUDGET_UNDER_500K_ADMIN,
     onAction: (data: any) => {
       Router.push(`/invite-friends/budget`);
