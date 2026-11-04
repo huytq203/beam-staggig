@@ -38,6 +38,7 @@
     "env-cmd": "10.1.0",
     "faker": "6.6.6",
     "file-type": "^16.5.4",
+    "firebase": "12.19.0",
     "formidable": "^3.5.4",
     "jose": "^6.2.3",
     "js-cookie": "3.0.1",

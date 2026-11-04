@@ -6,6 +6,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { AuthAPIs } from './apis';
 import { clearLastActivity } from './session.activity';
+import { unregisterWebPush } from '../notification-management/web-push';
 
 export type SignOutReason = 'idle' | 'expired' | 'manual';
 
@@ -53,15 +54,19 @@ export const forceSignOut = async (reason: SignOutReason): Promise<void> => {
   if (reason !== 'expired' && accessToken) {
     try {
       await Promise.race([
-        // axios trần chứ KHÔNG qua axiosInstance, vì hai lý do:
-        //   1. axiosInstance import clearSession từ chính file này -> vòng import;
-        //   2. response interceptor của nó tự redirect khi gặp 401, cướp mất
-        //      redirect kèm tham số `reason` ở cuối hàm.
-        axios.post(
-          AuthAPIs.LOGOUT_ACCESS_TOKEN,
-          {},
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        ),
+        Promise.allSettled([
+          // axios trần chứ KHÔNG qua axiosInstance, vì hai lý do:
+          //   1. axiosInstance import clearSession từ chính file này -> vòng import;
+          //   2. response interceptor của nó tự redirect khi gặp 401, cướp mất
+          //      redirect kèm tham số `reason` ở cuối hàm.
+          axios.post(
+            AuthAPIs.LOGOUT_ACCESS_TOKEN,
+            {},
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          ),
+          // Gỡ web push của trình duyệt này, để tài khoản đăng nhập sau không nhận thông báo của tài khoản cũ.
+          unregisterWebPush(accessToken),
+        ]),
         new Promise<void>((resolve) => {
           window.setTimeout(resolve, LOGOUT_API_TIMEOUT_MS);
         }),

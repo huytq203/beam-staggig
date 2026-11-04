@@ -203,7 +203,13 @@ axiosInstance.interceptors.response.use(
     // NProgress.done();
     let response = error.response;
     const responseData = response?.data;
-    const statusCode = responseData?.code ? responseData?.code : response?.code;
+    // Service thông báo chung (ECS) trả 401 dạng {"status":"401"} không có `code`, nên khi body
+    // thiếu `code` thì lấy HTTP 401 để vẫn refresh token. Chỉ áp cho 401: mã khác giữ như cũ.
+    const statusCode = responseData?.code
+      ? responseData?.code
+      : response?.status === 401
+        ? 401
+        : response?.code;
 
     // --- Hướng B: thử refresh token 1 lần trước khi đá về trang đăng nhập ---
     const originalRequest: any = error.config;

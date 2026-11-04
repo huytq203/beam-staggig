@@ -9,6 +9,14 @@ import {
 } from '@hooks/use-sockjs/INotificationContext';
 import { NotificationManagementService } from '@services/notification-management';
 import { NotificationManagementAPIs } from '@services/notification-management/apis';
+import {
+  WEB_PUSH_MESSAGE_SOURCE,
+  WEB_PUSH_OPEN_SOURCE,
+  isWebPushAvailable,
+  registerWebPush,
+  requestWebPushPermission,
+  webPushPermission,
+} from '@services/notification-management/web-push';
 import { Frame } from '@stomp/stompjs';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
@@ -62,7 +70,8 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
     {
       enabled: Boolean(token && profile?.username) && !checkExceptUrl(),
       refetchOnWindowFocus: USE_SHARED_NOTIFICATION,
-      refetchInterval: USE_SHARED_NOTIFICATION ? 15_000 : false,
+      // 5s cho chuông gần như tức thời khi chưa có web push; chỉ chạy khi tab đang hiển thị.
+      refetchInterval: USE_SHARED_NOTIFICATION ? 5_000 : false,
       refetchIntervalInBackground: false,
       getNextPageParam: (lastPage: any, allPage: any) => {
         const page = lastPage?.notifications;
@@ -152,6 +161,43 @@ export const NotificationProvider: React.FunctionComponent<any> = ({
       }
     };
   }, [token, router.route]);
+
+  // Web push (FCM): BE đẩy tín hiệu "có thông báo mới" để chuông cập nhật ngay, không chờ
+  // vòng polling. Polling 5s vẫn giữ làm dự phòng khi push không tới (chưa cấp quyền, mạng chặn...).
+  const pushOwner = token && profile?.username ? String(profile.username) : null;
+  React.useEffect(() => {
+    if (!USE_SHARED_NOTIFICATION || !pushOwner || checkExceptUrl()) return;
+    if (!isWebPushAvailable()) return;
+    let cancelled = false;
+
+    const onServiceWorkerMessage = (event: MessageEvent) => {
+      const source = event?.data?.source;
+      if (source === WEB_PUSH_MESSAGE_SOURCE || source === WEB_PUSH_OPEN_SOURCE) {
+        reFetchNotification();
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', onServiceWorkerMessage);
+
+    // Chưa có quyền: xin ở lần click đầu tiên (Firefox/Safari bắt buộc có thao tác người dùng).
+    const onFirstClick = async () => {
+      document.removeEventListener('click', onFirstClick, true);
+      if (!cancelled && (await requestWebPushPermission()) && !cancelled) {
+        await registerWebPush();
+      }
+    };
+    const permission = webPushPermission();
+    if (permission === 'granted') {
+      registerWebPush();
+    } else if (permission === 'default') {
+      document.addEventListener('click', onFirstClick, true);
+    }
+
+    return () => {
+      cancelled = true;
+      navigator.serviceWorker.removeEventListener('message', onServiceWorkerMessage);
+      document.removeEventListener('click', onFirstClick, true);
+    };
+  }, [pushOwner]);
 
   // Shared ECS service exposes authenticated REST. Poll only while visible;
   // notifications already present at mount never trigger historical popups.

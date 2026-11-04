@@ -3,6 +3,7 @@ import { AuthHelper } from '@helpers/auth.helper';
 import { useIdleLogout } from '@hooks/useIdleLogout';
 import { AuthServices } from '@services/auth';
 import { clearSession } from '@services/auth/session.cleanup';
+import { unregisterWebPush } from '@services/notification-management/web-push';
 import { startSessionTracking } from '@services/auth/session.activity';
 import { saveAuthTokens } from '@services/auth/token.refresh';
 import Cookies from 'js-cookie';
@@ -322,6 +323,8 @@ export const AuthenticationProvider = ({ children }: any) => {
     //   : config.redirectPath;
     stopLoadingState();
     const path = config.noRedirect ? '/' : decodeURIComponent(redirectPath);
+    // Gỡ web push trước khi xóa token (tự giới hạn thời gian, lỗi thì bỏ qua).
+    await unregisterWebPush();
     clearSession();
     window.location.href = decodeURIComponent(
       `${getAuthUrl()}/auth/signin?redirectUrl=${path}`
