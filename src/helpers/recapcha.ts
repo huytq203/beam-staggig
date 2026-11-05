@@ -66,8 +66,10 @@ function loadScript(): Promise<void> {
   return loadPromise
 }
 
-/** Sinh token reCAPTCHA cho 1 action. Throw nếu không tải/khởi tạo được. */
-export async function executeRecaptcha(action: string): Promise<string> {
+const MAX_EXECUTE_ATTEMPTS = 3
+const EXECUTE_RETRY_DELAY_MS = 500
+
+async function executeOnce(action: string): Promise<string> {
   await loadScript()
   const grecaptcha = (window as any).grecaptcha
   if (!grecaptcha?.execute) throw new Error('reCAPTCHA chưa sẵn sàng')
@@ -81,7 +83,31 @@ export async function executeRecaptcha(action: string): Promise<string> {
       resolve()
     })
   })
-  return grecaptcha.execute(SITE_KEY, { action })
+  // execute() có thể treo (mạng chập chờn, iframe anchor chưa sẵn sàng) nên cũng phải có timeout.
+  return Promise.race([
+    grecaptcha.execute(SITE_KEY, { action }) as Promise<string>,
+    new Promise<string>((_, reject) =>
+      setTimeout(() => reject(new Error('reCAPTCHA execute quá lâu')), LOAD_TIMEOUT_MS)
+    ),
+  ])
+}
+
+/**
+ * Sinh token reCAPTCHA cho 1 action, tự thử lại tối đa MAX_EXECUTE_ATTEMPTS lần.
+ * Mỗi lần lỗi sẽ gỡ script/grecaptcha hỏng để lần sau nạp lại từ đầu.
+ * Throw lỗi cuối cùng nếu hết lượt.
+ */
+export async function executeRecaptcha(action: string): Promise<string> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await executeOnce(action)
+    } catch (error) {
+      console.error(`[reCAPTCHA] lần ${attempt}/${MAX_EXECUTE_ATTEMPTS} lỗi:`, error)
+      if (attempt >= MAX_EXECUTE_ATTEMPTS) throw error
+      unloadScript()
+      await new Promise((resolve) => setTimeout(resolve, EXECUTE_RETRY_DELAY_MS))
+    }
+  }
 }
 
 /** Gỡ script + badge khỏi DOM để reCAPTCHA không còn hiển thị/hoạt động ngoài màn login. */
