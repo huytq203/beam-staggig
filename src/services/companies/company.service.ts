@@ -273,4 +273,23 @@ export class CompanyService {
     );
     return x?.data?.data;
   }
+
+  /** Kênh chi tiền ứng lương của công ty (core, chỉ super_admin/beam_admin). */
+  static async getPayoutChannel(companyId: string) {
+    const x = await axiosInstance.get(
+      `${CompanyAPIs.GET_LIST_COMPANY}/${companyId}/payout-channel`
+    );
+    return x?.data?.data;
+  }
+
+  static async updatePayoutChannel(
+    companyId: string,
+    payoutChannel: 'LEGACY_BANK' | 'FLEXPAY_V2'
+  ) {
+    const x = await axiosInstance.put(
+      `${CompanyAPIs.GET_LIST_COMPANY}/${companyId}/payout-channel`,
+      { payoutChannel }
+    );
+    return x?.data;
+  }
 }
