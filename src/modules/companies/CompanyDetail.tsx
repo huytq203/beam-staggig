@@ -6,6 +6,7 @@ import { Divider, Tag } from '@douyinfe/semi-ui';
 import { DateTimeHelper } from '@helpers/date-time.helper';
 import { StringHelper } from '@helpers/string.helper';
 import { useEffect } from 'react';
+import { CompanyPayoutChannel } from './CompanyPayoutChannel';
 
 const CompanyDetailRow = (props: any) => {
   const { label, children } = props;
@@ -341,6 +342,10 @@ export const CompanyDetail = (props: any) => {
           data={companyData}
           fields={creditFields}
         />
+      </ProtectedWrapper>
+      <ProtectedWrapper allowedRoles={[UserRole.BEAM_ADMIN, UserRole.SUPER_ADMIN]}>
+        <Divider dashed />
+        {companyData?.id && <CompanyPayoutChannel companyId={companyData.id} />}
       </ProtectedWrapper>
       <Divider dashed />
       <RowBuilder
