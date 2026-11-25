@@ -59,9 +59,10 @@ export const forceSignOut = async (reason: SignOutReason): Promise<void> => {
           //   1. axiosInstance import clearSession từ chính file này -> vòng import;
           //   2. response interceptor của nó tự redirect khi gặp 401, cướp mất
           //      redirect kèm tham số `reason` ở cuối hàm.
+          // flexpay-identity (realm ewa-hr) revoke theo refresh token trong body.
           axios.post(
             AuthAPIs.LOGOUT_ACCESS_TOKEN,
-            {},
+            { refreshToken: Cookies.get('REFRESH_TOKEN') },
             { headers: { Authorization: `Bearer ${accessToken}` } }
           ),
           // Gỡ web push của trình duyệt này, để tài khoản đăng nhập sau không nhận thông báo của tài khoản cũ.

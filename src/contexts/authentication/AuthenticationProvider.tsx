@@ -5,7 +5,18 @@ import { AuthServices } from '@services/auth';
 import { clearSession } from '@services/auth/session.cleanup';
 import { unregisterWebPush } from '@services/notification-management/web-push';
 import { startSessionTracking } from '@services/auth/session.activity';
-import { saveAuthTokens } from '@services/auth/token.refresh';
+import { readAuthTokens, saveAuthTokens } from '@services/auth/token.refresh';
+
+// flexpay-identity trả lỗi đăng nhập dạng { code, errorCode, message }. Đổi các
+// mã hay gặp sang câu tiếng Việt để LoginForm hiển thị qua `loginError.message`.
+const LOGIN_ERROR_MESSAGES: Record<string, string> = {
+  INVALID_CREDENTIALS: 'Tên đăng nhập hoặc mật khẩu không đúng',
+};
+const toLoginError = (error: any) => {
+  const data = error?.response?.data ?? error;
+  const message = LOGIN_ERROR_MESSAGES[data?.errorCode];
+  return message ? { ...data, message } : data;
+};
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/router';
@@ -165,7 +176,8 @@ export const AuthenticationProvider = ({ children }: any) => {
 
   // Tạo session từ response chứa token (dùng chung cho login thường + verify-otp).
   const establishSession = (response: any, callbackUrl?: string) => {
-    const { access_token: accessToken, refresh_token: refreshToken } = response;
+    const { accessToken, refreshToken } = readAuthTokens(response);
+    if (!accessToken) return;
 
     const responseUser: any = jwt_decode(accessToken);
     const user = {
@@ -174,7 +186,7 @@ export const AuthenticationProvider = ({ children }: any) => {
       name: responseUser.name,
       given_name: responseUser.given_name,
       family_name: responseUser.family_name,
-      roles: responseUser.realm_access.roles,
+      roles: responseUser.realm_access?.roles ?? [],
     };
 
     // Cookie do client set qua js-cookie nên KHÔNG thể đặt HttpOnly (chỉ server
@@ -226,7 +238,7 @@ export const AuthenticationProvider = ({ children }: any) => {
         }));
         return null;
       }
-      if (data.access_token) {
+      if (readAuthTokens(data).accessToken) {
         establishSession(data, authRequest?.callbackUrl);
         return { loggedIn: true };
       }
@@ -234,7 +246,7 @@ export const AuthenticationProvider = ({ children }: any) => {
     } catch (error: any) {
       setState((prev: any) => ({
         ...prev,
-        loginError: error?.response?.data ?? error,
+        loginError: toLoginError(error),
       }));
       return null;
     } finally {
@@ -254,7 +266,7 @@ export const AuthenticationProvider = ({ children }: any) => {
       otp,
     });
     const data = res?.data?.data;
-    if (!data?.access_token) {
+    if (!readAuthTokens(data).accessToken) {
       throw new Error('Mã OTP không đúng hoặc đã hết hạn, vui lòng thử lại!');
     }
     establishSession(data, authRequest.callbackUrl);
@@ -275,7 +287,7 @@ export const AuthenticationProvider = ({ children }: any) => {
         }));
         return;
       }
-      if (!response.access_token) {
+      if (!readAuthTokens(response).accessToken) {
         // BE yêu cầu OTP -> luồng này không tự đăng nhập được;
         // dùng requestLoginOtp + verifyLoginOtp (xem LoginForm).
         return;
@@ -284,7 +296,7 @@ export const AuthenticationProvider = ({ children }: any) => {
     } catch (error: any) {
       setState((prev: any) => ({
         ...prev,
-        loginError: error?.response?.data ?? error,
+        loginError: toLoginError(error),
       }));
     } finally {
       stopLoadingState();

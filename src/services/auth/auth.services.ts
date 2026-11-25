@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { axiosInstance } from '../api/axiosInstance';
 import { AuthAPIs } from './apis';
 
@@ -13,7 +14,9 @@ export class AuthServices {
   }
 
   static logout() {
-    return axiosInstance.post(`${AuthAPIs.LOGOUT_ACCESS_TOKEN}`);
+    return axiosInstance.post(`${AuthAPIs.LOGOUT_ACCESS_TOKEN}`, {
+      refreshToken: Cookies.get('REFRESH_TOKEN'),
+    });
   }
 
   static resetPassword(userName: any) {

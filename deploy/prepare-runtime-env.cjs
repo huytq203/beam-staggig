@@ -7,19 +7,20 @@ const DEV_NOTIFICATION_ENV = Object.freeze({
   NEXT_PUBLIC_API_NOTIFICATION_PROXY: '/api/proxy/notification',
   NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL: 'https://api.dev.ewallet.flexpay.vn/notification',
   NEXT_PUBLIC_EWA_NOTIFICATION_MANAGEMENT_API_URL: 'https://18.140.180.230:8082',
-  NEXT_PUBLIC_BEAM_API_DIRECT: 'https://identity.devops.beamewa.com.vn',
+  NEXT_PUBLIC_BEAM_API_DIRECT: 'https://api.dev.ewallet.flexpay.vn/identity',
   NEXT_PUBLIC_BEAM_API_PROXY: '/api/proxy/beam-api',
   NOTIFICATION_API_URL: 'https://api.dev.ewallet.flexpay.vn/notification',
   EWA_NOTIFICATION_MANAGEMENT_URL: 'https://18.140.180.230:8082',
-  IDENTITY_VERIFY_URL: 'https://identity.devops.beamewa.com.vn',
-  KEYCLOAK_ISSUER: 'https://18.140.180.230:8443/realms/ewa',
+  // Unified Identity realm ewa-hr: withAuth.ts verify JWT offline bằng JWKS.
+  EWA_JWKS_URI: 'https://api.dev.ewallet.flexpay.vn/identity/api/v1/.well-known/jwks/ewa-hr',
+  EWA_JWT_ISSUER: 'https://keycloak.dev.ewallet.flexpay.vn/realms/ewa-hr',
 });
 
 // Only these approved private variables may enter the Amplify SSR runtime file.
 // Credentials never receive a NEXT_PUBLIC_ alias.
 const PRIVATE_RUNTIME_KEYS = Object.freeze([
   'NOTIFICATION_API_URL', 'EWA_NOTIFICATION_MANAGEMENT_URL',
-  'IDENTITY_VERIFY_URL', 'KEYCLOAK_ISSUER',
+  'EWA_JWKS_URI', 'EWA_JWT_ISSUER',
   'DATABASE_URL', 'HEALTH_CHECK_TOKEN', 'CORS_ALLOWED_ORIGINS',
   'CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_R2_ACCESS_KEY_ID',
   'CLOUDFLARE_R2_SECRET_ACCESS_KEY', 'CLOUDFLARE_R2_BUCKET',

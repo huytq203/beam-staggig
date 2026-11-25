@@ -6,6 +6,7 @@ import { getResponseMessage } from './handlers';
 import { NEXT_PUBLIC_API_MAINTENANCE } from '@constants/endpoints';
 import { useState } from 'react';
 import { refreshAccessToken } from '../auth/token.refresh';
+import { AuthAPIEnums } from '../auth/apis';
 import { clearSession } from '../auth/session.cleanup';
 export const getAccessToken = () => {
   const access_token = Cookies.get('ACCESS_TOKEN');
@@ -213,9 +214,15 @@ axiosInstance.interceptors.response.use(
 
     // --- Hướng B: thử refresh token 1 lần trước khi đá về trang đăng nhập ---
     const originalRequest: any = error.config;
-    const isRefreshCall =
-      typeof originalRequest?.url === 'string' &&
-      originalRequest.url.includes('/account/refresh-token');
+    const requestUrl: string =
+      typeof originalRequest?.url === 'string' ? originalRequest.url : '';
+    const isRefreshCall = requestUrl.includes(AuthAPIEnums.REFRESH_TOKEN);
+    // Sai mật khẩu: flexpay-identity trả HTTP 401/400 { errorCode, message }.
+    // Không được rơi vào nhánh 401 bên dưới (xoá phiên + reload trang đăng nhập)
+    // vì sẽ nuốt mất lỗi; reject để AuthenticationProvider hiển thị loginError.
+    if (response && requestUrl.includes(AuthAPIEnums.LOGIN_ACCESS_TOKEN)) {
+      return Promise.reject(error);
+    }
     if (
       statusCode == 401 &&
       originalRequest &&

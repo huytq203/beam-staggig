@@ -1,6 +1,7 @@
 "server-only";
 
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import { createRemoteJWKSet, errors as joseErrors, jwtVerify } from "jose";
 import { ForbiddenError, UnauthorizedError } from "./errors";
 
 export interface KeycloakToken {
@@ -13,29 +14,26 @@ export interface KeycloakToken {
   [propName: string]: unknown;
 }
 
-// Xác thực token bằng cách gọi identity `/external/jwt/verify` — đúng cách mà
-// mọi service Java trong hệ thống vẫn làm.
+// Verify JWT offline bằng JWKS của realm `ewa-hr` (Unified Identity + Keycloak 26),
+// giống cách ewa-core / ewa-payment / ewa-reporting đang làm.
 //
-// Trước đây chỗ này tự verify chữ ký bằng jose + JWKS lấy thẳng từ Keycloak
-// (`KEYCLOAK_ISSUER` = https://<ip>:8443/realms/ewa). Cách đó chết khi chạy trên
-// Amplify: cổng 8443 của Keycloak chỉ mở cho vài IP cố định, mà Amplify chạy
-// trên Lambda nên đi ra bằng IP của AWS -> fetch JWKS treo -> timeout 5s -> mọi
-// API tin tức trả 401 INVALID_TOKEN ("request timed out"). Identity thì đã có
-// tên miền công khai nên gọi được từ Lambda.
-const IDENTITY_BASE_URL =
-  process.env.IDENTITY_VERIFY_URL ||
-  process.env.NEXT_PUBLIC_BEAM_API_DIRECT ||
-  process.env.NEXT_PUBLIC_BEAM_API;
+// `/external/jwt/verify` của beam.ewa.identity cũ đã tắt. JWKS được mở qua HTTPS
+// công khai (cổng 443) nên không còn cảnh fetch treo vì cổng 8443 chỉ mở cho vài
+// IP như thời Amplify. `createRemoteJWKSet` cache key trong bộ nhớ và chỉ fetch
+// lại khi gặp `kid` lạ, nên mỗi request không tốn thêm một round-trip.
+//
+// Mặc định trỏ DEV; production phải đặt EWA_JWKS_URI + EWA_JWT_ISSUER.
+const JWKS_URI =
+  process.env.EWA_JWKS_URI ||
+  "https://api.dev.ewallet.flexpay.vn/identity/api/v1/.well-known/jwks/ewa-hr";
+const ALLOWED_ISSUER =
+  process.env.EWA_JWT_ISSUER ||
+  "https://keycloak.dev.ewallet.flexpay.vn/realms/ewa-hr";
 
-const VERIFY_TIMEOUT_MS = 5_000;
-
-interface IdentityTokenInformation {
-  userId?: string;
-  userName?: string;
-  fullName?: string;
-  email?: string;
-  roles?: string[];
-}
+const jwks = createRemoteJWKSet(new URL(JWKS_URI), {
+  timeoutDuration: 5_000,
+  cooldownDuration: 30_000,
+});
 
 export function getTokenFromRequest(req: NextApiRequest): string | null {
   const authHeader = req.headers.authorization;
@@ -43,49 +41,33 @@ export function getTokenFromRequest(req: NextApiRequest): string | null {
   return req.cookies?.ACCESS_TOKEN ?? null;
 }
 
+// Payload Keycloak: sub -> userId, preferred_username -> userName,
+// email/name -> hiển thị, realm_access.roles -> kiểm `allowedRoles`.
 export async function verifyToken(token: string): Promise<KeycloakToken> {
-  if (!IDENTITY_BASE_URL) {
-    throw new Error("NEXT_PUBLIC_BEAM_API_DIRECT chưa được cấu hình");
-  }
-
-  const url = `${IDENTITY_BASE_URL.replace(/\/+$/, "")}/external/jwt/verify`;
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), VERIFY_TIMEOUT_MS);
-
-  let response: Response;
+  let payload: Record<string, unknown>;
   try {
-    response = await fetch(url, {
-      method: "GET",
-      headers: { authorization: `Bearer ${token}` },
-      signal: controller.signal,
-    });
+    ({ payload } = await jwtVerify(token, jwks, {
+      issuer: ALLOWED_ISSUER,
+      algorithms: ["RS256"],
+    }));
   } catch (err) {
-    const reason = err instanceof Error ? err.message : String(err);
-    throw new Error(`Không gọi được identity để xác thực token: ${reason}`);
-  } finally {
-    clearTimeout(timer);
+    if (err instanceof joseErrors.JWTExpired) {
+      throw new UnauthorizedError("Token đã hết hạn");
+    }
+    // Lỗi mạng / timeout khi lấy JWKS không phải lỗi của token -> giữ nguyên
+    // nguyên nhân để log; các lỗi JOSE còn lại (chữ ký, issuer, định dạng,
+    // không khớp kid) đều là token không hợp lệ.
+    if (err instanceof joseErrors.JWKSTimeout || !(err instanceof joseErrors.JOSEError)) {
+      const reason = err instanceof Error ? err.message : String(err);
+      throw new Error(`Không lấy được JWKS để xác thực token: ${reason}`);
+    }
+    throw new UnauthorizedError("Token không hợp lệ");
   }
 
-  if (response.status === 401 || response.status === 403) {
-    throw new UnauthorizedError("Token không hợp lệ hoặc đã hết hạn");
+  if (typeof payload.sub !== "string" || !payload.sub) {
+    throw new UnauthorizedError("Token không hợp lệ (thiếu sub)");
   }
-  if (!response.ok) {
-    throw new Error(`identity /external/jwt/verify trả về ${response.status}`);
-  }
-
-  const body = (await response.json()) as { data?: IdentityTokenInformation };
-  const info = body?.data;
-  if (!info?.userId) {
-    throw new UnauthorizedError("Token không hợp lệ (thiếu userId)");
-  }
-
-  return {
-    sub: info.userId,
-    preferred_username: info.userName,
-    email: info.email,
-    name: info.fullName,
-    realm_access: { roles: Array.isArray(info.roles) ? info.roles : [] },
-  };
+  return payload as KeycloakToken;
 }
 
 export function getUserRoles(decoded: KeycloakToken): string[] {

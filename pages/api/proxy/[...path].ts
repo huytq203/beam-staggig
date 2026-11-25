@@ -2,11 +2,14 @@ import axios from "axios";
 import https from "https";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+// Trên ECS (17-ewa-platform) container được bơm sẵn URL Service Connect nội bộ lúc
+// runtime; NEXT_PUBLIC_*_DIRECT bị nhúng cứng lúc build nên chỉ dùng làm fallback
+// khi chạy local (trỏ public HTTPS).
 const SERVICE_MAP: Record<string, string> = {
-  "beam-api":     process.env.NEXT_PUBLIC_BEAM_API_DIRECT!,
-  "core":         process.env.NEXT_PUBLIC_API_CORE_DIRECT!,
-  "core2":        process.env.NEXT_PUBLIC_API_CORE2_DIRECT!,
-  "payment":      process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT!,
+  "beam-api":     process.env.FLEXPAY_IDENTITY_URL || process.env.NEXT_PUBLIC_BEAM_API_DIRECT!,
+  "core":         process.env.EWA_CORE_INTERNAL_URL || process.env.NEXT_PUBLIC_API_CORE_DIRECT!,
+  "core2":        process.env.EWA_REPORTING_URL || process.env.NEXT_PUBLIC_API_CORE2_DIRECT!,
+  "payment":      process.env.EWA_PAYMENT_URL || process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT!,
   "notification": process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_ENABLED === "true"
     ? (process.env.NOTIFICATION_API_URL ?? process.env.NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL ?? "")
     : process.env.NEXT_PUBLIC_API_NOTIFICATION_DIRECT! ,

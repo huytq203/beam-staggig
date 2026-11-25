@@ -28,13 +28,15 @@ test('dev writes shared inbox, retained EWA management and explicit browser flag
   }
   assert.ok(content.includes('NOTIFICATION_API_URL="https://api.dev.ewallet.flexpay.vn/notification"'));
   assert.ok(content.includes('EWA_NOTIFICATION_MANAGEMENT_URL="https://18.140.180.230:8082"'));
-  assert.ok(content.includes('NEXT_PUBLIC_BEAM_API_DIRECT="https://identity.devops.beamewa.com.vn"'));
+  assert.ok(content.includes('NEXT_PUBLIC_BEAM_API_DIRECT="https://api.dev.ewallet.flexpay.vn/identity"'));
+  assert.ok(content.includes('EWA_JWKS_URI="https://api.dev.ewallet.flexpay.vn/identity/api/v1/.well-known/jwks/ewa-hr"'));
+  assert.ok(content.includes('EWA_JWT_ISSUER="https://keycloak.dev.ewallet.flexpay.vn/realms/ewa-hr"'));
   assert.ok(content.includes('NEXT_PUBLIC_BEAM_API_PROXY="/api/proxy/beam-api"'));
 });
 
 test('dev fails before writing for an invalid notification, management or identity target', (t) => {
   for (const key of ['NOTIFICATION_API_URL', 'EWA_NOTIFICATION_MANAGEMENT_URL',
-    'IDENTITY_VERIFY_URL', 'KEYCLOAK_ISSUER', 'NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL',
+    'EWA_JWKS_URI', 'EWA_JWT_ISSUER', 'NEXT_PUBLIC_SHARED_NOTIFICATION_API_URL',
     'NEXT_PUBLIC_BEAM_API_DIRECT', 'NEXT_PUBLIC_BEAM_API_PROXY']) {
     const directory = fixture(t);
     assert.throws(() => prepareRuntimeEnv({

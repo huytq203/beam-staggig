@@ -17,6 +17,15 @@ const getCookieOptions = (): Cookies.CookieAttributes => {
   };
 };
 
+// flexpay-identity (realm ewa-hr) trả camelCase `accessToken`/`refreshToken`;
+// các endpoint cũ còn sót (OTP, chốt đối soát) trả snake_case. Đọc được cả hai.
+export const readAuthTokens = (
+  data: any
+): { accessToken?: string; refreshToken?: string } => ({
+  accessToken: data?.accessToken ?? data?.access_token,
+  refreshToken: data?.refreshToken ?? data?.refresh_token,
+});
+
 export const saveAuthTokens = (accessToken: string, refreshToken?: string) => {
   const options = getCookieOptions();
   if (accessToken) {
@@ -40,14 +49,14 @@ export const refreshAccessToken = (): Promise<string> => {
     }
     // axios trần (không qua axiosInstance) để không lặp interceptor.
     refreshPromise = axios
-      .post(AuthAPIs.REFRESH_TOKEN, { refresh_token: refreshToken })
+      .post(AuthAPIs.REFRESH_TOKEN, { refreshToken })
       .then((res) => {
-        const data = res?.data?.data;
-        if (!data?.access_token) {
+        const tokens = readAuthTokens(res?.data?.data);
+        if (!tokens.accessToken) {
           throw new Error('REFRESH_FAILED');
         }
-        saveAuthTokens(data.access_token, data.refresh_token);
-        return data.access_token as string;
+        saveAuthTokens(tokens.accessToken, tokens.refreshToken);
+        return tokens.accessToken;
       })
       .finally(() => {
         refreshPromise = null;

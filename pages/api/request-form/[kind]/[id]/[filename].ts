@@ -17,7 +17,8 @@ export default async function handler(
   if (!KINDS.has(kind) || !UUID.test(id)) {
     return res.status(404).json({ message: "Not found" });
   }
-  const base = process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT;
+  // ECS: URL nội bộ lúc runtime; local: public HTTPS nhúng lúc build.
+  const base = process.env.EWA_PAYMENT_URL || process.env.NEXT_PUBLIC_API_PAYMENT_DIRECT;
   try {
     const response = await axios.get(
       `${base}/payment/reporting/${kind}/${id}/request-form`,

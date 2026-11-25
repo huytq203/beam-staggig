@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { StringHelper } from '@helpers/string.helper';
 import { AuthServices } from '@services/auth';
+import { readAuthTokens } from '@services/auth/token.refresh';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoginSchema } from 'validations/Auth.schema';
 import { DateTimeHelper } from '@helpers/date-time.helper';
@@ -191,8 +192,9 @@ export default function CheckReconciliationPage() {
     setCredentials({ username, password });
 
     // Backend tắt OTP và trả token thẳng -> chốt luôn, không dựng bước 2.
-    if (response.access_token) {
-      await finalizeReconciliation(response.access_token);
+    const directToken = readAuthTokens(response).accessToken;
+    if (directToken) {
+      await finalizeReconciliation(directToken);
       return;
     }
 
@@ -215,7 +217,7 @@ export default function CheckReconciliationPage() {
       password: credentials.password,
       otp: otp,
     });
-    const accessToken = response?.data?.data?.access_token;
+    const accessToken = readAuthTokens(response?.data?.data).accessToken;
     if (!accessToken) {
       throw new Error('Mã OTP không đúng hoặc đã hết hạn, vui lòng thử lại!');
     }
